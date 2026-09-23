@@ -1,0 +1,10 @@
+Comando: .venv/bin/python -m pytest tests/test_consultas.py -q
+
+........                                                                 [100%]
+8 passed, 2 warnings in 0.04s
+
+Avisos observados:
+- StarletteDeprecationWarning: TestClient com httpx foi depreciado nesta versão de Starlette.
+- DeprecationWarning: alias anyio.abc.BlockingPortal foi depreciado.
+
+Cenários acrescentados na revisão: isolamento de registros/IDs entre testes e rejeição de null em PATCH para campos obrigatórios.

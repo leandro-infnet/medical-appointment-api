@@ -1,0 +1,5 @@
+Comando: .venv/bin/python -m pip install -e '.[dev]'
+
+Resultado observado: build editável concluído; medical-appointment-api 0.1.0 instalado com sucesso no ambiente virtual. As dependências declaradas já estavam satisfeitas no ambiente.
+
+Nota: a primeira tentativa dentro do sandbox falhou ao baixar setuptools por falta de resolução de rede; a execução fora dele concluiu com sucesso.

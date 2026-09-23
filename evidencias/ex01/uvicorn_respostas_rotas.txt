@@ -1,0 +1,35 @@
+=== Testando GET / ===
+HTTP/1.1 200 OK
+date: Tue, 22 Sep 2026 05:01:46 GMT
+server: uvicorn
+content-length: 89
+content-type: application/json
+
+{"status":"online","servico":"API de Agendamento de Consultas Médicas","versao":"0.1.0"}
+
+=== Testando POST /consultas (Criação de Consulta) ===
+HTTP/1.1 201 Created
+date: Tue, 22 Sep 2026 05:01:46 GMT
+server: uvicorn
+content-length: 279
+content-type: application/json
+
+{"paciente_id":1,"profissional_id":2,"data_hora":"2026-10-15T14:30:00","motivo":"Consulta cardiológica inicial","id":1,"status":"agendada","observacoes_internas":"Histórico de hipertensão.","criado_em":"2026-09-22T02:01:46.737315","atualizado_em":"2026-09-22T02:01:46.737315"}
+
+=== Testando GET /consultas/1 ===
+HTTP/1.1 200 OK
+date: Tue, 22 Sep 2026 05:01:46 GMT
+server: uvicorn
+content-length: 279
+content-type: application/json
+
+{"paciente_id":1,"profissional_id":2,"data_hora":"2026-10-15T14:30:00","motivo":"Consulta cardiológica inicial","id":1,"status":"agendada","observacoes_internas":"Histórico de hipertensão.","criado_em":"2026-09-22T02:01:46.737315","atualizado_em":"2026-09-22T02:01:46.737315"}
+
+=== Testando GET /consultas ===
+HTTP/1.1 200 OK
+date: Tue, 22 Sep 2026 05:01:46 GMT
+server: uvicorn
+content-length: 281
+content-type: application/json
+
+[{"paciente_id":1,"profissional_id":2,"data_hora":"2026-10-15T14:30:00","motivo":"Consulta cardiológica inicial","id":1,"status":"agendada","observacoes_internas":"Histórico de hipertensão.","criado_em":"2026-09-22T02:01:46.737315","atualizado_em":"2026-09-22T02:01:46.737315"}]
