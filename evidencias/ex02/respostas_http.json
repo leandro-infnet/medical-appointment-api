@@ -1,0 +1,74 @@
+{
+  "origem": "HTTP em processo via FastAPI TestClient; memória isolada",
+  "POST /consultas": {
+    "status": 201,
+    "json": {
+      "paciente_id": 1,
+      "profissional_id": 2,
+      "data_hora": "2026-10-03T09:00:00",
+      "motivo": "Informacao clinica ficticia confidencial",
+      "id": 1,
+      "status": "agendada"
+    }
+  },
+  "GET /consultas/1": {
+    "status": 200,
+    "json": {
+      "paciente_id": 1,
+      "profissional_id": 2,
+      "data_hora": "2026-10-03T09:00:00",
+      "motivo": "Informacao clinica ficticia confidencial",
+      "id": 1,
+      "status": "agendada"
+    }
+  },
+  "GET /consultas": {
+    "status": 200,
+    "json": [
+      {
+        "paciente_id": 1,
+        "profissional_id": 2,
+        "data_hora": "2026-10-03T09:00:00",
+        "motivo": "Informacao clinica ficticia confidencial",
+        "id": 1,
+        "status": "agendada"
+      }
+    ]
+  },
+  "PATCH /consultas/1": {
+    "status": 200,
+    "json": {
+      "paciente_id": 1,
+      "profissional_id": 2,
+      "data_hora": "2026-10-03T09:00:00",
+      "motivo": "Informacao clinica ficticia confidencial",
+      "id": 1,
+      "status": "<script>alert(1)</script>"
+    }
+  },
+  "campos_armazenados": [
+    "atualizado_em",
+    "criado_em",
+    "data_hora",
+    "id",
+    "motivo",
+    "observacoes_internas",
+    "paciente_id",
+    "profissional_id",
+    "status"
+  ],
+  "GET /agenda?dia=2026-10-03": {
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "template": "agenda.html",
+    "campos_no_contexto": [
+      "horario",
+      "id",
+      "paciente_id",
+      "profissional_id",
+      "status"
+    ],
+    "payload_armazenado": "<script>alert(1)</script>",
+    "saida_escapada": "&lt;script&gt;alert(1)&lt;/script&gt;"
+  }
+}

@@ -2,7 +2,7 @@
 
 ## 1. Visão Geral e Contexto
 
-O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. No Exercício 1, as rotas ainda não têm autenticação nem autorização.
+O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas ainda não têm autenticação nem autorização.
 
 ### Consumidores do Sistema
 1. **Frontend JSON:** Aplicação consumidora das rotas REST da API.
@@ -36,14 +36,14 @@ Esta matriz propõe restrições para as etapas futuras. **Permitido** significa
 1. **Dados Pessoais:** Nome do paciente, identificador, contato.
 2. **Dados Sensíveis de Saúde:** Consultas, especialidade/motivo, histórico/prontuário clínico.
 3. **Credenciais e Segredos:** Senhas com hash bcrypt, chaves de assinatura JWT, tokens M2M, códigos MFA.
-4. **Campos Internos de Auditoria:** `observacoes_internas`, `criado_em` e `atualizado_em` existem no modelo inicial. Outros campos, como IP de origem e versão de registro, são apenas possibilidades futuras. Os campos internos deverão ser excluídos das respostas JSON públicas no Exercício 2. Hoje ainda são expostos.
+4. **Campos Internos de Auditoria:** `observacoes_internas`, `criado_em` e `atualizado_em` existem no modelo interno, mas foram excluídos das respostas JSON pelo `ConsultaResponse` no Exercício 2. Outros campos, como IP de origem e versão de registro, são apenas possibilidades futuras. A agenda também exclui motivo clínico e notas internas de seu contexto.
 5. **Dados de Disponibilidade:** Apenas intervalos livres de agenda (sem expor paciente ou motivo).
 
 ---
 
 ## 4. Requisitos Funcionais
 
-Os itens desta seção representam o **alvo do Assessment completo**; no Exercício 1, apenas RF-01 está implementado. A aplicação ainda não oferece os controles das etapas seguintes.
+Os itens desta seção representam o **alvo do Assessment completo**; RF-01 e RF-02 estão implementados e verificados. A aplicação ainda não oferece os controles das etapas seguintes.
 
 - **RF-01:** Prover CRUD RESTful completo de consultas médicas (`POST`, `GET`, `GET /{id}`, `PATCH /{id}`, `DELETE /{id}`) com validação explícita de schemas.
 - **RF-02:** Controlar exposição de dados via `response_model` no JSON e renderizar agenda diária HTML com Jinja2 com auto-escape.
@@ -63,3 +63,15 @@ Estes controles serão implementados progressivamente. A lista não afirma que j
 - **RNF-03 (Hardening de Rede):** CORS com origens explícitas, cabeçalhos de segurança (HSTS, X-Frame-Options, X-Content-Type-Options) e rate limiting em endpoints sensíveis (login).
 - **RNF-04 (Configuração Segura):** Segredos e credenciais via `pydantic-settings` (`BaseSettings`) lendo `.env`, com `.env.example` versionado.
 - **RNF-05 (Pipeline e Auditoria):** Pipeline DevSecOps com security gate automatizado e auditoria passiva via OWASP ZAP.
+
+## 6. Verificação do Exercício 2
+
+| Cenário | Comportamento esperado | Verificação |
+| --- | --- | --- |
+| Entidade contém notas e datas internas | JSON contém somente os seis campos contratados, sem apagar dados internos | `test_respostas_excluem_campos_internos_sem_apagar_armazenamento` |
+| Agenda contém consultas de dias/horários distintos | Só o dia solicitado, em ordem local; contexto mínimo | `test_agenda_filtra_dia_ordena_e_minimiza_contexto` |
+| Instante UTC pertence ao dia anterior local | Conversão precede filtro de dia | `test_agenda_converte_instante_utc_antes_de_filtrar_dia` |
+| Status contém script ou imagem com handler | Conteúdo armazenado é exibido como texto, sem tags executáveis | `test_agenda_escapa_texto_malicioso_armazenado` |
+| Dia vazio, omitido ou inválido | Mensagem de vazio, dia atual local ou 422, respectivamente | Demais testes de agenda |
+
+Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). Modelagem formal de ameaças ainda pendente para os Exercícios 3 e 4.

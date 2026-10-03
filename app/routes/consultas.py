@@ -10,14 +10,14 @@ from app.database.consultas import (
     atualizar_consulta,
     remover_consulta,
 )
-from app.models.consultas import Consulta, ConsultaCreate, ConsultaUpdate
+from app.models.consultas import ConsultaResponse, ConsultaCreate, ConsultaUpdate
 
 router = APIRouter(prefix="/consultas", tags=["Consultas"])
 
 
 @router.post(
     "",
-    response_model=Consulta,
+    response_model=ConsultaResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Criar uma nova consulta médica",
     description="Registra uma nova consulta vinculando paciente e profissional de saúde.",
@@ -28,7 +28,7 @@ def endpoint_criar_consulta(dados: ConsultaCreate):
 
 @router.get(
     "",
-    response_model=List[Consulta],
+    response_model=List[ConsultaResponse],
     status_code=status.HTTP_200_OK,
     summary="Listar consultas médicas",
     description="Retorna a lista de consultas cadastradas com filtros opcionais.",
@@ -46,7 +46,7 @@ def endpoint_listar_consultas(
 
 @router.get(
     "/{consulta_id}",
-    response_model=Consulta,
+    response_model=ConsultaResponse,
     status_code=status.HTTP_200_OK,
     summary="Obter detalhes de uma consulta",
     description="Retorna os dados de uma consulta específica a partir de seu ID.",
@@ -63,7 +63,7 @@ def endpoint_obter_consulta(consulta_id: int):
 
 @router.patch(
     "/{consulta_id}",
-    response_model=Consulta,
+    response_model=ConsultaResponse,
     status_code=status.HTTP_200_OK,
     summary="Atualizar uma consulta médica",
     description="Atualiza parcialmente campos permitidos de uma consulta existente.",
