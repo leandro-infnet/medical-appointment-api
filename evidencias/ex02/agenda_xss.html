@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agenda de 03/10/2026</title>
+</head>
+<body>
+    <header><h1>Agenda da clínica</h1></header>
+    <main>
+<h2>Consultas de 03/10/2026</h2>
+<p>Horários em America/Sao_Paulo.</p>
+<form method="get" action="http://testserver/agenda">
+    <label for="dia">Dia</label>
+    <input type="date" id="dia" name="dia" value="2026-10-03" required>
+    <button type="submit">Consultar</button>
+</form>
+
+<table>
+    <caption>Agenda diária da recepção</caption>
+    <thead><tr>
+        <th scope="col">Consulta</th><th scope="col">Horário</th>
+        <th scope="col">Paciente (ID)</th><th scope="col">Profissional (ID)</th>
+        <th scope="col">Status</th>
+    </tr></thead>
+    <tbody>
+    
+    <tr>
+        <td>1</td><td>09:00</td>
+        <td>1</td><td>2</td>
+        <td>&lt;script&gt;alert(1)&lt;/script&gt;</td>
+    </tr>
+    
+    </tbody>
+</table>
+
+</main>
+</body>
+</html>

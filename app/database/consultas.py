@@ -1,10 +1,29 @@
 """Operações de dados para o recurso de Consultas Médicas."""
 
-from datetime import datetime
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 from typing import List, Optional
 from app.database import memoria
 from app.database.memoria import _consultas, _lock
 from app.models.consultas import Consulta, ConsultaCreate, ConsultaUpdate
+
+FUSO_CLINICA = ZoneInfo("America/Sao_Paulo")
+
+
+def horario_na_clinica(horario: datetime) -> datetime:
+    """Horários sem fuso são locais; instantes com fuso são convertidos."""
+    if horario.tzinfo is None:
+        return horario.replace(tzinfo=FUSO_CLINICA)
+    return horario.astimezone(FUSO_CLINICA)
+
+
+def listar_consultas_do_dia(dia: date) -> List[Consulta]:
+    """Reutiliza a leitura em memória e ordena a agenda pelo instante local."""
+    consultas = [
+        consulta for consulta in listar_consultas()
+        if horario_na_clinica(consulta.data_hora).date() == dia
+    ]
+    return sorted(consultas, key=lambda consulta: horario_na_clinica(consulta.data_hora))
 
 
 def criar_consulta(dados: ConsultaCreate) -> Consulta:

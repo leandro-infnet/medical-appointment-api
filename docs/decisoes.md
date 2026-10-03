@@ -23,7 +23,30 @@ Este documento registra as decisões arquiteturais e técnicas de maior relevân
   - `DELETE /consultas/{id}`: Cancelamento/remoção da consulta (retorna 204 No Content ou 404 Not Found).
   - Modelo de dados de consulta inclui: `id`, `paciente_id`, `profissional_id`, `data_hora`, `status`, `motivo` e `observacoes_internas` (campo confidencial/auditoria).
 - **Consequência:** Semântica REST documentada, permitindo testes imediatos e evolução para response models seguros no Exercício 2. `DELETE` remove fisicamente o registro nesta etapa; cancelamento como mudança de estado permanece uma decisão de negócio a definir.
-- **Pendências:** fuso e duração das consultas, conflito de horários, estados permitidos e comportamento futuro de cancelamento. O `PATCH` rejeita `null` em campos obrigatórios, mas não fixa ainda um catálogo de estados.
+- **Pendências:** duração das consultas, conflito de horários, estados permitidos e comportamento futuro de cancelamento. O fuso provisório adotado no Exercício 2 está na DEC-14. O `PATCH` rejeita `null` em campos obrigatórios, mas não fixa ainda um catálogo de estados.
+
+---
+
+### DEC-13: Contratos de saída e minimização no Exercício 2
+
+- **Contexto:** o modelo interno `Consulta` contém `observacoes_internas`, `criado_em` e `atualizado_em`; devolver essa entidade inteira exporia notas confidenciais e metadados de auditoria. A evidência histórica do Exercício 1 mostra esse estado anterior. A presença de qualquer `response_model` não basta: o modelo anterior declarava também os campos internos.
+- **Decisão:** criar `ConsultaResponse`, derivado apenas de `ConsultaBase`, com `id` e `status` obrigatórios; aplicar nas respostas POST, GET unitário/listagem e PATCH. DELETE continua sem corpo (204). Os seis campos autorizados são `id`, `paciente_id`, `profissional_id`, `data_hora`, `motivo` e `status`. O motivo permanece no contrato clínico JSON; sua autorização será implementada no Exercício 6.
+- **Alternativa rejeitada:** repetir exclusões por rota ou retornar a entidade inteira, pois novos campos internos poderiam vazar e as listas de exclusão poderiam divergir. A allowlist de saída é um contrato próprio e continua válida após a migração SQLModel.
+- **Agenda:** o template recebe uma projeção somente com IDs de consulta/paciente/profissional, horário local e status, suficiente para a demonstração inicial da recepção. Não recebe motivo, observações, datas de auditoria, email ou prontuário. Exibir nomes e definir o mínimo operacional definitivo são decisões futuras de produto; os IDs não devem ser tratados como dados anônimos.
+- **Segurança:** `agenda.html` estende `base.html`; o Environment usa `select_autoescape` explicitamente para HTML/XML. Texto variável fica em nós de texto ou atributos HTML escapados; não há `safe`, JavaScript dinâmico ou CSS com conteúdo do usuário. Escape não substitui autorização.
+- **Verificação:** testes HTTP comparam o conjunto exato de campos em quatro respostas e confirmam preservação dos dados internos. Dois ataques didáticos via PATCH de status comprovam armazenamento do texto e sua renderização como texto, sem criar tags `script`/`img`. O catálogo de status ainda está pendente; o campo textual existente permite exercitar a defesa de saída sem reintroduzir vulnerabilidade.
+- **Fontes técnicas:** [FastAPI: response models e filtragem](https://fastapi.tiangolo.com/tutorial/response-model/) e [Jinja2: autoescaping](https://jinja.palletsprojects.com/en/stable/api/#autoescaping). A proteção efetiva foi verificada na aplicação instalada, não inferida apenas da documentação.
+
+---
+
+### DEC-14: Dia e fuso da agenda inicial
+
+- **Recomendação de engenharia adotada provisoriamente:** `America/Sao_Paulo` é o fuso único desta demonstração; o Assessment não define o fuso nem múltiplas clínicas com fusos diferentes. Confirmar esta convenção antes da disponibilidade M2M e persistência. Não é requisito acadêmico adicional.
+- **Decisão:** `GET /agenda?dia=AAAA-MM-DD`; sem `dia`, usar o dia atual nesse fuso, sem depender do fuso do servidor. Horários ingênuos existentes são interpretados como locais; horários com offset são convertidos. Filtrar pela data local e ordenar pelo instante convertido.
+- **Alternativas:** exigir offset em todos os horários e armazenar UTC na persistência; ou configurar fuso por clínica, se o domínio efetivamente exigir. Não introduzir esse escopo agora.
+- **Implementação:** regra temporal compartilhada em `app/database/consultas.py`; a rota coordena HTTP e projeção, o template só apresenta. `tzdata` provê fallback da base IANA em sistemas que não a tenham; templates são incluídos como package data e localizados a partir de `__file__`.
+- **Verificação:** data inválida rejeitada com 422, agenda vazia explícita, dia atual com relógio controlado e instante UTC no dia anterior local.
+- **Limites:** não há validação de horários locais ambíguos/inexistentes, duração, conflito ou catálogo de status. Esses pontos precisam de decisão antes de prometer garantias de disponibilidade ou consistência.
 
 ---
 

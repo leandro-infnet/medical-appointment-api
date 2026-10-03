@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from app.routes.consultas import router as consultas_router
+from app.routes.agenda import router as agenda_router
 
 app = FastAPI(
     title="API de Agendamento de Consultas Médicas",
@@ -10,6 +11,7 @@ app = FastAPI(
 )
 
 app.include_router(consultas_router)
+app.include_router(agenda_router)
 
 
 @app.get("/", tags=["Saúde"])

@@ -1,0 +1,12 @@
+{
+  "criacao": {
+    "paciente_id": 1,
+    "profissional_id": 2,
+    "data_hora": "2026-10-03T09:00:00",
+    "motivo": "Informacao clinica ficticia confidencial",
+    "observacoes_internas": "Nota interna ficticia restrita"
+  },
+  "ataque_didatico": {
+    "status": "<script>alert(1)</script>"
+  }
+}

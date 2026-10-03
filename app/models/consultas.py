@@ -34,6 +34,13 @@ class ConsultaUpdate(BaseModel):
         return valor
 
 
+class ConsultaResponse(ConsultaBase):
+    """Contrato JSON: somente campos destinados ao consumidor da API."""
+
+    id: int = Field(..., description="Identificador único da consulta")
+    status: str = Field(..., description="Estado atual da consulta")
+
+
 class Consulta(ConsultaBase):
     id: int = Field(..., description="Identificador único da consulta")
     status: str = Field(default="agendada", description="Estado atual da consulta")
