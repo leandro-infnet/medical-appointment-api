@@ -1,6 +1,6 @@
 """Roteador APIRouter para o recurso RESTful de Consultas."""
 
-from typing import List, Optional
+from typing import Annotated, List, Optional
 from fastapi import APIRouter, HTTPException, Query, status
 
 from app.database.consultas import (
@@ -34,8 +34,12 @@ def endpoint_criar_consulta(dados: ConsultaCreate):
     description="Retorna a lista de consultas cadastradas com filtros opcionais.",
 )
 def endpoint_listar_consultas(
-    paciente_id: Optional[int] = Query(None, description="Filtrar por ID do paciente", gt=0),
-    profissional_id: Optional[int] = Query(None, description="Filtrar por ID do profissional", gt=0),
+    paciente_id: Annotated[
+        Optional[int], Query(description="Filtrar por ID do paciente", gt=0)
+    ] = None,
+    profissional_id: Annotated[
+        Optional[int], Query(description="Filtrar por ID do profissional", gt=0)
+    ] = None,
 ):
     return listar_consultas(paciente_id=paciente_id, profissional_id=profissional_id)
 
