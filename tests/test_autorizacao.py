@@ -97,7 +97,11 @@ def test_desafio_inutilizado(anonimo, monkeypatch, modo):
     if modo == "expirado":
         monkeypatch.setattr("app.auth.mfa.monotonic", lambda: float("inf"))
     elif modo == "cinco_erros":
+        # Exercita o orçamento MFA sem esbarrar na cota HTTP; relógios independentes.
+        clock = [anonimo.app.state.rate_limiter.clock()]
+        monkeypatch.setattr(anonimo.app.state.rate_limiter, "clock", lambda: clock[0])
         for _ in range(5):
+            clock[0] += 61
             assert anonimo.post("/auth/mfa", json={"challenge_id": challenge, "code": "999999"}).status_code == 401
     else:
         desafio_admin(anonimo)

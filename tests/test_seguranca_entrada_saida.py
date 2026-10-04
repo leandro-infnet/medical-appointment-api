@@ -84,11 +84,13 @@ def test_header_invalido_nao_cai_para_cookie_valido(anonimo, recepcao_headers):
 
 
 def test_openapi_publica_allowlist_e_rejeicao_de_extras(anonimo):
-    schemas = anonimo.get("/openapi.json").json()["components"]["schemas"]
+    spec = anonimo.get("/openapi.json").json()
+    schemas = spec["components"]["schemas"]
     assert schemas["ConsultaCreate"]["additionalProperties"] is False
     assert schemas["ConsultaUpdate"]["additionalProperties"] is False
     assert schemas["ConsultaUpdate"]["properties"]["status"]["anyOf"][0]["enum"] == [
         "agendada", "cancelada", "realizada"]
+    assert spec["paths"]["/auth/token"]["post"]["responses"]["429"]["headers"]["Retry-After"]["schema"]["type"] == "integer"
 
 
 @pytest.mark.parametrize("extra", ["papel", "client_id", "client_secret", "paciente_id"])

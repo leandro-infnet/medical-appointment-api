@@ -1,0 +1,507 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Ex. 10 — hardening</title><h1>Verificações de rede e abuso</h1><pre>{
+  &quot;casos&quot;: [
+    {
+      &quot;cenario&quot;: &quot;HTTPS em processo: /&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;HTTPS em processo: /consultas&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/consultas&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;HTTPS em processo: /inexistente&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/inexistente&quot;,
+      &quot;status&quot;: 404,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Erro de formulário também recebe headers&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 422,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Preflight permitido sem JWT&quot;,
+      &quot;metodo&quot;: &quot;OPTIONS&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/consultas&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Preflight com origem negada&quot;,
+      &quot;metodo&quot;: &quot;OPTIONS&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/consultas&quot;,
+      &quot;status&quot;: 400,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Origem permitida não contorna autenticação&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/consultas&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;GET externo continua HTTP válido sem concessão CORS&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;HTTP local: sem política HSTS&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;http://testserver/&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: null,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 1/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 2/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 3/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 4/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 5/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 401,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 6/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 7/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 8/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 9/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 10/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 11/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 12/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 13/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 14/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 15/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 16/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 17/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 18/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 19/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;VUL-003: tentativa inválida 20/20&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;http://localhost:5173&quot;,
+        &quot;access-control-expose-headers&quot;: &quot;Retry-After&quot;,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Credencial correta também aguarda janela esgotada&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;MFA compartilha cota&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/mfa&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;M2M compartilha cota&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/m2m/token&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Rota comum admite 60, depois bloqueia&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/&quot;,
+      &quot;status&quot;: 429,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: &quot;60&quot;
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Login correto recupera após 60s simulados&quot;,
+      &quot;metodo&quot;: &quot;POST&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/auth/token&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    },
+    {
+      &quot;cenario&quot;: &quot;Rota comum recupera após janela&quot;,
+      &quot;metodo&quot;: &quot;GET&quot;,
+      &quot;url&quot;: &quot;https://clinica.example/&quot;,
+      &quot;status&quot;: 200,
+      &quot;headers&quot;: {
+        &quot;x-frame-options&quot;: &quot;DENY&quot;,
+        &quot;x-content-type-options&quot;: &quot;nosniff&quot;,
+        &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;,
+        &quot;access-control-allow-origin&quot;: null,
+        &quot;access-control-expose-headers&quot;: null,
+        &quot;retry-after&quot;: null
+      }
+    }
+  ],
+  &quot;configuracao&quot;: {
+    &quot;cors_origins&quot;: [
+      &quot;http://localhost:5173&quot;
+    ],
+    &quot;login_rate_limit&quot;: 5,
+    &quot;general_rate_limit&quot;: 60,
+    &quot;janela_segundos&quot;: 60
+  },
+  &quot;limites&quot;: [
+    &quot;HTTPS simulado pelo TestClient; nenhum certificado ou handshake TLS verificado.&quot;,
+    &quot;Contador local por arranque; não coordena workers nem mede capacidade.&quot;,
+    &quot;Nenhum token, senha, código MFA ou hash foi incluído.&quot;
+  ]
+}</pre></html>

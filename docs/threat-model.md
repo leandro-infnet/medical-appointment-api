@@ -1,6 +1,6 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
-> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–14 registram evolução e evidências dos Ex. 6–9; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–15 registram evolução e evidências dos Ex. 6–10; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
 
 
 ## 1. Escopo, baseline e método
@@ -294,3 +294,15 @@ Middleware ASGI em P-03, `app/auth/middleware.py`, reaproveita validação human
 | VUL-002/003 / TM-012/016/008 | CTRL-11/07, TEST-15/14 | Abertos até hardening Ex. 10; não declarar todos os findings corrigidos |
 
 R14–R16 têm controles e regressões rastreados em [correções de entrada/saída](correcoes-entrada-saida.md), com aceite acadêmico dos experimentos e interpretação do endpoint adicional pendentes. TM-011 recebe CTRL-09/TEST-22: handler 422 omite input/contexto/corpo, verificado em JSON/Form; outras falhas e futuras mensagens customizadas ainda requerem revisão. TM-007 exige auditoria persistente, TM-009/010 banco/concorrência. Sem scan, CVSS, gate ou liberação.
+
+## 15. Rede e abuso — Exercício 10 / versão 1.6
+
+CTRL-07/11 implementados em `app/network.py`, com configuração de `Settings` e estado por lifespan. Não há ator/rota/banco novo no DFD; controle intercepta as fronteiras HTTP existentes antes de P-01/03/04/06.
+
+| Finding / ameaça | Controle/teste | Resultado e risco residual |
+| --- | --- | --- |
+| VUL-002 / TM-012 | CTRL-11 / TEST-15 | DENY/nosniff, HSTS HTTPS e allowlist CORS verificados; TLS real/proxy ainda pendentes |
+| VUL-003 / TM-016/008 | CTRL-07 / TEST-14 | Cinco tentativas/minuto no grupo credenciais, 60 geral, 429 e recuperação verificados; NAT, distribuído, workers e pressão de memória permanecem |
+| TM-002/003/014/017 | CTRL-01/02/10/12 | Regressões de JWT, ownership, M2M e cookie continuam passando; CORS não concede acesso |
+
+Suíte integrada: 163 casos; reprodução: 35 observações. Relógio controlado, origens permitida/negada, recuperação, headers 200/400/401/403/404/422/429 e ausência de HSTS em HTTP verificados. 500 inesperado, browser/TLS real, ZAP, capacidade e produção não foram comprovados. [Hardening](hardening.md) preserva parâmetros e limitações; Ex. 11/12/13 seguem necessários.
