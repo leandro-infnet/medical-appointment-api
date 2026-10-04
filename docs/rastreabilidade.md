@@ -1,4 +1,4 @@
-# Rastreabilidade verificada — Exercícios 1 a 4
+# Rastreabilidade verificada — Exercícios 1 a 5
 
 Esta matriz registra código e documentação efetivamente entregues. Os requisitos estão descritos em [requisitos.md](requisitos.md), e os controles e cenários de teste planejados estão em [threat-model.md](threat-model.md). Os Threat IDs do Ex. 4 identificam riscos e controles, sem declarar a execução de testes futuros.
 
@@ -15,9 +15,14 @@ Esta matriz registra código e documentação efetivamente entregues. Os requisi
 | REQ-04.1: misuse cases relevantes | 4 | `docs/threat-model.md`, seção 4; MU-001–012 | Revisão de ator/precondição/tentativa/resultado/fluxo/controle/teste | TM-001–016 conforme cenário; casos futuros separados | `evidencias/ex04/threat-model-v1.md`, revisão documental | R07; cenários modelados não são ataques executados |
 | REQ-04.2: STRIDE em três componentes | 4 | Seção 5 do threat model; P-01/P-02/P-03 | Revisão das seis categorias em cada P; 18 avaliações | IDs da análise por componente, vinculados a P/F/TB | Snapshot inicial e DFD do Ex. 3 | R08; módulos compartilham processo e não criam isolamento |
 | REQ-04.3: ativos, superfícies e mitigações | 4 | Seções 2–3 e 6–9 do threat model; DEC-16 | Revisão de AT/SUP/MU/TM/CTRL/TEST e estados/risco residual | TM-001–016 | `evidencias/ex04/README.md`, snapshot/revisão/baseline | R08; testes futuros, CVSS e gate permanecem planejados |
+| REQ-05.1: partições do sistema | 5 | `docs/arquitetura-seguranca.md`, seção 2; DEC-17 | Inspeção de módulos, responsabilidade e estado atual/futuro | TM-001–016 conforme partição; CTRL-01–11 localizados | `evidencias/ex05/README.md`, revisão e baseline | R09; separação lógica não fornece isolamento |
+| REQ-05.2: fluxos entre componentes | 5 | Seção 3 do relatório e `docs/particoes-seguranca.mmd`; DFD preservado | Conferência F-01–10/TB-01–04 e percursos JSON/HTML | TM-001/002/003/004/005/011/012 | `evidencias/ex05/particoes-seguranca.svg`, PNG e revisão | R09; fluxos seguros futuros não executados |
+| REQ-05.3: três eixos e vetores | 5 | Seções 4–7; VD/VI/VF-01–04, controles e decisões pendentes | Revisão de quatro vetores por eixo e relação TM/CTRL/TEST | TM-001–016, sem novos IDs/finding | `evidencias/ex05/revisao_documental.md` e relatório | R09; JWT, ownership, infraestrutura e banco continuam planejados |
 
 **Verificação executada:** 16 testes passaram (oito da fundação, oito casos do Exercício 2), com dois avisos de depreciação das dependências do TestClient. Evidências HTTP em processo geradas com memória isolada; screenshot do HTML efetivamente renderizado pelo Chromium. Não foi executado ZAP, previsto no Capstone.
 
 **Exercício 3:** incremento documental, com inspeção de código, fonte Mermaid e exportação do DFD. Os testes acima são históricos da etapa anterior e não foram repetidos nesta etapa. A revisão documental encontra-se em `evidencias/ex03/revisao_documental.md`.
 
 **Exercício 4:** modelagem documental da aplicação no baseline `fe31673e1ed4e0238277abe0b111d66be1363c9e`, sem alteração funcional. A matriz ameaça → controle → teste → evidência → risco residual está nas seções 6–8 de `docs/threat-model.md`. Revisão e versão inicial preservadas em `evidencias/ex04/`. Não houve nova execução de pytest ou exploração.
+
+**Exercício 5:** baseline `e2f239badbaa6905ef32cdfe9423e0fa33b61065`; arquitetura e fluxos inspecionados, diagrama Mermaid exportado e R09 mapeado. O threat model recebe extensão arquitetural 1.1 sem modificar o snapshot inicial ou declarar novas mitigações verificadas. Não houve mudança em código, testes ou dependências da API.

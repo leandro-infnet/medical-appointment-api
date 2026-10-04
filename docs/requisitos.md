@@ -74,7 +74,7 @@ Estes controles serão implementados progressivamente. A lista não afirma que j
 | Status contém script ou imagem com handler | Conteúdo armazenado é exibido como texto, sem tags executáveis | `test_agenda_escapa_texto_malicioso_armazenado` |
 | Dia vazio, omitido ou inválido | Mensagem de vazio, dia atual local ou 422, respectivamente | Demais testes de agenda |
 
-Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). CIA e DFD estão registrados no Exercício 3; misuse cases e STRIDE permanecem pendentes para o Exercício 4.
+Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). CIA/DFD, misuse cases/STRIDE e partições de segurança estão documentados nos Exercícios 3, 4 e 5; os controles futuros continuam planejados.
 
 ## 7. Fundamentos de segurança — Exercício 3
 
@@ -97,3 +97,13 @@ LAC-01–06 registram autorização ausente, validação parcial, controle de ab
 | REQ-04.3: threat model consolidado | AT/SUP/MU/TM/CTRL/TEST rastreáveis; 16 ameaças, estados de mitigação e risco residual; snapshot inicial 1.0 | R08 |
 
 Entrega em [threat-model.md](threat-model.md), decisão DEC-16 e [evidências Ex. 4](../evidencias/ex04/README.md). Novos testes são planejados para seus incrementos; o documento não comprova exploração, correção executada ou CVSS. As permissões de paciente autenticado, vínculo paciente/profissional e regras de disponibilidade permanecem decisões pendentes.
+
+## 9. Arquitetura de segurança — Exercício 5
+
+| Requisito | Entrega / verificação documental | Rubrica |
+| --- | --- | --- |
+| REQ-05.1: partições do sistema | Componentes atuais/futuros, responsabilidade, localização, dados e controles; composição modular no mesmo processo | R09 |
+| REQ-05.2: fluxo entre componentes | Pares F-01–10 do DFD na visão de partições, dados sensíveis e TB atuais/lógicas/futuras | R09 |
+| REQ-05.3: vetores nos três eixos | VD-01–04 (design), VI-01–04 (implementação), VF-01–04 (infraestrutura), ligados a TM/CTRL/TEST | R09 |
+
+Entrega em [arquitetura-seguranca.md](arquitetura-seguranca.md), fonte [particoes-seguranca.mmd](particoes-seguranca.mmd), DEC-17 e [evidências Ex. 5](../evidencias/ex05/README.md). A arquitetura identifica decisões prévias ao Ex. 6, sem implementar JWT, sessão HTML, middleware ou SQLModel.

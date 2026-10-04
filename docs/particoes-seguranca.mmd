@@ -1,0 +1,26 @@
+flowchart LR
+    E01["E-01 Cliente JSON"]
+    E02["E-02 Navegador da recepção"]
+    subgraph TB01["Atual: um processo FastAPI - TB-01 exterior / aplicação"]
+        P01("P-01 Rotas JSON<br/>Entrada e response_model")
+        P02("P-02 Agenda HTML<br/>Projeção e Jinja2")
+        P03("P-03 Operações de consultas<br/>CRUD e filtro diário")
+        D01[("D-01 Memória temporária<br/>Entidades completas<br/>TB-02: divulgação lógica")]
+        P01 -->|"F-03 / F-04"| P03
+        P02 -->|"F-07 / F-08"| P03
+        P03 -->|"F-09 / F-10"| D01
+    end
+    E01 -->|"F-01 / F-02 - HTTP JSON"| P01
+    E02 -->|"F-05 / F-06 - HTTP HTML"| P02
+    subgraph PLANO["Planejado: controles e substituições ainda não implementados"]
+        ID("Identidade e autorização compartilhadas<br/>Ex. 6 - CTRL-01 / CTRL-02")
+        MW("Middleware JWT e hardening<br/>Ex. 9 / 10")
+        DB[("SQLModel relacional e sessão injetada<br/>Ex. 11 - CTRL-08")]
+    end
+    P01 -.->|"Política futura"| ID
+    P02 -.->|"Mesma política futura"| ID
+    P01 -.->|"Composição futura"| MW
+    D01 -.->|"Substituição futura"| DB
+    style TB01 fill:#eef5ff,stroke:#245b96,stroke-width:2px,stroke-dasharray:6 4
+    style D01 fill:#fff4e5,stroke:#a56600,stroke-dasharray:4 4
+    style PLANO fill:#f4f4f4,stroke:#666,stroke-dasharray:6 4

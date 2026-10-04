@@ -92,3 +92,9 @@ O DFD representa JSON, HTML e memória no mesmo processo; futuras autenticação
 [docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. JWT, M2M e SQL são explicitamente futuros; o estado atual continua sem autenticação e com memória temporária.
 
 [evidencias/ex04/README.md](evidencias/ex04/README.md) registra a revisão e preserva a versão inicial para comparar com os incrementos seguintes. Os testes existentes de filtragem JSON e escape HTML estão vinculados a TM-004/TM-005 como evidências históricas. As mitigações futuras e os respectivos testes não estão marcados como executados.
+
+## Arquitetura de segurança — Exercício 5
+
+[docs/arquitetura-seguranca.md](docs/arquitetura-seguranca.md) descreve partições, fluxos, fronteiras e doze vetores nos eixos design, implementação e infraestrutura. Localiza CTRL-01–11 e registra decisões de identidade, autorização por recurso, autenticação HTML, middleware, rede e persistência que orientarão os incrementos seguintes.
+
+O código continua no estado funcional dos Exercícios 1/2; os componentes futuros estão identificados como planejados. Fonte Mermaid, SVG, screenshot e revisão estão em [evidencias/ex05/README.md](evidencias/ex05/README.md), com rastreabilidade R09 em [docs/rastreabilidade.md](docs/rastreabilidade.md).
