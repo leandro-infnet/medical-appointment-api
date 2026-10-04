@@ -1,21 +1,41 @@
+%% Versão atual: Exercício 6. Exportações anteriores preservadas em evidências.
 flowchart LR
     E01["E-01 Consumidor JSON<br/>Frontend ou cliente HTTP"]
     E02["E-02 Navegador da recepção<br/>Cliente HTML"]
     subgraph TB01["TB-01: exterior não confiável / processo FastAPI"]
+        P04("P-04 Identidade e JWT<br/>bcrypt + claims + conta ativa + MFA")
+        P05("P-05 Políticas<br/>papel + profissional + vínculo + ownership")
+        D02[("D-02 Cadastro fictício confiável<br/>hashes + papéis + vínculos<br/>arquivo local e memória; sem API de escrita")]
+        D03[("D-03 Desafios MFA<br/>estado temporário + uso único + expiração")]
+        P04 -->|"F-11 Verificar conta e vínculos confiáveis"| D02
+        D02 -->|"F-12 Identidade, hash e atributos"| P04
+        P04 -->|"F-13 Criar / consumir desafio"| D03
+        D03 -->|"F-14 Estado de segundo fator"| P04
+        P01 -->|"F-15 Bearer, identidade e alvo"| P04
+        P02 -->|"F-16 Bearer ou cookie de agenda"| P04
+        P04 -->|"F-17 Principal validado; sem segredo"| P05
+        P05 -->|"F-18 Decisão de autorização JSON"| P01
+        P05 -->|"F-19 Papel de recepção autorizado"| P02
+        P05 -->|"F-20 Ler recurso para verificar ownership"| P03
+        D02 -->|"F-21 Vínculos e papel confiáveis"| P05
         P01("P-01 API de consultas<br/>HTTP + schemas de entrada/saída")
         P02("P-02 Agenda HTML<br/>Dia local + projeção + Jinja2")
         P03("P-03 Acesso a consultas<br/>Funções CRUD e leitura diária")
         D01[("D-01 Memória temporária<br/>Consultas completas + contador<br/>TB-02: limite lógico de divulgação")]
-        P01 -->|"F-03 Operação e dados validados"| P03
+        P01 -->|"F-03 Operação autorizada e dados validados"| P03
         P03 -->|"F-04 Consulta completa ou resultado"| P01
-        P02 -->|"F-07 Leitura e dia local"| P03
+        P02 -->|"F-07 Leitura autorizada e dia local"| P03
         P03 -->|"F-08 Consultas completas do dia"| P02
         P03 -->|"F-09 Leitura / gravação / remoção"| D01
         D01 -->|"F-10 Registros internos e contador"| P03
     end
-    E01 -->|"F-01 JSON, IDs e filtros - HTTP local"| P01
+    E01 -->|"F-01 Bearer, JSON, IDs e filtros - HTTP local"| P01
     P01 -->|"F-02 JSON filtrado ou erro / 204"| E01
-    E02 -->|"F-05 GET agenda, dia - HTTP local"| P02
+    E02 -->|"F-05 Cookie de agenda ou bearer, GET e dia - HTTP local"| P02
     P02 -->|"F-06 HTML mínimo e escapado"| E02
+    E01 -->|"F-22 Credenciais / fator via auth"| P04
+    P04 -->|"F-23 Token ou desafio; erro seguro"| E01
+    E02 -->|"F-24 Bearer de recepção para sessão"| P04
+    P04 -->|"F-25 Cookie HttpOnly restrito à agenda"| E02
     style TB01 fill:#eef5ff,stroke:#245b96,stroke-width:2px,stroke-dasharray:6 4
     style D01 fill:#fff4e5,stroke:#a56600,stroke-dasharray:4 4

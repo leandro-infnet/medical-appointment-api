@@ -1,6 +1,6 @@
 # API de Agendamento de Consultas Médicas
 
-API REST desenvolvida com FastAPI para agendamento de consultas médicas em uma rede de clínicas. Os Exercícios 1 e 2 entregam o CRUD modular, respostas JSON com campos controlados e agenda diária HTML com herança Jinja2 e escape de saída. Autenticação, autorização e persistência relacional serão introduzidas nos exercícios seguintes; execute esta etapa somente localmente com dados fictícios.
+API REST desenvolvida com FastAPI para agendamento de consultas médicas em uma rede de clínicas. Os Exercícios 1 e 2 entregam o CRUD modular, respostas JSON com campos controlados e agenda diária HTML com herança Jinja2 e escape de saída. O Exercício 6 adiciona bcrypt, JWT, MFA administrativo simulado e autorização por papel/vínculo/recurso. Persistência relacional permanece futura; execute localmente com dados fictícios.
 
 ## Requisitos
 
@@ -29,6 +29,12 @@ O manifesto declara versões mínimas. As versões usadas na demonstração do E
 
 As versões do Exercício 2 constam em `evidencias/ex02/ambiente_versao.txt`. `tzdata` fornece a base de fusos IANA quando ela não existe no sistema operacional.
 
+## Configurar identidade antes de executar
+
+Copie `.env.example` para `.env`, defina a chave JWT aleatória e o código MFA fictício e execute `.venv/bin/python -m app.auth.provision`. Para cookie da agenda em HTTP local, configure explicitamente `AGENDA_COOKIE_SECURE=false`; o padrão exige HTTPS. Sem configuração/cadastro válido, o startup falha. Senhas são solicitadas sem eco e ficam somente como bcrypt no cadastro ignorado `.local/usuarios.json`.
+
+Passos completos, contas, login, MFA e navegação estão em [docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md). Nunca incluir `.env`, cadastro, credenciais reais ou tokens no repositório/ZIP.
+
 ## Execução do Servidor
 
 Para iniciar a aplicação com recarregamento automático (modo de desenvolvimento):
@@ -45,11 +51,11 @@ A documentação interativa OpenAPI (Swagger UI) estará disponível em:
 
 As respostas de criação, listagem, leitura e atualização contêm somente `id`, `paciente_id`, `profissional_id`, `data_hora`, `motivo` e `status`. `observacoes_internas`, `criado_em` e `atualizado_em` permanecem no armazenamento, mas não saem no JSON.
 
-Abra [http://127.0.0.1:8000/agenda](http://127.0.0.1:8000/agenda) para o dia atual da clínica, ou `/agenda?dia=2026-10-03` para uma data explícita. A página apresenta horário, IDs de consulta/paciente/profissional e status; não recebe motivo clínico nem notas internas. Data inválida resulta em HTTP 422; dia vazio tem mensagem própria.
+Após login como recepção e criação da sessão em `POST /auth/agenda-session`, abra [http://127.0.0.1:8000/agenda](http://127.0.0.1:8000/agenda) para o dia atual da clínica, ou `/agenda?dia=2026-10-03` para uma data explícita. A página apresenta horário, IDs de consulta/paciente/profissional e status; não recebe motivo clínico nem notas internas. Data inválida resulta em HTTP 422; dia vazio tem mensagem própria.
 
 **Recomendação de engenharia adotada provisoriamente:** `America/Sao_Paulo` como fuso da clínica. Horários sem offset são interpretados nesse fuso; horários com offset são convertidos antes de filtrar o dia. Esta convenção não foi imposta pelo Assessment e deve ser confirmada antes da persistência/disponibilidade. A escolha é explicada em [docs/decisoes.md](docs/decisoes.md).
 
-A agenda ainda não restringe acesso à recepção: autenticação e autorização pertencem ao Exercício 6. Escape HTML evita interpretação das entradas como marcação; não substitui controle de acesso.
+A agenda é restrita à recepção autenticada. CRUD JSON exige bearer profissional e vínculo confiável. Escape HTML evita interpretação das entradas como marcação; não substitui controle de acesso.
 
 ## Execução dos Testes Automatizados
 
@@ -73,23 +79,17 @@ A aplicação segue a organização modular de responsabilidades separadas:
 
 ## Evidências do Exercício 2
 
-[evidencias/ex02/README.md](evidencias/ex02/README.md) relaciona requisitos, testes, respostas HTTP, HTML e screenshot real. Para regenerar os artefatos JSON/HTML em memória isolada:
-
-```bash
-.venv/bin/python evidencias/ex02/reproduzir.py
-```
-
-O script não se conecta a banco ou servidor existente. Os testes e as evidências do Exercício 1 foram preservados como registro histórico.
+[evidencias/ex02/README.md](evidencias/ex02/README.md) relaciona requisitos, testes, respostas HTTP, HTML e screenshot real. O script `evidencias/ex02/reproduzir.py` é histórico e deve ser executado no baseline do Ex. 2, sem autenticação. Não executá-lo na versão atual nem sobrescrever evidências antigas. A reprodução autenticada está em `evidencias/ex06/reproduzir.py`.
 
 ## Análise de segurança — Exercício 3
 
 [docs/cia-dfd.md](docs/cia-dfd.md) analisa confidencialidade, integridade e disponibilidade, mapeia OWASP/NIST SSDF/MITRE a controles existentes e apresenta o DFD do incremento atual. A fonte editável está em [docs/dfd-atual.mmd](docs/dfd-atual.mmd); exportação e revisão estão em [evidencias/ex03/README.md](evidencias/ex03/README.md).
 
-O DFD representa JSON, HTML e memória no mesmo processo; futuras autenticação, M2M e persistência continuam identificadas como pendências. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
+A exportação do Ex. 3 preserva JSON, HTML e memória daquele baseline. A fonte atual inclui identidade/políticas e sessão do Ex. 6; M2M e persistência relacional permanecem futuras. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
 
 ## Modelagem de ameaças — Exercício 4
 
-[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. JWT, M2M e SQL são explicitamente futuros; o estado atual continua sem autenticação e com memória temporária.
+[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. A versão inicial registra JWT, M2M e SQL como futuros naquele baseline. A extensão 1.2 registra autenticação efetiva e os riscos residuais do Ex. 6; a memória continua temporária.
 
 [evidencias/ex04/README.md](evidencias/ex04/README.md) registra a revisão e preserva a versão inicial para comparar com os incrementos seguintes. Os testes existentes de filtragem JSON e escape HTML estão vinculados a TM-004/TM-005 como evidências históricas. As mitigações futuras e os respectivos testes não estão marcados como executados.
 
@@ -97,4 +97,8 @@ O DFD representa JSON, HTML e memória no mesmo processo; futuras autenticação
 
 [docs/arquitetura-seguranca.md](docs/arquitetura-seguranca.md) descreve partições, fluxos, fronteiras e doze vetores nos eixos design, implementação e infraestrutura. Localiza CTRL-01–11 e registra decisões de identidade, autorização por recurso, autenticação HTML, middleware, rede e persistência que orientarão os incrementos seguintes.
 
-O código continua no estado funcional dos Exercícios 1/2; os componentes futuros estão identificados como planejados. Fonte Mermaid, SVG, screenshot e revisão estão em [evidencias/ex05/README.md](evidencias/ex05/README.md), com rastreabilidade R09 em [docs/rastreabilidade.md](docs/rastreabilidade.md).
+Nesse baseline histórico, o código permanecia no estado funcional dos Exercícios 1/2; os componentes futuros estão identificados como planejados. Fonte Mermaid, SVG, screenshot e revisão estão em [evidencias/ex05/README.md](evidencias/ex05/README.md), com rastreabilidade R09 em [docs/rastreabilidade.md](docs/rastreabilidade.md).
+
+## Autenticação e autorização — Exercício 6
+
+[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening, M2M e SQLModel permanecem nos próximos exercícios.

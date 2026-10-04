@@ -9,6 +9,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from app.auth.dependencies import AgendaDep
+from app.auth.policies import exigir_papel
+from app.models.identidades import Papel
+
 from app.database.consultas import (
     FUSO_CLINICA,
     horario_na_clinica,
@@ -25,8 +29,10 @@ templates = Jinja2Templates(env=Environment(
 @router.get("/agenda", response_class=HTMLResponse, summary="Consultar agenda diária")
 def endpoint_agenda(
     request: Request,
+    usuario: AgendaDep,
     dia: Annotated[date | None, Query(description="Dia local da clínica (AAAA-MM-DD)")] = None,
 ):
+    exigir_papel(usuario, Papel.RECEPCAO)
     dia_agenda = dia if dia is not None else datetime.now(FUSO_CLINICA).date()
     # Não entregar a entidade completa ao template: escape não substitui minimização.
     consultas = [
@@ -39,8 +45,11 @@ def endpoint_agenda(
         }
         for consulta in listar_consultas_do_dia(dia_agenda)
     ]
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request=request,
         name="agenda.html",
         context={"dia": dia_agenda, "consultas": consultas},
     )
+
+    response.headers["Cache-Control"] = "no-store"
+    return response

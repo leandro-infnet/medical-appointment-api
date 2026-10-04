@@ -2,7 +2,7 @@
 
 ## 1. Visão Geral e Contexto
 
-O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas ainda não têm autenticação nem autorização.
+O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas não tinham autenticação. No Exercício 6, RF-03/RF-04 foram implementados; o contrato efetivo está em [autenticação e autorização](autenticacao-autorizacao.md).
 
 ### Consumidores do Sistema
 1. **Frontend JSON:** Aplicação consumidora das rotas REST da API.
@@ -18,13 +18,13 @@ O produto é uma API REST desenvolvida em FastAPI para digitalização do agenda
 
 ## 2. Matriz Inicial de Atores x Operações x Recursos
 
-Esta matriz propõe restrições para as etapas futuras. **Permitido** significa comportamento a implementar, não proteção já existente. O Assessment não define todas as permissões: decisões ausentes precisam ser registradas antes da implementação. Em particular, o paciente autenticado é citado no cenário BOLA do Exercício 8, mas não faz parte dos três papéis internos definidos inicialmente.
+As linhas humanas representam a matriz aprovada e implementada no Ex. 6. Laboratório e paciente continuam futuros; **Permitido** nessas linhas significa alvo planejado. O Assessment não define todas as permissões: decisões ausentes precisam ser registradas antes da implementação. Em particular, o paciente autenticado é citado no cenário BOLA do Exercício 8, mas não faz parte dos três papéis internos definidos inicialmente.
 
 | Ator | Criar Consulta | Visualizar Próprias Consultas | Visualizar Consultas Alheias | Agenda Diária HTML | Rota Administrativa | Consultar Disponibilidade (M2M) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Profissional** | Permitido (seus pacientes) | A definir: alcance da leitura | Negado conforme ownership | A definir | Negado sem papel administrativo | A definir |
+| **Profissional** | Permitido (seus pacientes) | Permitido (somente próprias e vinculadas) | Negado conforme ownership | Negado | Negado | Negado |
 | **Recepcionista** | Negado | Negado | Negado | Permitido (leitura do dia) | Negado | Negado |
-| **Administrador** | Negado somente por ser administrador | A definir | A definir | A definir | Permitido (com MFA) | A definir |
+| **Administrador** | Negado | Negado | Negado | Negado | Permitido (diagnóstico com MFA) | Negado |
 | **Laboratório M2M**| Negado | Negado | Negado | Negado | Negado | Permitido (escopo restrito) |
 | **Paciente Autenticado** | A definir | A definir: acesso ao próprio prontuário | Negado (Cenário BOLA Ex. 8) | A definir | Negado | A definir |
 | **Anônimo** | Negado | Negado | Negado | Negado | Negado | Negado |
@@ -43,7 +43,7 @@ Esta matriz propõe restrições para as etapas futuras. **Permitido** significa
 
 ## 4. Requisitos Funcionais
 
-Os itens desta seção representam o **alvo do Assessment completo**; RF-01 e RF-02 estão implementados e verificados. A aplicação ainda não oferece os controles das etapas seguintes.
+Os itens desta seção representam o **alvo do Assessment completo**; RF-01–04 estão implementados e verificados; RF-05/06 continuam futuros.
 
 - **RF-01:** Prover CRUD RESTful completo de consultas médicas (`POST`, `GET`, `GET /{id}`, `PATCH /{id}`, `DELETE /{id}`) com validação explícita de schemas.
 - **RF-02:** Controlar exposição de dados via `response_model` no JSON e renderizar agenda diária HTML com Jinja2 com auto-escape.

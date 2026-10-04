@@ -18,7 +18,9 @@
 - [agenda_vazia.html](agenda_vazia.html): estado vazio de outro dia.
 - [agenda_xss.png](agenda_xss.png): screenshot real do HTML acima aberto no Chromium headless, com o script apresentado como texto. O print foi inspecionado; não é uma imagem simulada.
 
-## Como reproduzir
+## Como reproduzir o baseline histórico
+
+O script abaixo pertence à versão do Ex. 2, anterior à autenticação, e deve rodar naquele baseline. Na aplicação autenticada, use `evidencias/ex06/reproduzir.py`. Preserve as saídas históricas sem regenerá-las no incremento atual.
 
 Na raiz, com dependências instaladas:
 

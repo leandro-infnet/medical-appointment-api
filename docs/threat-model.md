@@ -1,5 +1,8 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. A seção 11 registra estado efetivo, nova superfície de sessão e evidência do Ex. 6; prevalece sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+
+
 ## 1. Escopo, baseline e método
 
 **Escopo do Exercício 4:** misuse cases relevantes, STRIDE em pelo menos três componentes e threat model consolidado com ativos, superfícies e mitigações. Este relatório atende **R07 e R08**.
@@ -220,3 +223,29 @@ O baseline `e2f239badbaa6905ef32cdfe9423e0fa33b61065` mantém o mesmo código ex
 - **Rede/configuração:** TLS, origens, proxy confiável, processos, segredos futuros e limites operacionais localizam CTRL-07/08/11. CORS não substitui autorização ou separação M2M de TM-014.
 
 Essa extensão refina a responsabilidade de mitigação, sem novos findings, mudanças de estado dos controles ou execução de testes de segurança. Após implementar Ex. 6/7/9/10/11, registrar evidência real e atualizar DFD/riscos. Verificação documental e diagrama: [evidências Ex. 5](../evidencias/ex05/README.md).
+
+## 11. Atualização 1.2 — identidade, ownership e sessão HTML
+
+Incremento do Ex. 6 sobre baseline `fb75b016ed9e535fbb4bf1715af2b8a91f697bdf`. Decisão de permissões e transporte aprovada pelo responsável: profissional → próprias consultas/pacientes vinculados; recepção → HTML mínimo; admin → diagnóstico sem clínica, somente após fator simulado. DFD atual acrescenta P-04/P-05/D-02/D-03 e F-11–25. AT-07 abrange credenciais/hashes/chaves/fator/tokens. Não há novos findings OWASP declarados.
+
+| Ameaça | Controle/localização efetivo | Teste e evidência | Estado / risco residual |
+| --- | --- | --- | --- |
+| TM-001 | CTRL-01/02: bcrypt, OAuth2PasswordBearer, claims/conta e vínculo na criação | TEST-04/08: `test_anonimo_negado`, `test_mutacoes_sem_token_negadas`, `test_criacao_exige_identidade_e_vinculo_confiavel`; JSON HTTP/pytest Ex. 6 | Mitigação verificada no cadastro fictício; TLS e abuso de login pendentes |
+| TM-002 | CTRL-02: política por recurso, listagem filtrada e papel de recepção | TEST-07/09: `test_ownership_leitura_alteracao_remocao_e_listagem`, `test_profissional2_paciente_proprio_e_filtro`, testes de recepção/cookie e regressões HTML | Verificado entre profissionais; paciente autenticado do Ex. 8 permanece indefinido |
+| TM-003 | CTRL-02 antes de PATCH/DELETE; verificação de paciente e profissional confiáveis | TEST-07/08: mesmos testes de ownership/vínculo e estado intacto; recurso com profissional certo/paciente sem vínculo também negado | Verificado em memória com vínculos imutáveis; mocking TEST-17 e constraints reais são futuros |
+| TM-004/005 | CTRL-03/04 preservados sob autenticação | Suite de response models e XSS com recepção autenticada | Regressões verificadas, sem ampliar alegação para outros contextos de saída |
+| TM-006 | Parte CTRL-05: vínculo válido na entrada, MFA extra forbid | Casos de criação sem vínculo | Mitigação parcial; regras de status/conflito e demais validações permanecem futuras |
+| TM-013 | CTRL-01/02: JWT HS256/claims/TTL, MFA sem token antecipado, papel admin | TEST-05/06/10: `test_claims_invalidas_negadas`, `test_jwt_invalido_negado`, `test_nao_administrador_negado_na_rota_administrativa`, testes MFA | Verificado; fator estático simulado não é MFA real; JWT roubado não tem revogação individual |
+| TM-016 | CTRL-01: erros sem enumeração e hash fictício para nome ausente; cinco erros por desafio | Login inválido, bcrypt/UTF-8, desafio inutilizado | Parcial; desafios novos reiniciam tentativas e login ainda não tem rate limiting CTRL-07, previsto Ex. 10 |
+
+### TM-017 / MU-013 — sessão de agenda e CSRF (nova superfície SUP-08)
+
+**Ativo:** AT-01/07; **componentes:** P-02/P-04/P-05; **fluxos:** F-05/16/24/25; **fronteira:** TB-01. Atacante tenta usar cookie roubado/expirado, induzir login cross-site ou usar cookie para mutação/CRUD. STRIDE: Spoofing, Tampering e Elevation of privilege. Impacto: acesso indevido à agenda ou ampliação de privilégios.
+
+**CTRL-12:** cookie HttpOnly/Secure por padrão/SameSite Strict/path `/agenda`; TTL JWT; cookie aceito apenas no GET HTML e somente com papel de recepção; criação/remoção de sessão exige bearer; API JSON/admin não aceita cookie; cache da agenda no-store. Política e verificador são os mesmos de CTRL-01/02. Não é proteção geral contra XSS nem isolamento de origem.
+
+**TEST-23:** `test_cookie_restrito_agenda_e_json_exige_bearer`, `test_cookie_secure_e_papel_correto`, `test_cookie_invalido_negado`. Evidência: Ex. 6 JSON HTTP e pytest. Cenários HTTP em processo verificados; navegação real cross-site, TLS e entrega Secure em HTTPS não foram executados. SameSite/HttpOnly são atributos de resposta verificados, sem alegação de teste de browser.
+
+**Residual:** em HTTP local, Secure explicitamente false só para demonstração; captura de bearer/cookie ainda permite replay até expiração/desativação. Logout apaga cookie sem revogar cópia roubada. Mutações futuras com cookie exigirão anti-CSRF específico. Desafios ficam em memória/um worker; produção exige MFA independente e sessão/infraestrutura apropriadas.
+
+TM-007–012/014–015 mantêm o estado anterior salvo controles parciais acima. Não foram executados scans, CVSS, gate, M2M, autenticação de paciente ou persistência relacional. O catálogo de testes do Ex. 12 reutilizará TEST-04–10 e TEST-23, preservando IDs e riscos abertos.

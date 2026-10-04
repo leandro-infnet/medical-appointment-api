@@ -43,3 +43,8 @@ htmlcov/
 # Database
 *.sqlite3
 *.db
+
+# Cadastro local de identidade
+.local/
+.env.*
+!.env.example

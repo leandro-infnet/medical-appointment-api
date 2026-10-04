@@ -1,0 +1,80 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- /home/leandro/dev/infnet/26E3_2/at/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/leandro/dev/infnet/26E3_2/at
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 60 items
+
+tests/test_autorizacao.py::test_anonimo_negado[/consultas] PASSED        [  1%]
+tests/test_autorizacao.py::test_anonimo_negado[/consultas/1] PASSED      [  3%]
+tests/test_autorizacao.py::test_anonimo_negado[/agenda] PASSED           [  5%]
+tests/test_autorizacao.py::test_anonimo_negado[/admin/status] PASSED     [  6%]
+tests/test_autorizacao.py::test_nao_administrador_negado_na_rota_administrativa[profissional1] PASSED [  8%]
+tests/test_autorizacao.py::test_nao_administrador_negado_na_rota_administrativa[recepcao] PASSED [ 10%]
+tests/test_autorizacao.py::test_login_invalido_sem_excecao_ou_enumeracao[inexistente-senha-ficticia-testes] PASSED [ 11%]
+tests/test_autorizacao.py::test_login_invalido_sem_excecao_ou_enumeracao[profissional1-incorreta] PASSED [ 13%]
+tests/test_autorizacao.py::test_login_invalido_sem_excecao_ou_enumeracao[profissional1-\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1\xe1] PASSED [ 15%]
+tests/test_autorizacao.py::test_bcrypt_salt_e_limite_utf8 PASSED         [ 16%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao0] PASSED [ 18%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao1] PASSED [ 20%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao2] PASSED [ 21%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao3] PASSED [ 23%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao4] PASSED [ 25%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao5] PASSED [ 26%]
+tests/test_autorizacao.py::test_claims_invalidas_negadas[alteracao6] PASSED [ 28%]
+tests/test_autorizacao.py::test_jwt_invalido_negado[assinatura] PASSED   [ 30%]
+tests/test_autorizacao.py::test_jwt_invalido_negado[sem_exp] PASSED      [ 31%]
+tests/test_autorizacao.py::test_jwt_invalido_negado[algoritmo] PASSED    [ 33%]
+tests/test_autorizacao.py::test_jwt_invalido_negado[adulterado] PASSED   [ 35%]
+tests/test_autorizacao.py::test_mfa_obrigatorio_uso_unico_e_admin_sem_dados_clinicos PASSED [ 36%]
+tests/test_autorizacao.py::test_admin_token_sem_mfa_negado PASSED        [ 38%]
+tests/test_autorizacao.py::test_desafio_inutilizado[expirado] PASSED     [ 40%]
+tests/test_autorizacao.py::test_desafio_inutilizado[cinco_erros] PASSED  [ 41%]
+tests/test_autorizacao.py::test_desafio_inutilizado[novo_desafio] PASSED [ 43%]
+tests/test_autorizacao.py::test_ownership_leitura_alteracao_remocao_e_listagem PASSED [ 45%]
+tests/test_autorizacao.py::test_criacao_exige_identidade_e_vinculo_confiavel[payload0-profissional1] PASSED [ 46%]
+tests/test_autorizacao.py::test_criacao_exige_identidade_e_vinculo_confiavel[payload1-profissional2] PASSED [ 48%]
+tests/test_autorizacao.py::test_criacao_exige_identidade_e_vinculo_confiavel[payload2-profissional1] PASSED [ 50%]
+tests/test_autorizacao.py::test_profissional2_paciente_proprio_e_filtro PASSED [ 51%]
+tests/test_autorizacao.py::test_cookie_restrito_agenda_e_json_exige_bearer PASSED [ 53%]
+tests/test_autorizacao.py::test_cookie_secure_e_papel_correto PASSED     [ 55%]
+tests/test_autorizacao.py::test_conta_desativada_invalida_token PASSED   [ 56%]
+tests/test_autorizacao.py::test_configuracao_sem_segredo_nao_tem_fallback PASSED [ 58%]
+tests/test_autorizacao.py::test_recepcao_nao_acessa_dados_clinicos[recepcao] PASSED [ 60%]
+tests/test_autorizacao.py::test_cookie_invalido_negado[expirado] PASSED  [ 61%]
+tests/test_autorizacao.py::test_cookie_invalido_negado[corrompido] PASSED [ 63%]
+tests/test_autorizacao.py::test_recurso_sem_vinculo_nao_basta_profissional_id PASSED [ 65%]
+tests/test_autorizacao.py::test_mutacoes_sem_token_negadas[post-/consultas-payload0] PASSED [ 66%]
+tests/test_autorizacao.py::test_mutacoes_sem_token_negadas[patch-/consultas/1-payload1] PASSED [ 68%]
+tests/test_autorizacao.py::test_mutacoes_sem_token_negadas[delete-/consultas/1-None] PASSED [ 70%]
+tests/test_autorizacao.py::test_configuracao_invalida_nao_expoe_chave_na_excecao PASSED [ 71%]
+tests/test_autorizacao.py::test_provisionamento_nao_sobrescreve_cadastro_existente PASSED [ 73%]
+tests/test_consultas.py::test_criar_consulta_sucesso PASSED              [ 75%]
+tests/test_consultas.py::test_listar_consultas PASSED                    [ 76%]
+tests/test_consultas.py::test_obter_consulta_por_id_sucesso PASSED       [ 78%]
+tests/test_consultas.py::test_obter_consulta_inexistente_retorna_404 PASSED [ 80%]
+tests/test_consultas.py::test_atualizar_consulta_sucesso PASSED          [ 81%]
+tests/test_consultas.py::test_remover_consulta_sucesso PASSED            [ 83%]
+tests/test_consultas.py::test_estado_reiniciado_entre_testes PASSED      [ 85%]
+tests/test_consultas.py::test_patch_nulo_rejeitado_sem_corromper_consulta PASSED [ 86%]
+tests/test_respostas_templates.py::test_respostas_excluem_campos_internos_sem_apagar_armazenamento PASSED [ 88%]
+tests/test_respostas_templates.py::test_agenda_filtra_dia_ordena_e_minimiza_contexto PASSED [ 90%]
+tests/test_respostas_templates.py::test_agenda_vazia PASSED              [ 91%]
+tests/test_respostas_templates.py::test_agenda_sem_parametro_usa_dia_atual_da_clinica PASSED [ 93%]
+tests/test_respostas_templates.py::test_agenda_rejeita_dia_invalido PASSED [ 95%]
+tests/test_respostas_templates.py::test_agenda_converte_instante_utc_antes_de_filtrar_dia PASSED [ 96%]
+tests/test_respostas_templates.py::test_agenda_escapa_texto_malicioso_armazenado[<script>alert(1)</script>] PASSED [ 98%]
+tests/test_respostas_templates.py::test_agenda_escapa_texto_malicioso_armazenado[<img src=x onerror="alert(1)">] PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/fastapi/testclient.py:1
+  /home/leandro/dev/infnet/26E3_2/at/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /home/leandro/dev/infnet/26E3_2/at/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 60 passed, 2 warnings in 10.86s ========================

@@ -1,5 +1,8 @@
 # Exercício 3 — CIA, referenciais e fluxo de dados
 
+> Baseline histórico: as seções originais descrevem a aplicação do Ex. 3. O DFD editável agora representa o Ex. 6; a exportação histórica do Ex. 3 permanece preservada. A atualização abaixo prevalece para o estado atual.
+
+
 ## 1. Escopo e estado analisado
 
 **Escopo do Exercício 3:** analisar a aplicação sob a tríade CIA, associar OWASP, NIST SSDF e MITRE a controles concretos existentes e construir um DFD com fronteiras de confiança e fluxos de dados sensíveis. A entrega atende **R05** (CIA e referenciais ligados a controles concretos) e **R06** (DFD, fronteiras e fluxos sensíveis). Não implementa autenticação, M2M ou persistência dos exercícios posteriores.
@@ -172,3 +175,13 @@ O [threat model STRIDE](threat-model.md) reutiliza este inventário e o mesmo DF
 ## 8. Partições e controles no Exercício 5
 
 [Arquitetura de segurança](arquitetura-seguranca.md) localiza os controles nas partições e analisa design, implementação e infraestrutura. O DFD atual não mudou: os fluxos F-01–10 e TB-01/02 permanecem no mesmo processo. Identidade, middleware, M2M, TLS e banco continuam planejados; TB-03/04 só serão concretizadas conforme implementação/topologia. O diagrama de partições agrupa pares de fluxo e usa linhas pontilhadas para plano futuro, sem substituir as direções detalhadas deste DFD.
+
+## Atualização de CIA e fronteiras — Exercício 6
+
+Confidencialidade: consultas exigem identidade, papel, ownership e vínculo; agenda somente para recepção, ainda minimizada. Integridade: criação e mutação verificam identidade/vínculo antes de gravar. Disponibilidade: desafios limitados a um por conta e expiração; não há limite global de requisições, durabilidade ou garantia entre workers.
+
+`dfd-atual.mmd` adiciona P-04 identidade/JWT/MFA, P-05 políticas, D-02 contas/vínculos confiáveis e D-03 desafios, preservando P-01–03/D-01/F-01–10. F-11–25 representam consulta de identidade/estado, decisão de acesso e transporte de credenciais/sessão. P-05 lê o alvo para verificar propriedade antes de P-01 expor ou alterar; ler internamente o recurso não equivale a autorizá-lo para o cliente.
+
+**Novo ativo AT-07:** hashes, chave de assinatura, tokens e fator simulado, de alta sensibilidade. D-02 provém de arquivo local restrito e seeds confiáveis; não há entrada HTTP de papéis/vínculos. D-03 é volátil. TB-01 continua exterior/processo; TB-02 continua divulgação lógica, sem isolamento de processo. A validação/política transforma entrada não confiável em principal autorizado dentro do mesmo processo; não é nova fronteira de rede. TB-03 (laboratório) e TB-04 (banco relacional) continuam futuras. Cookie é novo transporte na TB-01, avaliado em TM-017.
+
+[Contrato e limites](autenticacao-autorizacao.md), [threat model 1.2](threat-model.md) e [evidências reais](../evidencias/ex06/README.md) registram os controles atuais. Não há TLS, ZAP, conformidade regulatória ou liberação para produção demonstrados.

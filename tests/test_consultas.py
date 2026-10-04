@@ -10,7 +10,7 @@ def test_criar_consulta_sucesso(client):
     """
     payload = {
         "paciente_id": 1,
-        "profissional_id": 2,
+        "profissional_id": 1,
         "data_hora": "2026-10-15T14:30:00",
         "motivo": "Consulta de rotina cardiológica",
         "observacoes_internas": "Paciente alérgico a dipirona."
@@ -38,7 +38,7 @@ def test_listar_consultas(client):
     }
     c2 = {
         "paciente_id": 2,
-        "profissional_id": 2,
+        "profissional_id": 1,
         "data_hora": "2026-10-15T11:00:00",
         "motivo": "Retorno ortopédico"
     }
@@ -80,7 +80,7 @@ def test_atualizar_consulta_sucesso(client):
     """Testa a atualização parcial de consulta via PATCH /consultas/{id}."""
     payload = {
         "paciente_id": 1,
-        "profissional_id": 2,
+        "profissional_id": 1,
         "data_hora": "2026-10-18T15:00:00",
         "motivo": "Fisioterapia pós-operatória"
     }
