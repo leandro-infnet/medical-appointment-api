@@ -2,7 +2,7 @@
 
 ## 1. Escopo e estado analisado
 
-**Fonte normativa:** [Exercício 3 e rubrica do Assessment](../leandro_medeiros_DR2_AT.md). A entrega atende **R05** (CIA e referenciais ligados a controles concretos) e **R06** (DFD, fronteiras e fluxos sensíveis). Não implementa autenticação, M2M ou persistência dos exercícios posteriores.
+**Escopo do Exercício 3:** analisar a aplicação sob a tríade CIA, associar OWASP, NIST SSDF e MITRE a controles concretos existentes e construir um DFD com fronteiras de confiança e fluxos de dados sensíveis. A entrega atende **R05** (CIA e referenciais ligados a controles concretos) e **R06** (DFD, fronteiras e fluxos sensíveis). Não implementa autenticação, M2M ou persistência dos exercícios posteriores.
 
 **Baseline:** commit `46db788b99a19b4cf145555e8e9ff679a88e29fe`, integração do Exercício 2, na branch `feat/ex03-security-foundations-dfd`. A análise parte do código de `app/`, dos testes e das evidências dos Exercícios 1 e 2. Os consumidores representam os contratos existentes, não um frontend já desenvolvido ou um papel efetivamente autenticado.
 
@@ -164,3 +164,7 @@ Foi realizada inspeção documental e do código: cada controle tem localizaçã
 - [x] R05/R06 ligados à documentação e aos artefatos de evidência.
 
 Renderização/exportação do DFD e revisão do incremento estão registradas em [evidencias/ex03/README.md](../evidencias/ex03/README.md). Não foi executado scan, teste de carga, teste concorrente ou auditoria de produção. A análise identifica riscos do estágio atual, não autoriza deploy nem demonstra conformidade regulatória.
+
+## 7. Continuidade no Exercício 4
+
+O [threat model STRIDE](threat-model.md) reutiliza este inventário e o mesmo DFD. LAC-01 → TM-001/002/003, LAC-02 → TM-006, LAC-03 → TM-008/016, LAC-04 → TM-009/010, LAC-05 → TM-012/013/014 e LAC-06 → TM-007/011. TM-004/005 acompanham regressões dos controles existentes; TM-015 trata SQL futuro. Essas relações não mudam retroativamente o estado ou as evidências do Exercício 3.
