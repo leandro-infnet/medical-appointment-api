@@ -110,3 +110,9 @@ Client Credentials em `POST /auth/m2m/token`, autenticado com Basic; bearer com 
 Para habilitar localmente, execute `.venv/bin/python -m app.auth.provision_m2m`, copie o hash para `M2M_CLIENT_SECRET_HASH` no `.env` e reinicie o servidor. Sem hash, o M2M fica desativado e a autenticação humana continua funcionando. O segredo nunca entra no frontend, Git ou ZIP.
 
 [Contrato, fluxo e regras aprovadas](docs/integracao-m2m.md): blocos de 30 minutos, dias úteis 08h–18h, fuso da clínica e cancelamento liberando horário. [Evidências do Ex. 7](evidencias/ex07/README.md) preservam execução HTTP/pytest sem bearer ou credenciais. Disponibilidade não é reserva nem garantia contra concorrência.
+
+## Revisão manual OWASP — Exercício 8
+
+[docs/vulnerabilidades.md](docs/vulnerabilidades.md) analisa três categorias distintas de OWASP Top 10:2021: acesso por objeto no histórico e headers/throttling ausentes no baseline atual. [Evidências](evidencias/ex08/README.md) guardam snapshots com revisão/hash, payloads, respostas, execução e print, sem scanner ou mudanças em `app/`.
+
+O cenário de paciente autenticado é demonstrado somente em experimento didático separado, autorizado pelo responsável pelo projeto. A aplicação não ganhou papel/portal de paciente; aceitação acadêmica desse enquadramento permanece pendente. O relatório não inventa SQL Injection ou XSS explorado e identifica quais correções pertencem às próximas etapas.

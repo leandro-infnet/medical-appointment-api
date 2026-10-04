@@ -1,0 +1,295 @@
+{
+  "natureza": "aplicação atual; dados/segredos fictícios efêmeros; sem correção neste exercício",
+  "casos": [
+    {
+      "cenario": "Atual: proprietário autorizado lê",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 200,
+      "corpo": {
+        "paciente_id": 1,
+        "profissional_id": 1,
+        "data_hora": "2026-10-15T10:00:00",
+        "motivo": "Dado clínico fictício protegido",
+        "id": 1,
+        "status": "agendada"
+      }
+    },
+    {
+      "cenario": "Atual: outra identidade não lê ID conhecido",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 404,
+      "corpo": {
+        "detail": "Consulta não encontrada."
+      }
+    },
+    {
+      "cenario": "Atual: outra identidade não altera",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 404,
+      "corpo": {
+        "detail": "Consulta não encontrada."
+      }
+    },
+    {
+      "cenario": "Atual: outra identidade não remove",
+      "metodo": "DELETE",
+      "url": "/consultas/1",
+      "status": 404,
+      "corpo": {
+        "detail": "Consulta não encontrada."
+      }
+    },
+    {
+      "cenario": "Atual: anônimo não lê",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 401,
+      "corpo": {
+        "detail": "Autenticação necessária ou inválida."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 1/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 2/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 3/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 4/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 5/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 6/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 7/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 8/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 9/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 10/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 11/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 12/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 13/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 14/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 15/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 16/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 17/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 18/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 19/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: tentativa inválida 20/20 sem throttling",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 401,
+      "corpo": {
+        "detail": "Credenciais inválidas."
+      }
+    },
+    {
+      "cenario": "VUL-003: login correto após 20 erros não exige espera",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 200,
+      "corpo": "[token omitido; senha correta conhecida, não descoberta]"
+    },
+    {
+      "cenario": "VUL-002: HTML autenticado sem headers de proteção",
+      "metodo": "GET",
+      "url": "/agenda",
+      "status": 200,
+      "corpo": {
+        "headers": {
+          "x-frame-options": null,
+          "x-content-type-options": null,
+          "strict-transport-security": null,
+          "content-security-policy": null
+        },
+        "html": "[HTML mínimo; conteúdo omitido]"
+      }
+    },
+    {
+      "cenario": "VUL-002: headers também ausentes no erro",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 401,
+      "corpo": {
+        "headers": {
+          "x-frame-options": null,
+          "x-content-type-options": null,
+          "strict-transport-security": null,
+          "content-security-policy": null
+        }
+      }
+    },
+    {
+      "cenario": "OBS-001: campo extra ignorado; não promove identidade",
+      "metodo": "POST",
+      "url": "/consultas",
+      "status": 201,
+      "corpo": {
+        "paciente_id": 1,
+        "profissional_id": 1,
+        "data_hora": "2026-10-15T10:00:00",
+        "motivo": "Entrada fictícia",
+        "id": 2,
+        "status": "agendada"
+      }
+    },
+    {
+      "cenario": "OBS-002: payload persistido é escapado; não é XSS explorado",
+      "metodo": "GET",
+      "url": "/agenda",
+      "status": 200,
+      "corpo": {
+        "payload": "<script>alert(1)</script>",
+        "exibicao_escapada": true
+      }
+    }
+  ]
+}

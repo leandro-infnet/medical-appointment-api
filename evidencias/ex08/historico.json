@@ -1,0 +1,47 @@
+{
+  "natureza": "código histórico real; sem autenticação, não é paciente autenticado",
+  "casos": [
+    {
+      "cenario": "Histórico real: leitura do recurso 1 sem identidade",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 200,
+      "corpo": {
+        "paciente_id": 1,
+        "profissional_id": 1,
+        "data_hora": "2026-10-15T10:00:00",
+        "motivo": "Registro fictício paciente 1",
+        "id": 1,
+        "status": "agendada"
+      }
+    },
+    {
+      "cenario": "Histórico real: alterar apenas ID permite ler paciente 2 sem identidade",
+      "metodo": "GET",
+      "url": "/consultas/2",
+      "status": 200,
+      "corpo": {
+        "paciente_id": 2,
+        "profissional_id": 2,
+        "data_hora": "2026-10-15T10:00:00",
+        "motivo": "Registro fictício paciente 2",
+        "id": 2,
+        "status": "agendada"
+      }
+    },
+    {
+      "cenario": "Histórico real: mutação do recurso 2 sem identidade",
+      "metodo": "PATCH",
+      "url": "/consultas/2",
+      "status": 200,
+      "corpo": {
+        "paciente_id": 2,
+        "profissional_id": 2,
+        "data_hora": "2026-10-15T10:00:00",
+        "motivo": "Alteração indevida fictícia",
+        "id": 2,
+        "status": "agendada"
+      }
+    }
+  ]
+}

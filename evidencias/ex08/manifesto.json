@@ -1,0 +1,252 @@
+{
+  "baseline_atual": "c68979a6242e8772627f03def1a8ea565e715dae",
+  "baseline_historico": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+  "arquivos": [
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/__init__.py",
+      "snapshot": "snapshots/atual/app/__init__.py.txt",
+      "sha256": "d15e01d10276b507168367de00689d0f76c6550c2458702c5ade1070e8576cd1"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/__init__.py",
+      "snapshot": "snapshots/atual/app/auth/__init__.py.txt",
+      "sha256": "22b2c246a05af68e8a4a9b23bb7e092845c74dbfb32d0808b34448de9885c546"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/dependencies.py",
+      "snapshot": "snapshots/atual/app/auth/dependencies.py.txt",
+      "sha256": "0a635a99ecdcdfe61230faf676268703f6a1f6069403c488c26d63d143d085bb"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/m2m.py",
+      "snapshot": "snapshots/atual/app/auth/m2m.py.txt",
+      "sha256": "deb95561bd54ac16ddc58d5fbc3b79d1391ff9acf09f491952f20164cbd23d0b"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/mfa.py",
+      "snapshot": "snapshots/atual/app/auth/mfa.py.txt",
+      "sha256": "95c416810995be1d32a02b5d48a6feb8dd77d9cf04f64419dfbe2844a162e1ed"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/passwords.py",
+      "snapshot": "snapshots/atual/app/auth/passwords.py.txt",
+      "sha256": "a7a840430c9fd8bc03ae85b645d57fe05a8f41436392eed3d026b6eaad72c8a5"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/policies.py",
+      "snapshot": "snapshots/atual/app/auth/policies.py.txt",
+      "sha256": "4768fbd84b97cfb22da6be4f6dc26190659cd7923e55343de9bf204b5a3a9a99"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/provision.py",
+      "snapshot": "snapshots/atual/app/auth/provision.py.txt",
+      "sha256": "fd37c366f4812c290480063be06f20a8c7c91c78e8d71b78d186a0158a3396a2"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/provision_m2m.py",
+      "snapshot": "snapshots/atual/app/auth/provision_m2m.py.txt",
+      "sha256": "906fbedae1ab887a8b67dbae149b020124d14dfeb9b902885b65b701035a6e48"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/auth/tokens.py",
+      "snapshot": "snapshots/atual/app/auth/tokens.py.txt",
+      "sha256": "4f6b16f2d054a451219c5a03faf1b3793a559e14c80a14aa0306a87e0cce390d"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/database/__init__.py",
+      "snapshot": "snapshots/atual/app/database/__init__.py.txt",
+      "sha256": "d91ca99cdfff5a5aa452281fc652fd94f9964a1a31e55f1b57ac37011b923c88"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/database/consultas.py",
+      "snapshot": "snapshots/atual/app/database/consultas.py.txt",
+      "sha256": "d0a298cd0c2202a2b5791541986f3842885905dc283d33727a6f2e7eacae0af9"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/database/disponibilidade.py",
+      "snapshot": "snapshots/atual/app/database/disponibilidade.py.txt",
+      "sha256": "e6159a69454e6fa256c89426769e6e9069c200208db6fed8eb451b1347b2e591"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/database/identidades.py",
+      "snapshot": "snapshots/atual/app/database/identidades.py.txt",
+      "sha256": "7adc99aaa9a4b61ddcf7758c8a7ace1bf3f954a41992275cad8a6b2288c4979f"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/database/memoria.py",
+      "snapshot": "snapshots/atual/app/database/memoria.py.txt",
+      "sha256": "75fac9569b20e584a4f3fa79f8533681170a54947a4313b613f3ed9fc8cfa3c8"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/main.py",
+      "snapshot": "snapshots/atual/app/main.py.txt",
+      "sha256": "415369e83063a2c3f8aa156d748574a2b3ab32d7c364e13ec6e9abe424c7f877"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/models/__init__.py",
+      "snapshot": "snapshots/atual/app/models/__init__.py.txt",
+      "sha256": "6fd1ac0e52dec2312e99b587c12fbc669300996b9d714d2184eb0985ee70ab9c"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/models/consultas.py",
+      "snapshot": "snapshots/atual/app/models/consultas.py.txt",
+      "sha256": "bd935f5b6737c22fd975b0275319da7119ba020da3d5d9f9837736f49cce4407"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/models/disponibilidade.py",
+      "snapshot": "snapshots/atual/app/models/disponibilidade.py.txt",
+      "sha256": "8fd0ffd52991ad25b7549e1a93de19adbd6912ae001cfe353575c2bbff5c2b8c"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/models/identidades.py",
+      "snapshot": "snapshots/atual/app/models/identidades.py.txt",
+      "sha256": "683d7e377f40bf71dc01d50c37bdf1c7a46130cfa858dd538cf9fa1a0fb729aa"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/__init__.py",
+      "snapshot": "snapshots/atual/app/routes/__init__.py.txt",
+      "sha256": "79eeda90a4d7c199889777ca20eb12945d5037d7d23a96cc6f20fb7d0ef2904b"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/admin.py",
+      "snapshot": "snapshots/atual/app/routes/admin.py.txt",
+      "sha256": "011b1d45344b0d3c4015c4dd1a3171abbeee121033f40f0a347cfc9c372946a8"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/agenda.py",
+      "snapshot": "snapshots/atual/app/routes/agenda.py.txt",
+      "sha256": "c56355f930c7ea3b988ee8c8d15f7bd95b9581ddbf8ae68489df616209ff4bef"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/auth.py",
+      "snapshot": "snapshots/atual/app/routes/auth.py.txt",
+      "sha256": "02b2ed40023ae10ca65cac36cbf637fb675e2d6c85608324607edc24b4a0d015"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/consultas.py",
+      "snapshot": "snapshots/atual/app/routes/consultas.py.txt",
+      "sha256": "bfbb5f215e75213b6e2dd5ea9890d096d84f0ecf045f1da9fba3f0c67c1bec73"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/routes/disponibilidade.py",
+      "snapshot": "snapshots/atual/app/routes/disponibilidade.py.txt",
+      "sha256": "84571b046d61f1d7d3921af5d887b05de17ff4ac5a34ff3469a15f49f8fb7e5f"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/settings.py",
+      "snapshot": "snapshots/atual/app/settings.py.txt",
+      "sha256": "906ca118297ca3619473b712d90c1453ccaaceefee7bd6e7c024823725e7a7b3"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/templates/agenda.html",
+      "snapshot": "snapshots/atual/app/templates/agenda.html.txt",
+      "sha256": "882099d327bc199b48b326f4ce48feeea36f78712ef7549cbe13d0d073c15359"
+    },
+    {
+      "revisao": "c68979a6242e8772627f03def1a8ea565e715dae",
+      "origem": "app/templates/base.html",
+      "snapshot": "snapshots/atual/app/templates/base.html.txt",
+      "sha256": "9a2ed7aea643ffe2f3af0e5da0b1dd8161d09cd8e6b722691fb1c91743d748a1"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/__init__.py",
+      "snapshot": "snapshots/historico/app/__init__.py.txt",
+      "sha256": "d15e01d10276b507168367de00689d0f76c6550c2458702c5ade1070e8576cd1"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/database/__init__.py",
+      "snapshot": "snapshots/historico/app/database/__init__.py.txt",
+      "sha256": "d91ca99cdfff5a5aa452281fc652fd94f9964a1a31e55f1b57ac37011b923c88"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/database/consultas.py",
+      "snapshot": "snapshots/historico/app/database/consultas.py.txt",
+      "sha256": "d0a298cd0c2202a2b5791541986f3842885905dc283d33727a6f2e7eacae0af9"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/database/memoria.py",
+      "snapshot": "snapshots/historico/app/database/memoria.py.txt",
+      "sha256": "75fac9569b20e584a4f3fa79f8533681170a54947a4313b613f3ed9fc8cfa3c8"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/main.py",
+      "snapshot": "snapshots/historico/app/main.py.txt",
+      "sha256": "a7554ce96db61c7965f79dec028d990520a23a5e2fe7fc933921151cf122c26a"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/models/__init__.py",
+      "snapshot": "snapshots/historico/app/models/__init__.py.txt",
+      "sha256": "6fd1ac0e52dec2312e99b587c12fbc669300996b9d714d2184eb0985ee70ab9c"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/models/consultas.py",
+      "snapshot": "snapshots/historico/app/models/consultas.py.txt",
+      "sha256": "bd935f5b6737c22fd975b0275319da7119ba020da3d5d9f9837736f49cce4407"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/routes/__init__.py",
+      "snapshot": "snapshots/historico/app/routes/__init__.py.txt",
+      "sha256": "79eeda90a4d7c199889777ca20eb12945d5037d7d23a96cc6f20fb7d0ef2904b"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/routes/agenda.py",
+      "snapshot": "snapshots/historico/app/routes/agenda.py.txt",
+      "sha256": "7b6723b6ebe33c15cbbf1464294a3f860ec02433d247ef30d3b7c72cc3ee0b0c"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/routes/consultas.py",
+      "snapshot": "snapshots/historico/app/routes/consultas.py.txt",
+      "sha256": "49f77b08ce05759028fafa1ac24bc21b283b2820934be1303c7c83690c2dde92"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/templates/agenda.html",
+      "snapshot": "snapshots/historico/app/templates/agenda.html.txt",
+      "sha256": "882099d327bc199b48b326f4ce48feeea36f78712ef7549cbe13d0d073c15359"
+    },
+    {
+      "revisao": "4d6d7e342ac3b64e621a4c4d5a60018022e0433b",
+      "origem": "app/templates/base.html",
+      "snapshot": "snapshots/historico/app/templates/base.html.txt",
+      "sha256": "9a2ed7aea643ffe2f3af0e5da0b1dd8161d09cd8e6b722691fb1c91743d748a1"
+    }
+  ]
+}

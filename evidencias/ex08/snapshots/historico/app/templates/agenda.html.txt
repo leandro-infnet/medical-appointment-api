@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Agenda de {{ dia.strftime('%d/%m/%Y') }}{% endblock %}
+{% block content %}
+<h2>Consultas de {{ dia.strftime('%d/%m/%Y') }}</h2>
+<p>Horários em America/Sao_Paulo.</p>
+<form method="get" action="{{ url_for('endpoint_agenda') }}">
+    <label for="dia">Dia</label>
+    <input type="date" id="dia" name="dia" value="{{ dia.isoformat() }}" required>
+    <button type="submit">Consultar</button>
+</form>
+{% if consultas %}
+<table>
+    <caption>Agenda diária da recepção</caption>
+    <thead><tr>
+        <th scope="col">Consulta</th><th scope="col">Horário</th>
+        <th scope="col">Paciente (ID)</th><th scope="col">Profissional (ID)</th>
+        <th scope="col">Status</th>
+    </tr></thead>
+    <tbody>
+    {% for consulta in consultas %}
+    <tr>
+        <td>{{ consulta.id }}</td><td>{{ consulta.horario }}</td>
+        <td>{{ consulta.paciente_id }}</td><td>{{ consulta.profissional_id }}</td>
+        <td>{{ consulta.status }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Nenhuma consulta agendada para este dia.</p>
+{% endif %}
+{% endblock %}

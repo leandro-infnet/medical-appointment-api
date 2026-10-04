@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Agenda da clínica{% endblock %}</title>
+</head>
+<body>
+    <header><h1>Agenda da clínica</h1></header>
+    <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

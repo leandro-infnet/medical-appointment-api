@@ -264,3 +264,18 @@ P-06 calcula intervalos com projeção própria, reutilizando P-03/D-01; P-04 au
 | TM-012/016 | Configuração fora do Git, credencial M2M sem valor padrão e erro sem segredo | Hash ausente desativa M2M; Basic/grant/scopes inválidos negados | TLS e rate limiting não implementados; exposição externa permanece bloqueada pela avaliação de risco |
 
 STRIDE na superfície M2M: Spoofing mitigado pela autenticação do cliente/verificação JWT; Tampering pela assinatura e inputs tipados; Information Disclosure pela saída mínima; Elevation of privilege pela finalidade/audiência/scope e recusa nas rotas humanas. Repudiation permanece sem trilha persistente e Denial of service sem rate limiting/capacidade demonstrada. A matriz detalhada e os limites estão em [integração M2M](integracao-m2m.md). Não há novas vulnerabilidades exploradas em produção, CVSS, ZAP ou autorização de deploy.
+
+## 13. Revisão manual — Exercício 8 / versão 1.4
+
+Baseline `c68979a6242e8772627f03def1a8ea565e715dae`, sem alteração de arquitetura/fluxos/código de aplicação. Findings são identificados por VUL e não substituem Threat IDs. Snapshots históricos e atuais e a reprodução exploratória constam no [relatório de vulnerabilidades](vulnerabilidades.md).
+
+| Finding / observação | Threat/controle/teste relacionado | Estado efetivamente verificado / continuidade |
+| --- | --- | --- |
+| VUL-001 / A01:2021 e relação API1:2023 | TM-002/003; CTRL-01/02; TEST-07/08/09 | Código histórico real permite GET/PATCH sem autorização; atual nega acessos cruzados e preserva estado. Paciente autenticado só em DEMO-001; aceite acadêmico pendente |
+| VUL-002 / A05:2021 | TM-012; CTRL-11; TEST-15 | HTML autenticado e erro 401 sem X-Frame-Options/nosniff/HSTS/CSP; não houve exploit em browser/HTTPS. Ex. 10 trata hardening com TLS conforme ambiente |
+| VUL-003 / A07:2021 | TM-016/008; CTRL-07; TEST-14 | Vinte erros de senha processados sem throttling, seguido de login correto; nenhuma senha descoberta ou capacidade medida. Ex. 10 define política e repete sequência |
+| OBS-001 | TM-006; CTRL-05; TEST-12 | Campos extras ignorados sem elevar papel; falta rejeição explícita em contrato a corrigir no Ex. 9 |
+| OBS-002 | TM-005; CTRL-04; TEST-03 | Payload persiste, mas é exibido como texto escapado; não é XSS explorado |
+| OBS-003 | TM-015; CTRL-08; TEST-13 | Ausência de SQL atual; não alegar SQL Injection nesta memória |
+
+Não foram criados novos ativos, atores reais ou superfícies servidas pela API. DEMO-001 não entra no DFD ou em app/main.py: é experimento isolado, não quarto finding nem mudança do domínio. O mapa permanece válido para Ex. 9/10/11/12/13. Sem CVSS, scan, gate ou liberação externa executados nesta revisão.
