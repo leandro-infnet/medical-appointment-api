@@ -2,6 +2,15 @@
 
 Este documento registra as decisões arquiteturais e técnicas de maior relevância para o desenvolvimento da API de agendamento de consultas.
 
+## DEC-15: Referenciais e baseline de segurança do Exercício 3
+
+- **Contexto:** o Assessment exige CIA, associação de OWASP/NIST SSDF/MITRE a controles existentes e DFD com fronteiras e fluxos de pacientes; não define edições específicas.
+- **Recomendação de engenharia adotada:** fixar OWASP Top 10 2021, API Security Top 10 2023 como complemento, SSDF 1.1 (SP 800-218) e CWE 4.20 conforme as páginas oficiais consultadas. O recorte 2021 mantém a nomenclatura estável; não é apresentado como edição mais recente. CWE é a referência MITRE escolhida para descrever fraquezas de software, sem alegar uso de ATT&CK. Categorias API1/API3 não devem ser confundidas com A01/A03 do Top 10 geral.
+- **Decisão:** documentar o estado após o Ex. 2, baseline `46db788b99a19b4cf145555e8e9ff679a88e29fe`, em `docs/cia-dfd.md`, com fonte Mermaid em `docs/dfd-atual.mmd`. O DFD mostra memória, JSON e HTML reais; JWT, laboratório M2M e banco são lacunas/fases futuras.
+- **Alternativas:** usar outras edições ou ATT&CK para técnicas de ataque. Uma mudança futura exigirá justificativa e remapeamento; não altera os requisitos do Assessment.
+- **Consequências:** IDs AT/P/F/TB ficam estáveis para o STRIDE. TB-02 é limite lógico de divulgação, sem isolamento de processo; lock não é autorização nem garantia de conflito de agenda. Notas e dados clínicos permanecem sensíveis em memória e nos fluxos internos.
+- **Verificação:** inspeção de rotas, schemas, armazenamento, templates e percursos JSON/HTML; reaproveitamento das evidências reais Ex. 1/2. Não executar testes artificiais para tabelas nem alegar controles dos incrementos futuros. Fontes primárias e limitações constam no relatório.
+
 ---
 
 ### DEC-01: Organização e Layout Modular da Aplicação
