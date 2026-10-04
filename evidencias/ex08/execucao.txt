@@ -1,0 +1,3 @@
+historico: 3 observações verificadas; segredos omitidos.
+atual: 30 observações verificadas; segredos omitidos.
+didatico: 4 observações verificadas; segredos omitidos.

@@ -1,0 +1,132 @@
+[
+  {
+    "path": "/consultas",
+    "metodo": "POST",
+    "operation_id": "endpoint_criar_consulta_consultas_post",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/consultas",
+    "metodo": "GET",
+    "operation_id": "endpoint_listar_consultas_consultas_get",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/consultas/{consulta_id}",
+    "metodo": "GET",
+    "operation_id": "endpoint_obter_consulta_consultas__consulta_id__get",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/consultas/{consulta_id}",
+    "metodo": "PATCH",
+    "operation_id": "endpoint_atualizar_consulta_consultas__consulta_id__patch",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/consultas/{consulta_id}",
+    "metodo": "DELETE",
+    "operation_id": "endpoint_remover_consulta_consultas__consulta_id__delete",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/agenda",
+    "metodo": "GET",
+    "operation_id": "endpoint_agenda_agenda_get",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/auth/token",
+    "metodo": "POST",
+    "operation_id": "login_auth_token_post",
+    "seguranca_declarada": []
+  },
+  {
+    "path": "/auth/mfa",
+    "metodo": "POST",
+    "operation_id": "completar_mfa_auth_mfa_post",
+    "seguranca_declarada": []
+  },
+  {
+    "path": "/auth/agenda-session",
+    "metodo": "POST",
+    "operation_id": "criar_sessao_agenda_auth_agenda_session_post",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/auth/agenda-session",
+    "metodo": "DELETE",
+    "operation_id": "encerrar_sessao_agenda_auth_agenda_session_delete",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/auth/m2m/token",
+    "metodo": "POST",
+    "operation_id": "login_m2m_auth_m2m_token_post",
+    "seguranca_declarada": [
+      {
+        "ClientCredentialsAuthentication": []
+      }
+    ]
+  },
+  {
+    "path": "/admin/status",
+    "metodo": "GET",
+    "operation_id": "status_administrativo_admin_status_get",
+    "seguranca_declarada": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ]
+  },
+  {
+    "path": "/disponibilidade",
+    "metodo": "GET",
+    "operation_id": "disponibilidade_disponibilidade_get",
+    "seguranca_declarada": [
+      {
+        "LaboratorioOAuth2": [
+          "disponibilidade:ler"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/",
+    "metodo": "GET",
+    "operation_id": "root__get",
+    "seguranca_declarada": []
+  }
+]

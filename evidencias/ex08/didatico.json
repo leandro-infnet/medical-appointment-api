@@ -1,0 +1,49 @@
+{
+  "natureza": "experimento criado para ensino; não é finding no código atual nem histórico; aceitação acadêmica pendente",
+  "casos": [
+    {
+      "cenario": "Didático: paciente 1 lê registro próprio",
+      "metodo": "GET",
+      "url": "/experimento/consultas/1",
+      "status": 200,
+      "corpo": {
+        "id": 1,
+        "paciente_id": 1,
+        "resumo_clinico": "Relato fictício A"
+      }
+    },
+    {
+      "cenario": "Didático: mesmo token do paciente 1, somente ID trocado para 2",
+      "metodo": "GET",
+      "url": "/experimento/consultas/2",
+      "status": 200,
+      "corpo": {
+        "id": 2,
+        "paciente_id": 2,
+        "resumo_clinico": "Relato fictício B"
+      }
+    },
+    {
+      "cenario": "Didático: paciente 2 lê registro próprio",
+      "metodo": "GET",
+      "url": "/experimento/consultas/2",
+      "status": 200,
+      "corpo": {
+        "id": 2,
+        "paciente_id": 2,
+        "resumo_clinico": "Relato fictício B"
+      }
+    },
+    {
+      "cenario": "Didático: mesmo token do paciente 2, somente ID trocado para 1",
+      "metodo": "GET",
+      "url": "/experimento/consultas/1",
+      "status": 200,
+      "corpo": {
+        "id": 1,
+        "paciente_id": 1,
+        "resumo_clinico": "Relato fictício A"
+      }
+    }
+  ]
+}

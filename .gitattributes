@@ -1,0 +1,3 @@
+
+# Snapshots preservam os bytes da revisão original, inclusive espaços históricos.
+evidencias/ex08/snapshots/** -whitespace

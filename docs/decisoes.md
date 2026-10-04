@@ -120,3 +120,11 @@ Contexto: laboratório atua em nome próprio, limitado a horários livres. Escol
 Regra aprovada pelo responsável: consultas de demonstração de 30 minutos, dias úteis 08h–18h, America/Sao_Paulo; cancelada libera e demais estados bloqueiam; resposta por profissional com intervalos livres. A verificação considera sobreposição e offset. Não se trata de exigência adicional da disciplina nem de reserva atômica.
 
 Alternativas: Authorization Code representa delegação de usuário, ausente nesse cenário; senha humana compartilhada mistura privilégios; credenciais no corpo são desnecessárias quando Basic atende ao cliente confidencial. Consequências: hash/segredo ficam fora da entrega; configurar e reiniciar para ativar; tokens humanos/M2M permanecem segregados; regras de reserva, concorrência, feriados e duração variável permanecem pendentes. [Contrato e limites](integracao-m2m.md) e evidências Ex. 7 registram a decisão.
+
+## DEC-20 — Revisão OWASP e cenário de paciente do Ex. 8
+
+Contexto: ownership e auto-escape já existem, mas o cenário acadêmico exige BOLA de paciente autenticado e não há esse papel/prontuário na aplicação. Decisão aprovada pelo responsável: revisar código histórico real e atual; demonstrar separadamente dois pacientes fictícios em experimento local, sem portal ou rota vulnerável na aplicação. O aceite acadêmico desse enquadramento permanece pendente.
+
+Fixado OWASP Top 10:2021 para comparar categorias distintas, com API1:2023 identificado como referencial separado de BOLA. Encontrados A01 histórico, A05 e A07 atuais, com localizações e observações reproduzidas. SQL Injection e XSS não foram inventados: memória não executa SQL e a agenda escapa o payload. Campos extras ignorados são lacuna de contrato, sem elevação de privilégio demonstrada.
+
+Consequências: fontes de cada baseline têm SHA-256 e snapshots literais; nenhuma correção ou regressão vulnerável entrou em app/. Atributo Git de whitespace é limitado aos snapshots para conservar inclusive espaços da fonte histórica, não aos arquivos de aplicação. Ex. 9 reutiliza payloads e esclarece SQL/XSS; Ex. 10 trata headers/throttling; Ex. 12 prioriza findings com CVSS/negócio. [Relatório da revisão](vulnerabilidades.md) registra evidência, estado e limite acadêmico.
