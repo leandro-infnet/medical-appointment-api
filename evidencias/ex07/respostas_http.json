@@ -1,0 +1,465 @@
+[
+  {
+    "cenario": "Cliente válido obtém token",
+    "metodo": "POST",
+    "path": "/auth/m2m/token",
+    "status": 200,
+    "body": "[token omitido]",
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Credencial inválida",
+    "metodo": "POST",
+    "path": "/auth/m2m/token",
+    "status": 401,
+    "body": {
+      "error": "invalid_client"
+    },
+    "www_authenticate": "Basic",
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Grant humano rejeitado",
+    "metodo": "POST",
+    "path": "/auth/m2m/token",
+    "status": 400,
+    "body": {
+      "error": "unsupported_grant_type"
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Scope de escrita rejeitado",
+    "metodo": "POST",
+    "path": "/auth/m2m/token",
+    "status": 400,
+    "body": {
+      "error": "invalid_scope"
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Profissional obtém token distinto",
+    "metodo": "POST",
+    "path": "/auth/token",
+    "status": 200,
+    "body": "[token omitido]",
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Lab lê apenas intervalos livres",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 200,
+    "body": {
+      "profissional_id": 1,
+      "dia": "2026-10-15",
+      "fuso": "America/Sao_Paulo",
+      "intervalos": [
+        {
+          "inicio": "2026-10-15T09:00:00-03:00",
+          "fim": "2026-10-15T09:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T09:30:00-03:00",
+          "fim": "2026-10-15T10:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:00:00-03:00",
+          "fim": "2026-10-15T10:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:30:00-03:00",
+          "fim": "2026-10-15T11:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:00:00-03:00",
+          "fim": "2026-10-15T11:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:30:00-03:00",
+          "fim": "2026-10-15T12:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:00:00-03:00",
+          "fim": "2026-10-15T12:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:30:00-03:00",
+          "fim": "2026-10-15T13:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:00:00-03:00",
+          "fim": "2026-10-15T13:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:30:00-03:00",
+          "fim": "2026-10-15T14:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:00:00-03:00",
+          "fim": "2026-10-15T14:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:30:00-03:00",
+          "fim": "2026-10-15T15:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:00:00-03:00",
+          "fim": "2026-10-15T15:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:30:00-03:00",
+          "fim": "2026-10-15T16:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:00:00-03:00",
+          "fim": "2026-10-15T16:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:30:00-03:00",
+          "fim": "2026-10-15T17:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:00:00-03:00",
+          "fim": "2026-10-15T17:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:30:00-03:00",
+          "fim": "2026-10-15T18:00:00-03:00"
+        }
+      ]
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Humano não acessa rota do lab",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 401,
+    "body": {
+      "detail": "Token do laboratório inválido ou ausente."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Anônimo não acessa disponibilidade",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 401,
+    "body": {
+      "detail": "Token do laboratório inválido ou ausente."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em GET /consultas",
+    "metodo": "GET",
+    "path": "/consultas",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em GET /consultas/1",
+    "metodo": "GET",
+    "path": "/consultas/1",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em POST /consultas",
+    "metodo": "POST",
+    "path": "/consultas",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em PATCH /consultas/1",
+    "metodo": "PATCH",
+    "path": "/consultas/1",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em DELETE /consultas/1",
+    "metodo": "DELETE",
+    "path": "/consultas/1",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em GET /agenda",
+    "metodo": "GET",
+    "path": "/agenda",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em GET /admin/status",
+    "metodo": "GET",
+    "path": "/admin/status",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token M2M bloqueado em POST /auth/agenda-session",
+    "metodo": "POST",
+    "path": "/auth/agenda-session",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "www_authenticate": "Bearer",
+    "cache_control": null
+  },
+  {
+    "cenario": "Token sem scope não lê disponibilidade",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 403,
+    "body": {
+      "detail": "Escopo insuficiente ou não permitido."
+    },
+    "www_authenticate": "Bearer error=\"insufficient_scope\", scope=\"disponibilidade:ler\"",
+    "cache_control": null
+  },
+  {
+    "cenario": "Fim de semana sem expediente",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 200,
+    "body": {
+      "profissional_id": 1,
+      "dia": "2026-10-17",
+      "fuso": "America/Sao_Paulo",
+      "intervalos": []
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Outro profissional não herda ocupação",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 200,
+    "body": {
+      "profissional_id": 2,
+      "dia": "2026-10-15",
+      "fuso": "America/Sao_Paulo",
+      "intervalos": [
+        {
+          "inicio": "2026-10-15T08:00:00-03:00",
+          "fim": "2026-10-15T08:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T08:30:00-03:00",
+          "fim": "2026-10-15T09:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T09:00:00-03:00",
+          "fim": "2026-10-15T09:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T09:30:00-03:00",
+          "fim": "2026-10-15T10:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:00:00-03:00",
+          "fim": "2026-10-15T10:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:30:00-03:00",
+          "fim": "2026-10-15T11:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:00:00-03:00",
+          "fim": "2026-10-15T11:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:30:00-03:00",
+          "fim": "2026-10-15T12:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:00:00-03:00",
+          "fim": "2026-10-15T12:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:30:00-03:00",
+          "fim": "2026-10-15T13:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:00:00-03:00",
+          "fim": "2026-10-15T13:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:30:00-03:00",
+          "fim": "2026-10-15T14:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:00:00-03:00",
+          "fim": "2026-10-15T14:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:30:00-03:00",
+          "fim": "2026-10-15T15:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:00:00-03:00",
+          "fim": "2026-10-15T15:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:30:00-03:00",
+          "fim": "2026-10-15T16:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:00:00-03:00",
+          "fim": "2026-10-15T16:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:30:00-03:00",
+          "fim": "2026-10-15T17:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:00:00-03:00",
+          "fim": "2026-10-15T17:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:30:00-03:00",
+          "fim": "2026-10-15T18:00:00-03:00"
+        }
+      ]
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Cancelamento libera os slots",
+    "metodo": "GET",
+    "path": "/disponibilidade",
+    "status": 200,
+    "body": {
+      "profissional_id": 1,
+      "dia": "2026-10-15",
+      "fuso": "America/Sao_Paulo",
+      "intervalos": [
+        {
+          "inicio": "2026-10-15T08:00:00-03:00",
+          "fim": "2026-10-15T08:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T08:30:00-03:00",
+          "fim": "2026-10-15T09:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T09:00:00-03:00",
+          "fim": "2026-10-15T09:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T09:30:00-03:00",
+          "fim": "2026-10-15T10:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:00:00-03:00",
+          "fim": "2026-10-15T10:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T10:30:00-03:00",
+          "fim": "2026-10-15T11:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:00:00-03:00",
+          "fim": "2026-10-15T11:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T11:30:00-03:00",
+          "fim": "2026-10-15T12:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:00:00-03:00",
+          "fim": "2026-10-15T12:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T12:30:00-03:00",
+          "fim": "2026-10-15T13:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:00:00-03:00",
+          "fim": "2026-10-15T13:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T13:30:00-03:00",
+          "fim": "2026-10-15T14:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:00:00-03:00",
+          "fim": "2026-10-15T14:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T14:30:00-03:00",
+          "fim": "2026-10-15T15:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:00:00-03:00",
+          "fim": "2026-10-15T15:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T15:30:00-03:00",
+          "fim": "2026-10-15T16:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:00:00-03:00",
+          "fim": "2026-10-15T16:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T16:30:00-03:00",
+          "fim": "2026-10-15T17:00:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:00:00-03:00",
+          "fim": "2026-10-15T17:30:00-03:00"
+        },
+        {
+          "inicio": "2026-10-15T17:30:00-03:00",
+          "fim": "2026-10-15T18:00:00-03:00"
+        }
+      ]
+    },
+    "www_authenticate": null,
+    "cache_control": "no-store"
+  }
+]

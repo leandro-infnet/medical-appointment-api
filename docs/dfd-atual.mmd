@@ -1,8 +1,14 @@
-%% Versão atual: Exercício 6. Exportações anteriores preservadas em evidências.
+%% Versão atual: Exercício 7. Exportações anteriores preservadas em evidências.
 flowchart LR
     E01["E-01 Consumidor JSON<br/>Frontend ou cliente HTTP"]
     E02["E-02 Navegador da recepção<br/>Cliente HTML"]
+    E03["E-03 Laboratório parceiro<br/>TB-03: consumidor externo com privilégio mínimo"]
     subgraph TB01["TB-01: exterior não confiável / processo FastAPI"]
+        P06("P-06 Disponibilidade<br/>intervalos + schema mínimo + scope")
+        P06 -->|"F-26 Bearer de cliente e scope exigido"| P04
+        P04 -->|"F-27 Identidade M2M e scope validados"| P06
+        P06 -->|"F-28 Snapshot por profissional"| P03
+        P03 -->|"F-29 Consultas para cálculo interno; sem divulgação clínica"| P06
         P04("P-04 Identidade e JWT<br/>bcrypt + claims + conta ativa + MFA")
         P05("P-05 Políticas<br/>papel + profissional + vínculo + ownership")
         D02[("D-02 Cadastro fictício confiável<br/>hashes + papéis + vínculos<br/>arquivo local e memória; sem API de escrita")]
@@ -37,5 +43,9 @@ flowchart LR
     P04 -->|"F-23 Token ou desafio; erro seguro"| E01
     E02 -->|"F-24 Bearer de recepção para sessão"| P04
     P04 -->|"F-25 Cookie HttpOnly restrito à agenda"| E02
+    E03 -->|"F-30 Basic e grant client_credentials via auth"| P04
+    P04 -->|"F-31 Token M2M limitado ou erro OAuth"| E03
+    E03 -->|"F-32 GET disponibilidade, dia, profissional e bearer"| P06
+    P06 -->|"F-33 Apenas intervalos livres ou erro seguro"| E03
     style TB01 fill:#eef5ff,stroke:#245b96,stroke-width:2px,stroke-dasharray:6 4
     style D01 fill:#fff4e5,stroke:#a56600,stroke-dasharray:4 4

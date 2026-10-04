@@ -1,13 +1,14 @@
 """Login humano, conclusão de MFA e sessão de leitura da agenda."""
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
 from fastapi.security import OAuth2PasswordRequestFormStrict
 from app.auth.dependencies import SettingsDep, UsuariosDep, UsuarioDep
 from app.auth.passwords import verificar_senha
 from app.auth.policies import exigir_papel
-from app.auth.tokens import emitir_token
+from app.auth.tokens import emitir_token, emitir_token_m2m, DISPONIBILIDADE_SCOPE
+from app.auth.m2m import autenticar_cliente, OAuthClientError
 from app.settings import Settings
-from app.models.identidades import MFAChallengeResponse, MFAInput, Papel, TokenResponse, Usuario
+from app.models.identidades import MFAChallengeResponse, MFAInput, Papel, TokenResponse, Usuario, M2MTokenResponse
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 
@@ -60,3 +61,24 @@ def encerrar_sessao_agenda(usuario: UsuarioDep, settings: SettingsDep, response:
     exigir_papel(usuario, Papel.RECEPCAO)
     response.delete_cookie("agenda_session", path="/agenda",
         secure=settings.agenda_cookie_secure, httponly=True, samesite="strict")
+
+
+@router.post("/m2m/token", response_model=M2MTokenResponse,
+    responses={400: {"description": "Grant ou escopo não permitido."},
+               401: {"description": "Credenciais do cliente inválidas."}})
+async def login_m2m(request: Request, response: Response, settings: SettingsDep,
+              autenticado: Annotated[None, Depends(autenticar_cliente)],
+              grant_type: Annotated[str, Form()], scope: Annotated[str | None, Form()] = None):
+    if grant_type != "client_credentials":
+        raise OAuthClientError("unsupported_grant_type")
+    # Form converte string vazia em default; presença precisa ser conferida no corpo.
+    if scope is None and "scope" in await request.form():
+        scope = ""
+    solicitados = set(scope.split()) if scope is not None else {DISPONIBILIDADE_SCOPE}
+    if solicitados - {DISPONIBILIDADE_SCOPE}:
+        raise OAuthClientError("invalid_scope")
+    concedido = " ".join(sorted(solicitados))
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    return M2MTokenResponse(access_token=emitir_token_m2m(settings, concedido),
+                           expires_in=settings.m2m_token_minutes * 60, scope=concedido)

@@ -4,11 +4,13 @@ from contextlib import asynccontextmanager
 from secrets import token_urlsafe
 from fastapi import FastAPI
 from app.auth.mfa import MFAStore
+from app.auth.m2m import OAuthClientError, oauth_error_response
 from app.auth.passwords import gerar_hash
 from app.database.identidades import carregar_usuarios
 from app.settings import get_settings
 from app.routes.auth import router as auth_router
 from app.routes.admin import router as admin_router
+from app.routes.disponibilidade import router as disponibilidade_router
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
@@ -28,10 +30,13 @@ app = FastAPI(
     description="API RESTful segura para agendamento de consultas em clínicas médicas.",
 )
 
+app.add_exception_handler(OAuthClientError, oauth_error_response)
+
 app.include_router(consultas_router)
 app.include_router(agenda_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
+app.include_router(disponibilidade_router)
 
 
 @app.get("/", tags=["Saúde"])

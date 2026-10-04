@@ -1,5 +1,8 @@
 # Autenticação e autorização — Exercício 6
 
+> Este documento preserva o contrato humano do Ex. 6. O laboratório, mencionado como futuro neste baseline, foi implementado no Ex. 7 com [contrato próprio](integracao-m2m.md).
+
+
 ## Resultado, requisitos e contrato
 
 A aplicação mantém o CRUD, os response models e a agenda com escape. Agora exige identidade humana válida e autoriza por papel e recurso. Este incremento implementa OAuth2PasswordBearer, bcrypt, JWT expirável, ownership, MFA administrativo simulado e pytest de negação a não administrador (R10/R11; fundação de R22).
