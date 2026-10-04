@@ -1,4 +1,4 @@
-# Rastreabilidade verificada — Exercícios 1 e 2
+# Rastreabilidade verificada — Exercícios 1 a 3
 
 Esta matriz registra o que já foi implementado e verificado. A matriz central do [guia](../GUIA_DESENVOLVIMENTO_AT.md) mantém também as etapas planejadas. Vincular Threat IDs após o threat model dos Exercícios 3 e 4, sem inventar análise já realizada.
 
@@ -9,5 +9,10 @@ Esta matriz registra o que já foi implementado e verificado. A matriz central d
 | REQ-02.2: justificar contrato de saída | 2 | `docs/decisoes.md`: DEC-13 | Inspeção do contrato e comparação armazenamento × resposta no TEST-02 | A vincular | Comparação histórica com `evidencias/ex01/uvicorn_respostas_rotas.txt` e resposta atual | R03; campos novos exigem revisão explícita do contrato |
 | REQ-02.3: agenda diária e herança | 2 | `app/routes/agenda.py`, `app/templates/base.html`, `agenda.html`; regra temporal em `app/database/consultas.py` | TEST-03: testes de filtragem, ordem, vazio, data inválida, relógio e UTC em `tests/test_respostas_templates.py` | A vincular | `agenda_xss.html`, `agenda_vazia.html`, `agenda_xss.png`, `pytest_output.txt` | R04; fuso provisório DEC-14 e acesso sem autenticação até Ex. 6 |
 | REQ-02.4: proteção de saída XSS | 2 | Environment com auto-escape; texto sem `safe`; projeção sem campos clínicos internos | TEST-03: `test_agenda_escapa_texto_malicioso_armazenado` com script e imagem/handler | A vincular: XSS persistido | `payloads.json`, `respostas_http.json`, HTML, screenshot e pytest | R04; não comprova segurança em contextos JS/CSS ou autorização |
+| REQ-03.1: CIA aplicada | 3 | `docs/cia-dfd.md`, seções 1–3; CIA-01–08 e AT-01–06 | Revisão de cenários, consequências e correspondência com código/evidências Ex. 1/2 | A vincular no Ex. 4; LAC-01–06 são lacunas | `evidencias/ex03/README.md`, `revisao_documental.md` | R05; riscos de acesso, memória e abuso permanecem |
+| REQ-03.2: referenciais ligados a controles | 3 | Seção 5 de `docs/cia-dfd.md`, DEC-15 | Revisão de fontes oficiais, itens e controles com localização real | A vincular no Ex. 4 | Referências e mapa no relatório; revisão Ex. 3 | R05; mapeamento parcial, sem certificação |
+| REQ-03.3: DFD, dados sensíveis e fronteiras | 3 | `docs/dfd-atual.mmd`, seção 4 de `docs/cia-dfd.md` | Inspeção dos dez fluxos, percursos JSON/HTML e distinção real/lógica/futura | A vincular aos P/F/TB no Ex. 4 | `evidencias/ex03/dfd-atual.svg`, `dfd-atual.png` e revisão | R06; TB-02 não isola memória; TB-03/04 futuras |
 
 **Verificação executada:** 16 testes passaram (oito da fundação, oito casos do Exercício 2), com dois avisos de depreciação das dependências do TestClient. Evidências HTTP em processo geradas com memória isolada; screenshot do HTML efetivamente renderizado pelo Chromium. Não foi executado ZAP, previsto no Capstone.
+
+**Exercício 3:** incremento documental, com inspeção de código, fonte Mermaid e exportação do DFD. Os testes acima são históricos da etapa anterior e não foram repetidos nesta etapa. A revisão documental encontra-se em `evidencias/ex03/revisao_documental.md`.

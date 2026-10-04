@@ -80,3 +80,9 @@ A aplicação segue a organização modular de responsabilidades separadas:
 ```
 
 O script não se conecta a banco ou servidor existente. Os testes e as evidências do Exercício 1 foram preservados como registro histórico.
+
+## Análise de segurança — Exercício 3
+
+[docs/cia-dfd.md](docs/cia-dfd.md) analisa confidencialidade, integridade e disponibilidade, mapeia OWASP/NIST SSDF/MITRE a controles existentes e apresenta o DFD do incremento atual. A fonte editável está em [docs/dfd-atual.mmd](docs/dfd-atual.mmd); exportação e revisão estão em [evidencias/ex03/README.md](evidencias/ex03/README.md).
+
+O DFD representa JSON, HTML e memória no mesmo processo; futuras autenticação, M2M e persistência continuam identificadas como pendências. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).

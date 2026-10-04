@@ -1,0 +1,31 @@
+Baseline analisado:
+46db788b99a19b4cf145555e8e9ff679a88e29fe
+Merge pull request #2 from leandro-infnet/feat/ex02-response-models-templates
+Branch: feat/ex03-security-foundations-dfd
+
+SHA-256 dos artefatos e arquivos inspecionados:
+0b7147d0f8d5e5738ccfbde1a25172e87af571ef9dd612a66ee549fcc228b3b1  docs/cia-dfd.md
+bfb9bef3f1d32ba763b68f356179c70dd719459dc940a52b700602286883cd46  docs/dfd-atual.mmd
+d15e01d10276b507168367de00689d0f76c6550c2458702c5ade1070e8576cd1  app/__init__.py
+d91ca99cdfff5a5aa452281fc652fd94f9964a1a31e55f1b57ac37011b923c88  app/database/__init__.py
+d0a298cd0c2202a2b5791541986f3842885905dc283d33727a6f2e7eacae0af9  app/database/consultas.py
+75fac9569b20e584a4f3fa79f8533681170a54947a4313b613f3ed9fc8cfa3c8  app/database/memoria.py
+a7554ce96db61c7965f79dec028d990520a23a5e2fe7fc933921151cf122c26a  app/main.py
+6fd1ac0e52dec2312e99b587c12fbc669300996b9d714d2184eb0985ee70ab9c  app/models/__init__.py
+bd935f5b6737c22fd975b0275319da7119ba020da3d5d9f9837736f49cce4407  app/models/consultas.py
+79eeda90a4d7c199889777ca20eb12945d5037d7d23a96cc6f20fb7d0ef2904b  app/routes/__init__.py
+7b6723b6ebe33c15cbbf1464294a3f860ec02433d247ef30d3b7c72cc3ee0b0c  app/routes/agenda.py
+49f77b08ce05759028fafa1ac24bc21b283b2820934be1303c7c83690c2dde92  app/routes/consultas.py
+882099d327bc199b48b326f4ce48feeea36f78712ef7549cbe13d0d073c15359  app/templates/agenda.html
+9a2ed7aea643ffe2f3af0e5da0b1dd8161d09cd8e6b722691fb1c91743d748a1  app/templates/base.html
+3eb85a7d9bef64ddd9e5a94094ae5e767f0ad2a94388e010d0ddaf7693ef1351  evidencias/ex03/dfd-atual.svg
+e005bdfa59ddcbef6fe9944845b7f6fd194ce2c48403267388099bf1926658eb  evidencias/ex03/dfd-atual.png
+
+Checks executados:
+Fonte Mermaid incorporada ao relatório: idêntica.
+Fluxos dirigidos na fonte: 10.
+SVG parseado como XML: válido.
+DOM Mermaid: data-rendered="true".
+PNG final: inspecionado visualmente.
+git diff --exit-code -- app/ tests/ pyproject.toml: sem alterações.
+git diff --check: sem problemas.

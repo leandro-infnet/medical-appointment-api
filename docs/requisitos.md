@@ -74,4 +74,16 @@ Estes controles serão implementados progressivamente. A lista não afirma que j
 | Status contém script ou imagem com handler | Conteúdo armazenado é exibido como texto, sem tags executáveis | `test_agenda_escapa_texto_malicioso_armazenado` |
 | Dia vazio, omitido ou inválido | Mensagem de vazio, dia atual local ou 422, respectivamente | Demais testes de agenda |
 
-Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). Modelagem formal de ameaças ainda pendente para os Exercícios 3 e 4.
+Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). CIA e DFD estão registrados no Exercício 3; misuse cases e STRIDE permanecem pendentes para o Exercício 4.
+
+## 7. Fundamentos de segurança — Exercício 3
+
+Análise CIA e DFD atual documentados em [cia-dfd.md](cia-dfd.md). A revisão distingue controles implementados, lacunas e arquitetura futura; não introduz novos controles executáveis.
+
+| Requisito documental | Entrega | Rubrica |
+| --- | --- | --- |
+| REQ-03.1: CIA da aplicação construída | Cenários CIA-01–08 com ativos, impactos, controles e limites de verificação | R05 |
+| REQ-03.2: OWASP, NIST SSDF e MITRE associados a controles reais | Mapeamento com edição, item, código, teste/evidência e limite; DEC-15 | R05 |
+| REQ-03.3: DFD, fluxos sensíveis e trust boundaries | E-01/02, P-01–03, D-01, F-01–10, TB-01 real e TB-02 lógico; futuras TB-03/04 explicitamente separadas | R06 |
+
+LAC-01–06 registram autorização ausente, validação parcial, controle de abuso, memória volátil e demais pontos a desenvolver. Não são Threat IDs nem findings de scanner. Misuse cases e STRIDE continuam pendentes para o Exercício 4. A aplicação permanece no estado funcional do Exercício 2.
