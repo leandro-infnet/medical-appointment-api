@@ -1,0 +1,8 @@
+{
+  "sub": "client:laboratorio_parceiro",
+  "aud": "clinic-laboratory",
+  "iss": "medical-appointment-api",
+  "token_use": "m2m_access",
+  "client_id": "laboratorio_parceiro",
+  "scope": "disponibilidade:ler"
+}

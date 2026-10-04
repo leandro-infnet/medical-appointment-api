@@ -185,3 +185,9 @@ Confidencialidade: consultas exigem identidade, papel, ownership e vínculo; age
 **Novo ativo AT-07:** hashes, chave de assinatura, tokens e fator simulado, de alta sensibilidade. D-02 provém de arquivo local restrito e seeds confiáveis; não há entrada HTTP de papéis/vínculos. D-03 é volátil. TB-01 continua exterior/processo; TB-02 continua divulgação lógica, sem isolamento de processo. A validação/política transforma entrada não confiável em principal autorizado dentro do mesmo processo; não é nova fronteira de rede. TB-03 (laboratório) e TB-04 (banco relacional) continuam futuras. Cookie é novo transporte na TB-01, avaliado em TM-017.
 
 [Contrato e limites](autenticacao-autorizacao.md), [threat model 1.2](threat-model.md) e [evidências reais](../evidencias/ex06/README.md) registram os controles atuais. Não há TLS, ZAP, conformidade regulatória ou liberação para produção demonstrados.
+
+## Atualização de fronteira e dados — Exercício 7
+
+O parceiro agora cruza TB-03 por Basic/Client Credentials e bearer exclusivo, validado em P-04. P-06 acrescenta cálculo de intervalos e projeção mínima, com F-26–33 no DFD editável. P-03/D-01 permanecem no mesmo processo em memória. Exportações Ex. 3/5/6 são históricas e foram preservadas.
+
+CTRL-10/TM-014/TEST-11 foram implementados/verificados; a agenda não se tornou pública nem o administrador ganhou acesso clínico. A disponibilidade pode revelar ocupação indiretamente, mas não paciente/motivo. Integridade da reserva, durabilidade, TLS e limites operacionais não são comprovados pelo cálculo. [Contrato e decisões](integracao-m2m.md), threat model 1.3 e evidências Ex. 7 registram o estado atual.

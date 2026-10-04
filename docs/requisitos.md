@@ -2,7 +2,7 @@
 
 ## 1. Visão Geral e Contexto
 
-O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas não tinham autenticação. No Exercício 6, RF-03/RF-04 foram implementados; o contrato efetivo está em [autenticação e autorização](autenticacao-autorizacao.md).
+O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas não tinham autenticação. No Exercício 6, RF-03/RF-04 foram implementados; no Ex. 7, RF-05 também; o contrato efetivo está em [autenticação e autorização](autenticacao-autorizacao.md).
 
 ### Consumidores do Sistema
 1. **Frontend JSON:** Aplicação consumidora das rotas REST da API.
@@ -18,7 +18,7 @@ O produto é uma API REST desenvolvida em FastAPI para digitalização do agenda
 
 ## 2. Matriz Inicial de Atores x Operações x Recursos
 
-As linhas humanas representam a matriz aprovada e implementada no Ex. 6. Laboratório e paciente continuam futuros; **Permitido** nessas linhas significa alvo planejado. O Assessment não define todas as permissões: decisões ausentes precisam ser registradas antes da implementação. Em particular, o paciente autenticado é citado no cenário BOLA do Exercício 8, mas não faz parte dos três papéis internos definidos inicialmente.
+As linhas humanas representam a matriz implementada no Ex. 6; laboratório está implementado no Ex. 7 somente para disponibilidade. Paciente continua futuro; permissões desse ator não são controles já implementados. O Assessment não define todas as permissões: decisões ausentes precisam ser registradas antes da implementação. Em particular, o paciente autenticado é citado no cenário BOLA do Exercício 8, mas não faz parte dos três papéis internos definidos inicialmente.
 
 | Ator | Criar Consulta | Visualizar Próprias Consultas | Visualizar Consultas Alheias | Agenda Diária HTML | Rota Administrativa | Consultar Disponibilidade (M2M) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -43,7 +43,7 @@ As linhas humanas representam a matriz aprovada e implementada no Ex. 6. Laborat
 
 ## 4. Requisitos Funcionais
 
-Os itens desta seção representam o **alvo do Assessment completo**; RF-01–04 estão implementados e verificados; RF-05/06 continuam futuros.
+Os itens desta seção representam o **alvo do Assessment completo**; RF-01–05 estão implementados e verificados; RF-06 continua futuro.
 
 - **RF-01:** Prover CRUD RESTful completo de consultas médicas (`POST`, `GET`, `GET /{id}`, `PATCH /{id}`, `DELETE /{id}`) com validação explícita de schemas.
 - **RF-02:** Controlar exposição de dados via `response_model` no JSON e renderizar agenda diária HTML com Jinja2 com auto-escape.

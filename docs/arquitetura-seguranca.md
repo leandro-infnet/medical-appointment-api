@@ -169,3 +169,9 @@ Identidade, senha, JWT, MFA e políticas agora estão em `app/auth/`; contratos 
 As quatro primeiras decisões da seção 6 foram resolvidas em DEC-18: vínculo fictício confiável, matriz mínima aprovada, contrato JWT/MFA e cookie HttpOnly exclusivo de agenda. [Contrato completo](autenticacao-autorizacao.md) e [DFD atualizado](dfd-atual.mmd) registram a evolução. O diagrama `particoes-seguranca.mmd` permanece snapshot conceitual do Ex. 5; o DFD editável representa o incremento atual.
 
 CTRL-01/02 passaram a implementados/verificados por pytest e reprodução HTTP; CTRL-12 trata transporte da sessão (TM-017). Middleware, laboratório, TLS/headers, rate limiting e banco continuam nos incrementos seguintes. Cenários de criação autorizada, acesso cruzado negado e recepção mínima foram exercitados no Ex. 6; M2M e falha relacional não foram executados.
+
+## Partição de disponibilidade — Exercício 7
+
+O parceiro agora cruza TB-03 por Basic/Client Credentials e bearer exclusivo, validado em P-04. P-06 acrescenta cálculo de intervalos e projeção mínima, com F-26–33 no DFD editável. P-03/D-01 permanecem no mesmo processo em memória. Exportações Ex. 3/5/6 são históricas e foram preservadas.
+
+CTRL-10/TM-014/TEST-11 foram implementados/verificados; a agenda não se tornou pública nem o administrador ganhou acesso clínico. A disponibilidade pode revelar ocupação indiretamente, mas não paciente/motivo. Integridade da reserva, durabilidade, TLS e limites operacionais não são comprovados pelo cálculo. [Contrato e decisões](integracao-m2m.md), threat model 1.3 e evidências Ex. 7 registram o estado atual.

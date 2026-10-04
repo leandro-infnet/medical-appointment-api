@@ -1,6 +1,6 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
-> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. A seção 11 registra estado efetivo, nova superfície de sessão e evidência do Ex. 6; prevalece sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11/12 registram o estado efetivo e evidências dos Ex. 6/7; prevalece sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
 
 
 ## 1. Escopo, baseline e método
@@ -238,7 +238,7 @@ Incremento do Ex. 6 sobre baseline `fb75b016ed9e535fbb4bf1715af2b8a91f697bdf`. D
 | TM-013 | CTRL-01/02: JWT HS256/claims/TTL, MFA sem token antecipado, papel admin | TEST-05/06/10: `test_claims_invalidas_negadas`, `test_jwt_invalido_negado`, `test_nao_administrador_negado_na_rota_administrativa`, testes MFA | Verificado; fator estático simulado não é MFA real; JWT roubado não tem revogação individual |
 | TM-016 | CTRL-01: erros sem enumeração e hash fictício para nome ausente; cinco erros por desafio | Login inválido, bcrypt/UTF-8, desafio inutilizado | Parcial; desafios novos reiniciam tentativas e login ainda não tem rate limiting CTRL-07, previsto Ex. 10 |
 
-### TM-017 / MU-013 — sessão de agenda e CSRF (nova superfície SUP-08)
+### TM-017 / MU-013 — sessão de agenda e CSRF (nova superfície SUP-10)
 
 **Ativo:** AT-01/07; **componentes:** P-02/P-04/P-05; **fluxos:** F-05/16/24/25; **fronteira:** TB-01. Atacante tenta usar cookie roubado/expirado, induzir login cross-site ou usar cookie para mutação/CRUD. STRIDE: Spoofing, Tampering e Elevation of privilege. Impacto: acesso indevido à agenda ou ampliação de privilégios.
 
@@ -249,3 +249,18 @@ Incremento do Ex. 6 sobre baseline `fb75b016ed9e535fbb4bf1715af2b8a91f697bdf`. D
 **Residual:** em HTTP local, Secure explicitamente false só para demonstração; captura de bearer/cookie ainda permite replay até expiração/desativação. Logout apaga cookie sem revogar cópia roubada. Mutações futuras com cookie exigirão anti-CSRF específico. Desafios ficam em memória/um worker; produção exige MFA independente e sessão/infraestrutura apropriadas.
 
 TM-007–012/014–015 mantêm o estado anterior salvo controles parciais acima. Não foram executados scans, CVSS, gate, M2M, autenticação de paciente ou persistência relacional. O catálogo de testes do Ex. 12 reutilizará TEST-04–10 e TEST-23, preservando IDs e riscos abertos.
+
+## 12. Atualização 1.3 — laboratório confidencial e disponibilidade
+
+Baseline do incremento: `ec391e97f9afdc508429fb3a20ce33399e8bbb2f`. TM-014/CTRL-10/TEST-11 passam a implementados/verificados. SUP-08 permanece a superfície M2M original; a nova sessão de agenda do Ex. 6 é SUP-10, corrigindo a colisão anterior sem alterar Threat IDs. TB-03 é a fronteira com o laboratório externo, sem alegar isolamento adicional dos módulos internos.
+
+P-06 calcula intervalos com projeção própria, reutilizando P-03/D-01; P-04 autentica o cliente e verifica seu contrato; F-26–33 acrescentam os fluxos de autenticação e consulta do parceiro. A chave/segredo/token está em AT-07. O parceiro não recebe o snapshot interno de consultas, apenas intervalos livres.
+
+| Ameaça / misuse | Controle efetivo e arquivos | Teste e evidência | Risco residual |
+| --- | --- | --- | --- |
+| TM-014 / MU-011 | CTRL-10: Client Credentials, Basic, token_use/client_id/sub/aud/TTL e scope mínimo; `auth/m2m.py`, `tokens.py`, `routes/auth.py` | TEST-11: 41 casos de `tests/test_m2m.py`; reprodução HTTP Ex. 7 com negativas humanas/cliente | Bearer roubado pode ler disponibilidade até expiração/desativação; hash trocado não revoga token |
+| TM-002/004/014 | `DisponibilidadeResponse` e P-06 sem paciente, motivo, notas ou consulta ID; role/scopes humanos não são confundidos | Resposta com campos mínimos; humanos negados; M2M negado em oito operações humanas | Ocupação pode ser inferida pelos intervalos; não é anonimização formal |
+| TM-009 | Regra aprovada de intervalos, duração, expediente/fuso/cancelamento; `database/disponibilidade.py` | Sobreposição, UTC, limite, cancelamento, outros estados e profissional separado | Consulta de disponibilidade não reserva nem impede sobreposição de gravação; garantia relacional futura |
+| TM-012/016 | Configuração fora do Git, credencial M2M sem valor padrão e erro sem segredo | Hash ausente desativa M2M; Basic/grant/scopes inválidos negados | TLS e rate limiting não implementados; exposição externa permanece bloqueada pela avaliação de risco |
+
+STRIDE na superfície M2M: Spoofing mitigado pela autenticação do cliente/verificação JWT; Tampering pela assinatura e inputs tipados; Information Disclosure pela saída mínima; Elevation of privilege pela finalidade/audiência/scope e recusa nas rotas humanas. Repudiation permanece sem trilha persistente e Denial of service sem rate limiting/capacidade demonstrada. A matriz detalhada e os limites estão em [integração M2M](integracao-m2m.md). Não há novas vulnerabilidades exploradas em produção, CVSS, ZAP ou autorização de deploy.

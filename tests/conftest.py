@@ -23,6 +23,9 @@ def ambiente(tmp_path, monkeypatch):
     monkeypatch.setenv("MFA_SIMULATED_CODE", "123456")
     monkeypatch.setenv("USERS_FILE", str(path))
     monkeypatch.setenv("AGENDA_COOKIE_SECURE", "false")
+    monkeypatch.setenv("M2M_CLIENT_ID", "laboratorio_parceiro")
+    monkeypatch.setenv("M2M_CLIENT_SECRET_HASH", senha_hash)
+    monkeypatch.setenv("M2M_TOKEN_MINUTES", "5")
     get_settings.cache_clear()
     reset_banco()
     yield

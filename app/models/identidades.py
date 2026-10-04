@@ -35,3 +35,7 @@ class MFAInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     challenge_id: str = Field(min_length=1, max_length=128)
     code: SecretStr = Field(min_length=6, max_length=6)
+
+
+class M2MTokenResponse(TokenResponse):
+    scope: str

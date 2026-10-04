@@ -112,3 +112,11 @@ Contexto: três papéis, gestão de pacientes próprios e MFA administrativo. Ma
 Alternativas: RBAC isolado não resolve BOLA; motor ABAC genérico seria prematuro; bearer exclusivo em HTML exigiria cliente HTTP controlado; armazenar token em URL exporia credencial. Escolhas detalhadas, claims, limites e comandos em [autenticacao-autorizacao.md](autenticacao-autorizacao.md).
 
 Consequências: autorização é centralizada e preserva os controles JSON/HTML. Cadastro e desafio não são solução relacional/multiworker; não há MFA real, refresh ou revogação individual. Mudanças de arquivo exigem restart. TTL curto reduz janela, sem eliminar roubo de sessão. Rate limiting, TLS/headers, M2M e migração SQLModel continuam pendentes. Não há autorização para deploy.
+
+## DEC-19 — Client Credentials e disponibilidade do parceiro
+
+Contexto: laboratório atua em nome próprio, limitado a horários livres. Escolha técnica: Client Credentials separado do login humano, Basic com hash bcrypt local, scope único `disponibilidade:ler`, subject `client:<id>`, finalidade `m2m_access`, audiência `clinic-laboratory` e TTL de cinco minutos. Cliente não vira profissional nem administrador. Sem credencial configurada, M2M é negado sem interromper a aplicação humana.
+
+Regra aprovada pelo responsável: consultas de demonstração de 30 minutos, dias úteis 08h–18h, America/Sao_Paulo; cancelada libera e demais estados bloqueiam; resposta por profissional com intervalos livres. A verificação considera sobreposição e offset. Não se trata de exigência adicional da disciplina nem de reserva atômica.
+
+Alternativas: Authorization Code representa delegação de usuário, ausente nesse cenário; senha humana compartilhada mistura privilégios; credenciais no corpo são desnecessárias quando Basic atende ao cliente confidencial. Consequências: hash/segredo ficam fora da entrega; configurar e reiniciar para ativar; tokens humanos/M2M permanecem segregados; regras de reserva, concorrência, feriados e duração variável permanecem pendentes. [Contrato e limites](integracao-m2m.md) e evidências Ex. 7 registram a decisão.

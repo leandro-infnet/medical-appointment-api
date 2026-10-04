@@ -53,7 +53,7 @@ As respostas de criação, listagem, leitura e atualização contêm somente `id
 
 Após login como recepção e criação da sessão em `POST /auth/agenda-session`, abra [http://127.0.0.1:8000/agenda](http://127.0.0.1:8000/agenda) para o dia atual da clínica, ou `/agenda?dia=2026-10-03` para uma data explícita. A página apresenta horário, IDs de consulta/paciente/profissional e status; não recebe motivo clínico nem notas internas. Data inválida resulta em HTTP 422; dia vazio tem mensagem própria.
 
-**Recomendação de engenharia adotada provisoriamente:** `America/Sao_Paulo` como fuso da clínica. Horários sem offset são interpretados nesse fuso; horários com offset são convertidos antes de filtrar o dia. Esta convenção não foi imposta pelo Assessment e deve ser confirmada antes da persistência/disponibilidade. A escolha é explicada em [docs/decisoes.md](docs/decisoes.md).
+**Decisão de domínio aprovada para a demonstração (DEC-19):** `America/Sao_Paulo` como fuso da clínica. Horários sem offset são interpretados nesse fuso; horários com offset são convertidos antes de filtrar o dia. Esta convenção não foi imposta pela disciplina; foi aprovada no incremento de disponibilidade. A escolha é explicada em [docs/decisoes.md](docs/decisoes.md).
 
 A agenda é restrita à recepção autenticada. CRUD JSON exige bearer profissional e vínculo confiável. Escape HTML evita interpretação das entradas como marcação; não substitui controle de acesso.
 
@@ -101,4 +101,12 @@ Nesse baseline histórico, o código permanecia no estado funcional dos Exercíc
 
 ## Autenticação e autorização — Exercício 6
 
-[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening, M2M e SQLModel permanecem nos próximos exercícios.
+[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening e SQLModel permanecem nos próximos exercícios; o Ex. 7 implementa M2M.
+
+## Laboratório M2M — Exercício 7
+
+Client Credentials em `POST /auth/m2m/token`, autenticado com Basic; bearer com audiência/tipo próprios e somente `disponibilidade:ler`. O laboratório consulta `GET /disponibilidade?dia=2026-10-15&profissional_id=1` e não acessa consultas clínicas, agenda humana ou administração.
+
+Para habilitar localmente, execute `.venv/bin/python -m app.auth.provision_m2m`, copie o hash para `M2M_CLIENT_SECRET_HASH` no `.env` e reinicie o servidor. Sem hash, o M2M fica desativado e a autenticação humana continua funcionando. O segredo nunca entra no frontend, Git ou ZIP.
+
+[Contrato, fluxo e regras aprovadas](docs/integracao-m2m.md): blocos de 30 minutos, dias úteis 08h–18h, fuso da clínica e cancelamento liberando horário. [Evidências do Ex. 7](evidencias/ex07/README.md) preservam execução HTTP/pytest sem bearer ou credenciais. Disponibilidade não é reserva nem garantia contra concorrência.
