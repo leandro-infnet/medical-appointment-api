@@ -86,4 +86,14 @@ Análise CIA e DFD atual documentados em [cia-dfd.md](cia-dfd.md). A revisão di
 | REQ-03.2: OWASP, NIST SSDF e MITRE associados a controles reais | Mapeamento com edição, item, código, teste/evidência e limite; DEC-15 | R05 |
 | REQ-03.3: DFD, fluxos sensíveis e trust boundaries | E-01/02, P-01–03, D-01, F-01–10, TB-01 real e TB-02 lógico; futuras TB-03/04 explicitamente separadas | R06 |
 
-LAC-01–06 registram autorização ausente, validação parcial, controle de abuso, memória volátil e demais pontos a desenvolver. Não são Threat IDs nem findings de scanner. Misuse cases e STRIDE continuam pendentes para o Exercício 4. A aplicação permanece no estado funcional do Exercício 2.
+LAC-01–06 registram autorização ausente, validação parcial, controle de abuso, memória volátil e demais pontos a desenvolver. Não são Threat IDs nem findings de scanner. Sua ligação ao STRIDE do Exercício 4 está no threat model. A aplicação permanece no estado funcional do Exercício 2.
+
+## 8. Threat modeling — Exercício 4
+
+| Requisito | Entrega / verificação documental | Rubrica |
+| --- | --- | --- |
+| REQ-04.1: misuse cases relevantes | MU-001–012: ator, precondição, tentativa, resultado proibido e ligação a fluxo/controle/teste; cenários futuros identificados | R07 |
+| REQ-04.2: STRIDE em pelo menos três componentes | P-01/P-02/P-03, com seis categorias examinadas em cada um e 18 linhas de análise | R08 |
+| REQ-04.3: threat model consolidado | AT/SUP/MU/TM/CTRL/TEST rastreáveis; 16 ameaças, estados de mitigação e risco residual; snapshot inicial 1.0 | R08 |
+
+Entrega em [threat-model.md](threat-model.md), decisão DEC-16 e [evidências Ex. 4](../evidencias/ex04/README.md). Novos testes são planejados para seus incrementos; o documento não comprova exploração, correção executada ou CVSS. As permissões de paciente autenticado, vínculo paciente/profissional e regras de disponibilidade permanecem decisões pendentes.

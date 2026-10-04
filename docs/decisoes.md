@@ -2,6 +2,15 @@
 
 Este documento registra as decisões arquiteturais e técnicas de maior relevância para o desenvolvimento da API de agendamento de consultas.
 
+## DEC-16: STRIDE rastreável no Exercício 4
+
+- **Contexto:** o Assessment exige misuse cases e STRIDE em pelo menos três componentes, com ativos, superfícies e mitigações. O DFD do Ex. 3 já identifica os três processos reais P-01/P-02/P-03.
+- **Decisão:** analisar as seis categorias em cada processo e consolidar ameaças únicas em `docs/threat-model.md`. Preservar AT/P/F/TB do DFD; introduzir MU/TM/SUP/CTRL e vincular ao catálogo TEST da seção 8 desse documento. Propagação entre módulos não exige inventar interfaces de rede ou duplicar IDs de ameaça.
+- **Recomendação de engenharia:** distinguir lacuna observada, mitigação verificada historicamente, hipótese e ameaça futura/condicional. Usar prioridade qualitativa contextual; CVSS e limiar do gate serão definidos no Ex. 12, sem importar um score arbitrário.
+- **Alternativas:** analisar somente rotas ou listar STRIDE genérico. Rejeitadas por omitirem processamento HTML, armazenamento e ligação ao fluxo sensível. Não implementar JWT, banco ou mitigações posteriores como parte de um exercício documental.
+- **Consequências:** o modelo inicial 1.0 tem 12 misuse cases, 18 avaliações e 16 Threat IDs (12 atuais/condicionais e quatro futuros). Guardar snapshot em `evidencias/ex04/threat-model-v1.md`; futuras atualizações mantêm IDs e registram teste, controle e risco residual. Os TEST-19–22 adicionais são recomendações, não novos requisitos acadêmicos.
+- **Verificação:** revisão de correspondência com código/DFD, cobertura dos três componentes, referências e rastreabilidade; testes Ex. 2 permanecem históricos. Baseline da aplicação: `fe31673e1ed4e0238277abe0b111d66be1363c9e`.
+
 ## DEC-15: Referenciais e baseline de segurança do Exercício 3
 
 - **Contexto:** o Assessment exige CIA, associação de OWASP/NIST SSDF/MITRE a controles existentes e DFD com fronteiras e fluxos de pacientes; não define edições específicas.
@@ -74,7 +83,7 @@ Este documento registra as decisões arquiteturais e técnicas de maior relevân
   - Implementar inicialmente um repositório em memória em `app/database/memoria.py` e funções de acesso em `app/database/consultas.py`.
   - Isolar as funções de acesso para que as rotas em `app/routes/consultas.py` dependam de contratos de função (`criar_consulta`, `obter_consulta`, etc.), minimizando o impacto na migração do Ex. 11.
 - **Decisão a definir:** Motor relacional final (por exemplo, SQLite ou PostgreSQL), estratégia de migração e garantias de concorrência. Não atribuir garantias iguais a motores diferentes sem verificar.
-- **Consequência:** Mantém a fundação funcional sem repositórios genéricos. A escolha do banco final será registrada antes do Exercício 11, conforme DEC-04 no guia.
+- **Consequência:** Mantém a fundação funcional sem repositórios genéricos. Antes do Exercício 11, esta decisão será complementada com o banco escolhido, a estratégia de migração e as garantias de concorrência verificadas.
 
 ---
 

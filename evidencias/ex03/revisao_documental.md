@@ -2,7 +2,7 @@
 
 ## Origem e método
 
-Baseline: `46db788b99a19b4cf145555e8e9ff679a88e29fe`; branch `feat/ex03-security-foundations-dfd`. Foram lidos o enunciado, a rubrica, o guia, os módulos `app/`, os testes e as evidências existentes. Esta revisão é inspeção de código/documentos e renderização do diagrama; não é scan nem novo teste de exploração.
+Baseline: `46db788b99a19b4cf145555e8e9ff679a88e29fe`; branch `feat/ex03-security-foundations-dfd`. Foram examinados os requisitos acadêmicos, a rubrica, a documentação técnica, os módulos `app/`, os testes e as evidências existentes. Esta revisão é inspeção de código/documentos e renderização do diagrama; não é scan nem novo teste de exploração.
 
 ## Resultado da inspeção
 

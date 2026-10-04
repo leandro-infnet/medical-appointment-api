@@ -1,0 +1,36 @@
+Baseline da aplicação:
+fe31673e1ed4e0238277abe0b111d66be1363c9e
+Merge pull request #3 from leandro-infnet/feat/ex03-security-foundations-dfd
+Branch observada: feat/ex04-stride-threat-model
+
+SHA-256 dos documentos e código inspecionado:
+0eb7121bf17c3560bd46d311b3ebfdd8fd2ecd60b6967d05d39fc45e3d79da70  docs/threat-model.md
+ec09ac1374f5025068c6a50316f1823c5701c14f5dbd72155aff85c9a45878a4  docs/cia-dfd.md
+bfb9bef3f1d32ba763b68f356179c70dd719459dc940a52b700602286883cd46  docs/dfd-atual.mmd
+d6d05e661e6b505da43b2637a79e0e66683beb401237f2da79e23162f2743433  docs/rastreabilidade.md
+fff43ae62363ab08518db3c17cb6b0f26af54759a12bbcec543fa065e949a401  evidencias/ex04/revisao_documental.md
+e48c1361890742ee8b04c3d10718d53e3f4da217b93793cc4c3bcb7020b073b8  evidencias/ex04/threat-model-v1.md
+18dd3a594f1b192172d3230bdb7694529c37a7085a9f36e60aab4f68d0aac019  evidencias/ex04/README.md
+d15e01d10276b507168367de00689d0f76c6550c2458702c5ade1070e8576cd1  app/__init__.py
+d91ca99cdfff5a5aa452281fc652fd94f9964a1a31e55f1b57ac37011b923c88  app/database/__init__.py
+d0a298cd0c2202a2b5791541986f3842885905dc283d33727a6f2e7eacae0af9  app/database/consultas.py
+75fac9569b20e584a4f3fa79f8533681170a54947a4313b613f3ed9fc8cfa3c8  app/database/memoria.py
+a7554ce96db61c7965f79dec028d990520a23a5e2fe7fc933921151cf122c26a  app/main.py
+6fd1ac0e52dec2312e99b587c12fbc669300996b9d714d2184eb0985ee70ab9c  app/models/__init__.py
+bd935f5b6737c22fd975b0275319da7119ba020da3d5d9f9837736f49cce4407  app/models/consultas.py
+79eeda90a4d7c199889777ca20eb12945d5037d7d23a96cc6f20fb7d0ef2904b  app/routes/__init__.py
+7b6723b6ebe33c15cbbf1464294a3f860ec02433d247ef30d3b7c72cc3ee0b0c  app/routes/agenda.py
+49f77b08ce05759028fafa1ac24bc21b283b2820934be1303c7c83690c2dde92  app/routes/consultas.py
+882099d327bc199b48b326f4ce48feeea36f78712ef7549cbe13d0d073c15359  app/templates/agenda.html
+9a2ed7aea643ffe2f3af0e5da0b1dd8161d09cd8e6b722691fb1c91743d748a1  app/templates/base.html
+
+Verificações documentais executadas:
+12 MU e 16 TM com IDs únicos/contínuos no catálogo.
+11 CTRL com IDs únicos/contínuos no plano de controles.
+Seis categorias em cada P-01/P-02/P-03: 18 avaliações.
+Referências TM/CTRL possuem definição.
+git diff --exit-code -- app/ tests/ pyproject.toml: sem alteração funcional.
+git diff --check: sem problemas.
+Snapshot inicial preservado, com links relativos adaptados.
+Pytest/scans/ataques não executados nesta etapa.
+Links locais dos documentos/evidências: destinos existentes.

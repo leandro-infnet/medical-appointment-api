@@ -86,3 +86,9 @@ O script não se conecta a banco ou servidor existente. Os testes e as evidênci
 [docs/cia-dfd.md](docs/cia-dfd.md) analisa confidencialidade, integridade e disponibilidade, mapeia OWASP/NIST SSDF/MITRE a controles existentes e apresenta o DFD do incremento atual. A fonte editável está em [docs/dfd-atual.mmd](docs/dfd-atual.mmd); exportação e revisão estão em [evidencias/ex03/README.md](evidencias/ex03/README.md).
 
 O DFD representa JSON, HTML e memória no mesmo processo; futuras autenticação, M2M e persistência continuam identificadas como pendências. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
+
+## Modelagem de ameaças — Exercício 4
+
+[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. JWT, M2M e SQL são explicitamente futuros; o estado atual continua sem autenticação e com memória temporária.
+
+[evidencias/ex04/README.md](evidencias/ex04/README.md) registra a revisão e preserva a versão inicial para comparar com os incrementos seguintes. Os testes existentes de filtragem JSON e escape HTML estão vinculados a TM-004/TM-005 como evidências históricas. As mitigações futuras e os respectivos testes não estão marcados como executados.
