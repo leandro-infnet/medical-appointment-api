@@ -168,3 +168,7 @@ Renderização/exportação do DFD e revisão do incremento estão registradas e
 ## 7. Continuidade no Exercício 4
 
 O [threat model STRIDE](threat-model.md) reutiliza este inventário e o mesmo DFD. LAC-01 → TM-001/002/003, LAC-02 → TM-006, LAC-03 → TM-008/016, LAC-04 → TM-009/010, LAC-05 → TM-012/013/014 e LAC-06 → TM-007/011. TM-004/005 acompanham regressões dos controles existentes; TM-015 trata SQL futuro. Essas relações não mudam retroativamente o estado ou as evidências do Exercício 3.
+
+## 8. Partições e controles no Exercício 5
+
+[Arquitetura de segurança](arquitetura-seguranca.md) localiza os controles nas partições e analisa design, implementação e infraestrutura. O DFD atual não mudou: os fluxos F-01–10 e TB-01/02 permanecem no mesmo processo. Identidade, middleware, M2M, TLS e banco continuam planejados; TB-03/04 só serão concretizadas conforme implementação/topologia. O diagrama de partições agrupa pares de fluxo e usa linhas pontilhadas para plano futuro, sem substituir as direções detalhadas deste DFD.

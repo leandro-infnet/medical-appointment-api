@@ -1,0 +1,40 @@
+Baseline da aplicação:
+216269ea75dec78de688eb8ec4ef13c760c6d9d6
+Merge pull request #4 from leandro-infnet/feat/ex04-stride-threat-model
+Branch observada: feat/ex05-security-architecture
+
+SHA-256 dos documentos, artefatos e código inspecionado:
+4cdd507e4b3daca2de2b0ebfe70f21e278e46ec7713ac3ada4e78e7d391d4042  docs/arquitetura-seguranca.md
+119402e8bc4d669247a7f11bde1937dbe6ff4bbc363d667d0e28a95c4ff02464  docs/particoes-seguranca.mmd
+abe50b4e4ab26b6552075b1a61266ac064b6caa38b120812e6e757b3c759d12b  docs/threat-model.md
+dd8749e8d37b6654d34f0e3d68477af87e6ebd6d0c94cf1b03413f4a2dbcb44b  docs/cia-dfd.md
+c2cca3c678d5dc105fa35086e55ab17d883d2c6b93481c674d4e7e1f420e3eee  docs/requisitos.md
+a3018ec37b2af14c7caaf64cce25737468720e3116786a9a00508ecf1bddc29b  docs/decisoes.md
+a19d652256778e47c02b33ea4b159e2db0e6c6aa7e57236e755c27569497abec  docs/rastreabilidade.md
+30d439d0f2c3934439e3d29acd6b93072fa278f6bf80a0752cff86c50a525a29  evidencias/ex05/revisao_documental.md
+491e4a2c04791b39b0fcdcad3897171a01468f3050814f78099fa36b3f5d8d71  evidencias/ex05/README.md
+62d3406f31d41075f0f6ff5b6f9b9f396229da35a238e7ddbe8f247a1a841db1  evidencias/ex05/particoes-seguranca.svg
+a16bca8eb55037aef3dc15df61d14c91cd068c1ea86838b9725c8259b31e64c9  evidencias/ex05/particoes-seguranca.png
+d15e01d10276b507168367de00689d0f76c6550c2458702c5ade1070e8576cd1  app/__init__.py
+d91ca99cdfff5a5aa452281fc652fd94f9964a1a31e55f1b57ac37011b923c88  app/database/__init__.py
+d0a298cd0c2202a2b5791541986f3842885905dc283d33727a6f2e7eacae0af9  app/database/consultas.py
+75fac9569b20e584a4f3fa79f8533681170a54947a4313b613f3ed9fc8cfa3c8  app/database/memoria.py
+a7554ce96db61c7965f79dec028d990520a23a5e2fe7fc933921151cf122c26a  app/main.py
+6fd1ac0e52dec2312e99b587c12fbc669300996b9d714d2184eb0985ee70ab9c  app/models/__init__.py
+bd935f5b6737c22fd975b0275319da7119ba020da3d5d9f9837736f49cce4407  app/models/consultas.py
+79eeda90a4d7c199889777ca20eb12945d5037d7d23a96cc6f20fb7d0ef2904b  app/routes/__init__.py
+7b6723b6ebe33c15cbbf1464294a3f860ec02433d247ef30d3b7c72cc3ee0b0c  app/routes/agenda.py
+49f77b08ce05759028fafa1ac24bc21b283b2820934be1303c7c83690c2dde92  app/routes/consultas.py
+882099d327bc199b48b326f4ce48feeea36f78712ef7549cbe13d0d073c15359  app/templates/agenda.html
+9a2ed7aea643ffe2f3af0e5da0b1dd8161d09cd8e6b722691fb1c91743d748a1  app/templates/base.html
+
+Verificações executadas:
+12 vetores: quatro de design, quatro de implementação e quatro de infraestrutura.
+11 controles com responsabilidade arquitetural; Threat IDs definidos no modelo.
+Fonte Mermaid incorporada ao relatório: idêntica.
+Mermaid 10.9.3 concluiu renderização; SVG XML válido; PNG inspecionado visualmente.
+git diff --exit-code -- app/ tests/ pyproject.toml: código/testes/dependências inalterados.
+git diff --check: sem problemas.
+Pytest, scanners, carga, JWT, M2M e SQL não executados nesta etapa.
+16 documentos; 105 links locais com destinos existentes.
+Nenhuma referência aos arquivos removíveis nos documentos auditados.

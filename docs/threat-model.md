@@ -4,7 +4,7 @@
 
 **Escopo do Exercício 4:** misuse cases relevantes, STRIDE em pelo menos três componentes e threat model consolidado com ativos, superfícies e mitigações. Este relatório atende **R07 e R08**.
 
-**Versão inicial do modelo:** 1.0. **Baseline da aplicação:** `fe31673e1ed4e0238277abe0b111d66be1363c9e`, integração do Exercício 3, analisado na branch `main`. A aplicação continua com CRUD JSON, agenda HTML e armazenamento em memória.
+**Versão inicial do modelo:** 1.0; extensão arquitetural 1.1 documentada no Exercício 5. **Baseline inicial da aplicação:** `fe31673e1ed4e0238277abe0b111d66be1363c9e`, integração do Exercício 3, analisado na branch `main`. A aplicação continua com CRUD JSON, agenda HTML e armazenamento em memória.
 
 Contexto reutilizado: [CIA e DFD](cia-dfd.md), [fonte do DFD](dfd-atual.mmd), [diagrama exportado](../evidencias/ex03/dfd-atual.svg) e decisões DEC-13–15. Não há novo fluxo ou componente executável nesta etapa; o DFD permanece válido.
 
@@ -209,3 +209,14 @@ TEST-01 continua regressão funcional do CRUD, sem ameaça presumida. As evidên
 - [x] REQ-04/R07–R08 documentados, com snapshot inicial para comparação no Ex. 12.
 
 Verificações documentais e evidências: [Exercício 4](../evidencias/ex04/README.md). Esta versão não declara vulnerabilidades exploradas, scanner executado, CVSS atribuído, conformidade LGPD ou autorização para deploy.
+
+## 10. Extensão arquitetural 1.1 — Exercício 5
+
+O baseline `e2f239badbaa6905ef32cdfe9423e0fa33b61065` mantém o mesmo código executável e os 16 Threat IDs. A [arquitetura de segurança](arquitetura-seguranca.md) associa doze vetores dos eixos design/implementação/infraestrutura a TM/CTRL/TEST e localiza os controles. O snapshot 1.0 permanece preservado em `evidencias/ex04/threat-model-v1.md`.
+
+- **P-01/P-02:** validação e divulgação continuam locais; ambas as apresentações deverão invocar a mesma identidade/política. Testes de campos/escape não encerram TM-002/003.
+- **Auth/middleware futuros:** separar validação de JWT da decisão por recurso, preservando CTRL-01/02 e TM-001/003/013. Autenticação HTML é decisão pendente, sem sessão presumida; se introduzir cookie, revisar ameaças específicas antes de implementar.
+- **P-03/D-01:** constraints/transações no banco real deverão tratar TM-006/009/010/015; motor/regra/topologia continuam indefinidos. Sem mudança dos fluxos atuais.
+- **Rede/configuração:** TLS, origens, proxy confiável, processos, segredos futuros e limites operacionais localizam CTRL-07/08/11. CORS não substitui autorização ou separação M2M de TM-014.
+
+Essa extensão refina a responsabilidade de mitigação, sem novos findings, mudanças de estado dos controles ou execução de testes de segurança. Após implementar Ex. 6/7/9/10/11, registrar evidência real e atualizar DFD/riscos. Verificação documental e diagrama: [evidências Ex. 5](../evidencias/ex05/README.md).

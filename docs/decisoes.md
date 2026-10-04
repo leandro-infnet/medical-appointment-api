@@ -2,6 +2,16 @@
 
 Este documento registra as decisões arquiteturais e técnicas de maior relevância para o desenvolvimento da API de agendamento de consultas.
 
+## DEC-17: Localização dos controles e partições do Exercício 5
+
+- **Contexto:** a arquitetura precisa localizar as ameaças STRIDE nos componentes/fluxos e nos eixos design, implementação e infraestrutura, preparando a autenticação sem duplicar lógica nas rotas JSON e HTML.
+- **Decisão:** manter o mesmo processo modular e DFD; explicitar responsabilidades de transporte, apresentação, identidade, política por recurso, operação/persistência e configuração. JWT valida identidade, enquanto ownership e escopo dependem de recurso/vínculo. Middleware futuro reutilizará o verificador de token; não inferirá ownership somente pela URL.
+- **Recomendação de engenharia:** RBAC para papéis internos combinado com política por recurso/atributos de vínculo; justificar o contrato final no Ex. 6 após fechar a matriz. Constraints/transações no banco escolhido complementam validação, sem tratar lock em memória como exclusividade de agenda.
+- **Alternativas:** política copiada em cada rota, toda segurança no middleware ou divisão em microserviços. Rejeitadas por duplicação, falta de contexto do recurso ou complexidade sem necessidade. Não criar abstrações ou módulos vazios nesta etapa.
+- **Decisões a definir:** relação paciente/profissional e permissões clínicas/admin; transporte de identidade para HTML; claims/expiração e MFA; duração/status/conflito; banco/recuperação; TLS/proxy/origens/hosts/workers. Cookie/sessão exige reavaliar CSRF e não é controle já implementado.
+- **Consequências:** doze vetores VD/VI/VF ligados a TM e CTRL no relatório `docs/arquitetura-seguranca.md`; nenhum novo fluxo atual ou fronteira de isolamento presumida. As mitigações continuam nos exercícios correspondentes.
+- **Verificação:** inspeção dos fluxos atuais, revisão de acesso permitido/proibido planejado, fonte/diagrama e rastreabilidade R09. Baseline: `e2f239badbaa6905ef32cdfe9423e0fa33b61065`; testes existentes permanecem históricos.
+
 ## DEC-16: STRIDE rastreável no Exercício 4
 
 - **Contexto:** o Assessment exige misuse cases e STRIDE em pelo menos três componentes, com ativos, superfícies e mitigações. O DFD do Ex. 3 já identifica os três processos reais P-01/P-02/P-03.
