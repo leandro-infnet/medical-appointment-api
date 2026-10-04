@@ -74,3 +74,7 @@ Testes em `tests/test_m2m.py`: sucesso, scope padrão/explícito/vazio/excessivo
 Residual: disponibilidade revela ocupação indiretamente, sem identificar pacientes; bearer roubado continua lendo disponibilidade até expiração/desativação; não há rate limiting, revogação individual, TLS demonstrado, scanner, banco durável, garantia multiworker ou reserva atômica. Não há autorização para deploy. Ex. 9 deverá reutilizar ambos os verificadores no middleware; Ex. 10 aplica hardening também à emissão M2M; Ex. 11 persiste vínculos/consultas; Ex. 12/13 reutilizam TEST-11 e TM-014.
 
 Referência complementar: [FastAPI: OAuth2 scopes e SecurityScopes](https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/).
+
+## Evolução da persistência — Exercício 11
+
+A disponibilidade agora consulta o mesmo SQLite do CRUD por sessão injetada. O CRUD impede sobreposição de 30 minutos por profissional, inclusive atualização/reativação; retorna 409 e protege a gravação por reserva transacional. A disponibilidade permanece uma leitura, sem reservar o intervalo. Status desconhecido também é impedido pelo CHECK; a regra histórica defensiva do cálculo não enfraquece essa constraint. Vínculos permanecem no cadastro confiável estático, sem novo CRUD de identidade. Limites anteriores “sem SQL/rate limiting/validação de status” descrevem o baseline do Ex. 7. [Estado atual e testes](persistencia.md).

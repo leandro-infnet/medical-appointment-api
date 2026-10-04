@@ -1,98 +1,103 @@
-"""Operações de dados para o recurso de Consultas Médicas."""
-
-from datetime import date, datetime
+"""CRUD SQLModel com parâmetros vinculados e transação da requisição."""
+from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
-from typing import List, Optional
-from app.database import memoria
-from app.database.memoria import _consultas, _lock
+from sqlmodel import Session, col, select
 from app.models.consultas import Consulta, ConsultaCreate, ConsultaUpdate
+from app.models.tabelas import ConsultaTabela, agora_utc
 
 FUSO_CLINICA = ZoneInfo("America/Sao_Paulo")
+DURACAO_CONSULTA = timedelta(minutes=30)
+
+
+class ConflitoAgenda(Exception):
+    """Intervalo já ocupado pelo mesmo profissional."""
 
 
 def horario_na_clinica(horario: datetime) -> datetime:
-    """Horários sem fuso são locais; instantes com fuso são convertidos."""
     if horario.tzinfo is None:
         return horario.replace(tzinfo=FUSO_CLINICA)
     return horario.astimezone(FUSO_CLINICA)
 
 
-def listar_consultas_do_dia(dia: date) -> List[Consulta]:
-    """Reutiliza a leitura em memória e ordena a agenda pelo instante local."""
-    consultas = [
-        consulta for consulta in listar_consultas()
-        if horario_na_clinica(consulta.data_hora).date() == dia
-    ]
-    return sorted(consultas, key=lambda consulta: horario_na_clinica(consulta.data_hora))
+def horario_utc(horario: datetime) -> datetime:
+    return horario_na_clinica(horario).astimezone(timezone.utc).replace(tzinfo=None)
 
 
-def criar_consulta(dados: ConsultaCreate) -> Consulta:
-    """Cria e armazena uma nova consulta em memória."""
-    with _lock:
-        memoria._contador_consultas += 1
-        novo_id = memoria._contador_consultas
-        agora = datetime.now()
-        
-        registro = {
-            "id": novo_id,
-            "paciente_id": dados.paciente_id,
-            "profissional_id": dados.profissional_id,
-            "data_hora": dados.data_hora,
-            "motivo": dados.motivo,
-            "status": "agendada",
-            "observacoes_internas": dados.observacoes_internas,
-            "criado_em": agora,
-            "atualizado_em": agora,
-        }
-        _consultas[novo_id] = registro
-        return Consulta(**registro)
+def para_consulta(registro: ConsultaTabela) -> Consulta:
+    dados = registro.model_dump()
+    dados["data_hora"] = registro.data_hora.replace(tzinfo=timezone.utc).astimezone(FUSO_CLINICA)
+    return Consulta.model_validate(dados)
 
 
-def listar_consultas(
-    paciente_id: Optional[int] = None,
-    profissional_id: Optional[int] = None
-) -> List[Consulta]:
-    """Retorna lista de consultas cadastradas, com filtros opcionais."""
-    with _lock:
-        resultados = []
-        for registro in _consultas.values():
-            if paciente_id is not None and registro["paciente_id"] != paciente_id:
-                continue
-            if profissional_id is not None and registro["profissional_id"] != profissional_id:
-                continue
-            resultados.append(Consulta(**registro))
-        return resultados
+def listar_consultas(session: Session, paciente_id: int | None = None,
+                     profissional_id: int | None = None) -> list[Consulta]:
+    query = select(ConsultaTabela)
+    if paciente_id is not None:
+        query = query.where(ConsultaTabela.paciente_id == paciente_id)
+    if profissional_id is not None:
+        query = query.where(ConsultaTabela.profissional_id == profissional_id)
+    return [para_consulta(row) for row in session.exec(query.order_by(col(ConsultaTabela.id))).all()]
 
 
-def obter_consulta_por_id(consulta_id: int) -> Optional[Consulta]:
-    """Retorna uma consulta pelo ID ou None se não existir."""
-    with _lock:
-        registro = _consultas.get(consulta_id)
-        if registro:
-            return Consulta(**registro)
+def listar_consultas_do_dia(session: Session, dia: date) -> list[Consulta]:
+    inicio = horario_utc(datetime.combine(dia, time.min))
+    fim = horario_utc(datetime.combine(dia + timedelta(days=1), time.min))
+    query = select(ConsultaTabela).where(ConsultaTabela.data_hora >= inicio,
+        ConsultaTabela.data_hora < fim).order_by(col(ConsultaTabela.data_hora), col(ConsultaTabela.id))
+    return [para_consulta(row) for row in session.exec(query).all()]
+
+
+def obter_consulta_por_id(session: Session, consulta_id: int) -> Consulta | None:
+    registro = session.get(ConsultaTabela, consulta_id)
+    return para_consulta(registro) if registro is not None else None
+
+
+def verificar_conflito(session: Session, registro: ConsultaTabela) -> None:
+    if registro.status == "cancelada":
+        return
+    query = select(ConsultaTabela.id).where(
+        ConsultaTabela.profissional_id == registro.profissional_id,
+        ConsultaTabela.status != "cancelada",
+        ConsultaTabela.data_hora > registro.data_hora - DURACAO_CONSULTA,
+        ConsultaTabela.data_hora < registro.data_hora + DURACAO_CONSULTA,
+    )
+    if registro.id is not None:
+        query = query.where(ConsultaTabela.id != registro.id)
+    with session.no_autoflush:
+        if session.exec(query.limit(1)).first() is not None:
+            raise ConflitoAgenda()
+
+
+def criar_consulta(session: Session, dados: ConsultaCreate) -> Consulta:
+    registro = ConsultaTabela(**{**dados.model_dump(), "data_hora": horario_utc(dados.data_hora)})
+    verificar_conflito(session, registro)
+    session.add(registro)
+    session.commit()
+    session.refresh(registro)
+    return para_consulta(registro)
+
+
+def atualizar_consulta(session: Session, consulta_id: int, dados: ConsultaUpdate) -> Consulta | None:
+    registro = session.get(ConsultaTabela, consulta_id)
+    if registro is None:
         return None
+    valores = dados.model_dump(exclude_unset=True)
+    if "data_hora" in valores:
+        valores["data_hora"] = horario_utc(valores["data_hora"])
+    if valores:
+        registro.sqlmodel_update(valores)
+        verificar_conflito(session, registro)
+        registro.atualizado_em = agora_utc()
+        session.add(registro)
+        session.commit()
+        session.refresh(registro)
+    return para_consulta(registro)
 
 
-def atualizar_consulta(consulta_id: int, dados: ConsultaUpdate) -> Optional[Consulta]:
-    """Atualiza campos de uma consulta existente."""
-    with _lock:
-        registro = _consultas.get(consulta_id)
-        if not registro:
-            return None
-        
-        dados_atualizacao = dados.model_dump(exclude_unset=True)
-        if dados_atualizacao:
-            registro.update(dados_atualizacao)
-            registro["atualizado_em"] = datetime.now()
-            _consultas[consulta_id] = registro
-            
-        return Consulta(**registro)
-
-
-def remover_consulta(consulta_id: int) -> bool:
-    """Remove uma consulta do armazenamento. Retorna True se removida, False se não encontrada."""
-    with _lock:
-        if consulta_id in _consultas:
-            del _consultas[consulta_id]
-            return True
+def remover_consulta(session: Session, consulta_id: int) -> bool:
+    registro = session.get(ConsultaTabela, consulta_id)
+    if registro is None:
         return False
+    session.delete(registro)
+    session.commit()
+    return True

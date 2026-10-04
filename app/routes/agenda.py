@@ -13,6 +13,7 @@ from app.auth.dependencies import AgendaDep
 from app.auth.policies import exigir_papel
 from app.models.identidades import Papel
 
+from app.database.session import SessionDep
 from app.database.consultas import (
     FUSO_CLINICA,
     horario_na_clinica,
@@ -30,6 +31,7 @@ templates = Jinja2Templates(env=Environment(
 def endpoint_agenda(
     request: Request,
     usuario: AgendaDep,
+    session: SessionDep,
     dia: Annotated[date | None, Query(description="Dia local da clínica (AAAA-MM-DD)")] = None,
 ):
     exigir_papel(usuario, Papel.RECEPCAO)
@@ -43,7 +45,7 @@ def endpoint_agenda(
             "horario": horario_na_clinica(consulta.data_hora).strftime("%H:%M"),
             "status": consulta.status,
         }
-        for consulta in listar_consultas_do_dia(dia_agenda)
+        for consulta in listar_consultas_do_dia(session, dia_agenda)
     ]
     response = templates.TemplateResponse(
         request=request,

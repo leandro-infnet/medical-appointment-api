@@ -1,0 +1,2 @@
+13 observações HTTP verificadas em dois processos distintos.
+Query INSERT com parâmetros vinculados; bancos temporários removidos; segredos omitidos.

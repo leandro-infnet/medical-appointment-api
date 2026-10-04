@@ -1,6 +1,6 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
-> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–15 registram evolução e evidências dos Ex. 6–10; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–16 registram evolução e evidências dos Ex. 6–11; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
 
 
 ## 1. Escopo, baseline e método
@@ -306,3 +306,17 @@ CTRL-07/11 implementados em `app/network.py`, com configuração de `Settings` e
 | TM-002/003/014/017 | CTRL-01/02/10/12 | Regressões de JWT, ownership, M2M e cookie continuam passando; CORS não concede acesso |
 
 Suíte integrada: 163 casos; reprodução: 35 observações. Relógio controlado, origens permitida/negada, recuperação, headers 200/400/401/403/404/422/429 e ausência de HSTS em HTTP verificados. 500 inesperado, browser/TLS real, ZAP, capacidade e produção não foram comprovados. [Hardening](hardening.md) preserva parâmetros e limitações; Ex. 11/12/13 seguem necessários.
+
+## 16. Persistência segura — Exercício 11 / versão 1.7
+
+D-01 passa de memória para SQLite em arquivo. TB-04 é o acesso processo/arquivo pelo sistema operacional, sem servidor/TCP de banco. F-09/10 passam a SQL parametrizado e registros relacionais. TB-02 continua sendo divulgação lógica, sem isolamento das camadas. Cadastro de conta/vínculo permanece confiável no servidor; não há ator novo. Fonte atual: `docs/dfd-atual.mmd`; exportações antigas permanecem históricas.
+
+| Ameaça | Controle / teste | Estado e risco residual |
+| --- | --- | --- |
+| TM-015 | CTRL-08 / TEST-13 | SQLModel real com parâmetros, payload literal preservado, operadores em ID/filtro 422 e INSERT observado pelo driver; ANTES didático permanece questão acadêmica |
+| TM-009/010 | CTRL-08 / TEST-16/21 | FK/CHECK, rollback e reserva SQLite de escrita antes de conflito; disputas de criação/atualização com um vencedor; SQL externo pode contornar a regra de sobreposição |
+| TM-002/003/004 | CTRL-02/03 / TEST-02/07/08/09 | Ownership e filtragem preservados usando sessão injetada; HTML/M2M minimizados |
+| TM-005 | CTRL-04/05 / TEST-03 | HTTP e CHECK impedem status inválido; auto-escape de projeção legada verificado com mock explícito |
+| TM-007/011/012 | CTRL-08/09 | SQLite ocupado retorna erro mínimo 503; banco não é trilha de auditoria. Permissões de arquivo, backup/restore e segurança operacional pendentes |
+
+Verificações: 181 testes, 13 observações HTTP em dois processos e versões reais preservadas em Ex. 11. [Persistência](persistencia.md) distingue configuração externa, credenciais não aplicáveis ao SQLite, garantia transacional e limitações. ZAP, CVSS, gate e liberação ainda não executados nesta etapa.

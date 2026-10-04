@@ -1,4 +1,4 @@
-# Rastreabilidade — Exercícios 1 a 10
+# Rastreabilidade — Exercícios 1 a 11
 
 Esta matriz registra código e documentação efetivamente entregues. Os requisitos estão descritos em [requisitos.md](requisitos.md), e os controles e cenários de teste planejados estão em [threat-model.md](threat-model.md). Os Threat IDs do Ex. 4 identificam riscos e controles, sem declarar a execução de testes futuros.
 
@@ -6,6 +6,7 @@ Esta matriz registra código e documentação efetivamente entregues. Os requisi
 
 | Requisito | Exercício | Implementação / arquivo | Teste | Threat ID | Evidência | Rubrica / risco residual |
 | --- | --- | --- | --- | --- | --- | --- |
+| REQ-11.1: SQLModel relacional, sessão e configuração | 11 | `models/tabelas.py`, `database/session.py`, `settings.py`, `.env.example`; CRUD/HTML/M2M no SQLite | TEST-01/07/13/16/21: contratos, FK/CHECK, parâmetros, rollback, sessões, reinício, concorrência e 503 | TM-002/003/009/010/015, CTRL-02/08/09 | `evidencias/ex11/`: 181 testes e 13 observações; INSERT vinculado e dois processos | R18; SQLite local, escrita pela API; backup/operação externa pendentes |
 | REQ-10.1: CORS e headers | 10 | `app/network.py`, `Settings`, `.env.example` | TEST-15: origem/método/header permitidos e negados; HTML e erros; HSTS somente HTTPS | TM-012, CTRL-11 | `evidencias/ex10/respostas_http.json`, pytest e relatório | R17; HTTPS em processo não comprova TLS real |
 | REQ-10.2: limite diferenciado | 10 | `RateLimiter`, cotas por conexão e lifespan | TEST-14: 5/60 por minuto, grupo humano/M2M/MFA, 429/Retry-After, recuperação, IP e isolamento | TM-016/008, CTRL-07 | 20 tentativas comparadas ao baseline Ex. 8; JSON/execução/pytest | R17; NAT, workers e ataque distribuído residuais |
 | REQ-09.1: middleware JWT e ownership | 9 | `app/auth/middleware.py`, dependências humanas/M2M e `policies.py` | TEST-04/05/07/08/09/11; spy verifica decode único; acesso cruzado não muta | TM-001/002/003/014 | `evidencias/ex09/`, suíte integrada e HTTP | R14; paciente didático, aceite pendente; concorrência relacional futura |
@@ -57,3 +58,5 @@ Esta matriz registra código e documentação efetivamente entregues. Os requisi
 **Exercício 8:** revisão executada, sem alterar `app/` ou a suíte final. Foram verificadas 37 observações HTTP/assertions exploratórias (3 histórico real, 30 baseline atual e 4 experimento didático); não são 37 casos pytest. Não houve scanner/ZAP nem nova execução da suíte normal nesta etapa documental. BOLA histórica e proteção atual demonstradas; paciente autenticado apenas em aplicação didática separada. R13/R14 dependem da aceitação acadêmica desse enquadramento; não marcar requisito integral como concluído. VUL-002/VUL-003 permanecem abertos; futuras correções/testes e CVSS estão pendentes.
 
 **Exercício 10:** 163 testes passaram e 35 observações HTTP foram reproduzidas. VUL-002/003 mitigadas/verificadas no escopo local; preflight não consome cota nem exige JWT, CORS não substitui ownership, HSTS apenas em HTTPS. Dois avisos de dependências permanecem; sem TLS real, ZAP, teste de carga ou deploy. Decisões em DEC-22 e `docs/hardening.md`; futuras etapas continuam necessárias.
+
+**Exercício 11:** 181 testes passaram, incluindo dezoito casos novos de SQLite, e 13 observações HTTP foram reproduzidas em dois processos distintos. Memória substituída, DFD atualizado, sessão injetada, FK/CHECK, rollback e sobreposição concorrente verificados. Configuração não contém credenciais SQLite; nenhum banco/segredo na evidência. Parametrização real fecha a lacuna técnica SQLModel dos Ex. 8/9, sem resolver a aceitação acadêmica do ANTES didático ou do cenário paciente. Auditoria persistente, backup, ZAP/gate e deploy continuam pendentes. [Decisões e riscos](persistencia.md).

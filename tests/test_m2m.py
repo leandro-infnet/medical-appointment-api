@@ -117,11 +117,6 @@ def test_cancelada_libera_outros_estados_bloqueiam_e_profissionais_isolados(clie
         assert client.patch(path, json={"status": estado}).status_code == 200
         assert len(slots()) == 18
     assert client.patch(path, json={"status": "estado-desconhecido"}).status_code == 422
-    # Dado legado desconhecido continua bloqueando por precaução.
-    from app.database.memoria import _consultas, _lock
-    with _lock:
-        _consultas[criada.json()["id"]]["status"] = "estado-desconhecido"
-    assert len(slots()) == 18
     assert client.patch(path, json={"status": "cancelada"}).status_code == 200
     assert len(slots()) == 20
 

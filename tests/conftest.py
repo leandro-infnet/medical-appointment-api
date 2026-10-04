@@ -4,7 +4,7 @@ from secrets import token_urlsafe
 import pytest
 from fastapi.testclient import TestClient
 from app.auth.passwords import gerar_hash
-from app.database.memoria import reset_banco
+from sqlmodel import Session
 from app.main import app
 from app.settings import get_settings
 
@@ -29,10 +29,9 @@ def ambiente(tmp_path, monkeypatch):
     monkeypatch.setenv("CORS_ORIGINS", '["http://localhost:5173"]')
     monkeypatch.setenv("LOGIN_RATE_LIMIT", "5")
     monkeypatch.setenv("GENERAL_RATE_LIMIT", "60")
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///" + str(tmp_path / "consultas.db"))
     get_settings.cache_clear()
-    reset_banco()
     yield
-    reset_banco()
     get_settings.cache_clear()
 
 @pytest.fixture
@@ -57,3 +56,8 @@ def client(anonimo, autenticar):
 @pytest.fixture
 def recepcao_headers(autenticar):
     return autenticar("recepcao")
+
+@pytest.fixture
+def db_session(anonimo):
+    with Session(app.state.engine) as session:
+        yield session

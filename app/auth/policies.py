@@ -1,5 +1,6 @@
 """Negação por padrão com papel, vínculo confiável e propriedade do recurso."""
 from fastapi import HTTPException
+from sqlmodel import Session
 from app.auth.dependencies import UsuarioDep
 from app.database.identidades import VINCULOS
 from app.database.consultas import obter_consulta_por_id
@@ -23,8 +24,8 @@ def exigir_vinculo(usuario: Usuario, paciente_id: int, profissional_id: int) -> 
         raise HTTPException(403, "Vínculo não autorizado.")
 
 
-def consulta_autorizada(consulta_id: int, usuario: Usuario) -> Consulta:
-    consulta = obter_consulta_por_id(consulta_id)
+def consulta_autorizada(consulta_id: int, usuario: Usuario, session: Session) -> Consulta:
+    consulta = obter_consulta_por_id(session, consulta_id)
     if consulta is None or not pode_acessar(usuario, consulta.paciente_id, consulta.profissional_id):
         raise HTTPException(404, "Consulta não encontrada.")
     return consulta
