@@ -1,5 +1,8 @@
 # Exercício 5 — Partições e arquitetura de segurança
 
+> Baseline histórico do Ex. 5. A atualização do Ex. 6 ao final registra quais decisões passaram a implementação; tabelas anteriores documentam o planejamento original.
+
+
 ## 1. Escopo e baseline
 
 O Exercício 5 exige particionar o sistema em componentes, mapear os fluxos entre eles e identificar vetores de ataque nos eixos **design, implementação e infraestrutura**. Este documento atende **R09**, localizando decisões e controles na arquitetura da própria aplicação.
@@ -158,3 +161,11 @@ Listagem, filtros, agenda HTML e futura disponibilidade não podem ser exceçõe
 - [x] REQ-05/R09 rastreados com fonte Mermaid, exportação e revisão.
 
 [Evidências do Exercício 5](../evidencias/ex05/README.md) registram baseline, diagrama e verificações documentais. Testes JSON/XSS dos Ex. 1/2 continuam evidências históricas; não houve nova execução de pytest, scan, carga, autenticação ou banco. O documento não comprova liberação para produção.
+
+## 9. Partições implementadas no Exercício 6
+
+Identidade, senha, JWT, MFA e políticas agora estão em `app/auth/`; contratos em `app/models/identidades.py`, configuração em `app/settings.py`, cadastro/vínculos em `app/database/identidades.py`. As rotas JSON/HTML dependem do mesmo principal validado; a política decide papel e recurso antes de expor/mutar. Cadastro local e desafios não são serviços externos e não mudam o isolamento de processo.
+
+As quatro primeiras decisões da seção 6 foram resolvidas em DEC-18: vínculo fictício confiável, matriz mínima aprovada, contrato JWT/MFA e cookie HttpOnly exclusivo de agenda. [Contrato completo](autenticacao-autorizacao.md) e [DFD atualizado](dfd-atual.mmd) registram a evolução. O diagrama `particoes-seguranca.mmd` permanece snapshot conceitual do Ex. 5; o DFD editável representa o incremento atual.
+
+CTRL-01/02 passaram a implementados/verificados por pytest e reprodução HTTP; CTRL-12 trata transporte da sessão (TM-017). Middleware, laboratório, TLS/headers, rate limiting e banco continuam nos incrementos seguintes. Cenários de criação autorizada, acesso cruzado negado e recepção mínima foram exercitados no Ex. 6; M2M e falha relacional não foram executados.

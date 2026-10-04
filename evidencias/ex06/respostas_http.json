@@ -1,0 +1,210 @@
+[
+  {
+    "cenario": "Anônimo na API",
+    "metodo": "GET",
+    "path": "/consultas",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Login profissional",
+    "metodo": "POST",
+    "path": "/auth/token",
+    "status": 200,
+    "body": "[conteúdo de autenticação omitido]",
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Não administrador na rota administrativa",
+    "metodo": "GET",
+    "path": "/admin/status",
+    "status": 403,
+    "body": {
+      "detail": "Operação não permitida para este papel."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Criação com vínculo autorizado",
+    "metodo": "POST",
+    "path": "/consultas",
+    "status": 201,
+    "body": {
+      "paciente_id": 1,
+      "profissional_id": 1,
+      "data_hora": "2026-10-15T10:00:00",
+      "motivo": "Rotina fictícia",
+      "id": 1,
+      "status": "agendada"
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Outro profissional lê recurso",
+    "metodo": "GET",
+    "path": "/consultas/1",
+    "status": 404,
+    "body": {
+      "detail": "Consulta não encontrada."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Outro profissional altera recurso",
+    "metodo": "PATCH",
+    "path": "/consultas/1",
+    "status": 404,
+    "body": {
+      "detail": "Consulta não encontrada."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Outro profissional remove recurso",
+    "metodo": "DELETE",
+    "path": "/consultas/1",
+    "status": 404,
+    "body": {
+      "detail": "Consulta não encontrada."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Listagem não vaza recurso",
+    "metodo": "GET",
+    "path": "/consultas",
+    "status": 200,
+    "body": [],
+    "cache_control": null
+  },
+  {
+    "cenario": "Criação sem vínculo",
+    "metodo": "POST",
+    "path": "/consultas",
+    "status": 403,
+    "body": {
+      "detail": "Vínculo não autorizado."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Admin precisa de MFA; não recebe token",
+    "metodo": "POST",
+    "path": "/auth/token",
+    "status": 202,
+    "body": "[conteúdo de autenticação omitido]",
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Desafio não é bearer",
+    "metodo": "GET",
+    "path": "/admin/status",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Segundo fator incorreto",
+    "metodo": "POST",
+    "path": "/auth/mfa",
+    "status": 401,
+    "body": {
+      "detail": "Desafio inválido, expirado ou código incorreto."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Segundo fator validado",
+    "metodo": "POST",
+    "path": "/auth/mfa",
+    "status": 200,
+    "body": "[conteúdo de autenticação omitido]",
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Admin autenticado",
+    "metodo": "GET",
+    "path": "/admin/status",
+    "status": 200,
+    "body": {
+      "status": "online",
+      "servico": "medical-appointment-api"
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Admin sem permissão clínica implícita",
+    "metodo": "GET",
+    "path": "/consultas",
+    "status": 403,
+    "body": {
+      "detail": "Operação não permitida para este papel."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Replay do desafio bloqueado",
+    "metodo": "POST",
+    "path": "/auth/mfa",
+    "status": 401,
+    "body": {
+      "detail": "Desafio inválido, expirado ou código incorreto."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Sessão de agenda criada",
+    "metodo": "POST",
+    "path": "/auth/agenda-session",
+    "status": 204,
+    "body": "[HTML/sem conteúdo]",
+    "cache_control": "no-store",
+    "cookie_flags": {
+      "httponly": true,
+      "path": "/agenda",
+      "samesite": "strict",
+      "secure": false
+    }
+  },
+  {
+    "cenario": "Agenda navegável via cookie",
+    "metodo": "GET",
+    "path": "/agenda",
+    "status": 200,
+    "body": "[HTML/sem conteúdo]",
+    "cache_control": "no-store"
+  },
+  {
+    "cenario": "Cookie não autentica API JSON",
+    "metodo": "GET",
+    "path": "/consultas",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "cache_control": null
+  },
+  {
+    "cenario": "Encerramento da sessão",
+    "metodo": "DELETE",
+    "path": "/auth/agenda-session",
+    "status": 204,
+    "body": "[HTML/sem conteúdo]",
+    "cache_control": null
+  },
+  {
+    "cenario": "Agenda exige novo login após logout",
+    "metodo": "GET",
+    "path": "/agenda",
+    "status": 401,
+    "body": {
+      "detail": "Autenticação necessária ou inválida."
+    },
+    "cache_control": null
+  }
+]

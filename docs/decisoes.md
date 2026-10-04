@@ -104,3 +104,11 @@ Este documento registra as decisões arquiteturais e técnicas de maior relevân
   - `pyproject.toml` como manifesto declarativo de dependências do projeto e configuração do pytest.
   - `pydantic-settings` e `.env.example` previstos para isolamento de configurações futuras.
 - **Consequência:** Ambiente isolado e dependências declaradas. O `pyproject.toml` usa versões mínimas, sem lockfile; reprodução exata das versões ainda não está garantida. As versões observadas na execução inicial constam em `evidencias/ex01/ambiente_versao.txt`.
+
+## DEC-18 — Identidade, sessão e autorização do Ex. 6
+
+Contexto: três papéis, gestão de pacientes próprios e MFA administrativo. Matriz e cookie de agenda foram aprovados pelo responsável pelo projeto. Escolha: RBAC por família de operação mais vínculo confiável e ownership; diagnóstico admin sem clínica; bcrypt custo 12; PyJWT HS256/TTL 15 minutos; BaseSettings sem chave padrão; cadastro fictício local ignorado; desafio único/300s/cinco erros; fator estático local somente para simulação. Cookie HttpOnly/SameSite Strict/Secure com path `/agenda`, aceito apenas na leitura HTML; sessão exige bearer.
+
+Alternativas: RBAC isolado não resolve BOLA; motor ABAC genérico seria prematuro; bearer exclusivo em HTML exigiria cliente HTTP controlado; armazenar token em URL exporia credencial. Escolhas detalhadas, claims, limites e comandos em [autenticacao-autorizacao.md](autenticacao-autorizacao.md).
+
+Consequências: autorização é centralizada e preserva os controles JSON/HTML. Cadastro e desafio não são solução relacional/multiworker; não há MFA real, refresh ou revogação individual. Mudanças de arquivo exigem restart. TTL curto reduz janela, sem eliminar roubo de sessão. Rate limiting, TLS/headers, M2M e migração SQLModel continuam pendentes. Não há autorização para deploy.

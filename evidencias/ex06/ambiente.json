@@ -1,0 +1,13 @@
+{
+  "python": "3.14.4",
+  "plataforma": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "pacotes": {
+    "fastapi": "0.141.1",
+    "bcrypt": "5.0.0",
+    "PyJWT": "2.15.1",
+    "pydantic-settings": "2.15.0",
+    "python-multipart": "0.0.32",
+    "pytest": "9.1.1",
+    "httpx": "0.28.1"
+  }
+}
