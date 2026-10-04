@@ -4,17 +4,22 @@ from contextlib import asynccontextmanager
 from secrets import token_urlsafe
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.errors import validation_error_response
 from app.auth.mfa import MFAStore
 from app.auth.m2m import OAuthClientError, oauth_error_response
 from app.auth.middleware import JWTMiddleware
 from app.auth.passwords import gerar_hash
+from app.database.session import criar_engine, inicializar_banco, BancoIndisponivel
+from app.database.consultas import ConflitoAgenda
 from app.database.identidades import carregar_usuarios
 from app.settings import get_settings
 from app.network import NetworkMiddleware, RateLimiter
 from app.routes.auth import router as auth_router
 from app.routes.admin import router as admin_router
 from app.routes.disponibilidade import router as disponibilidade_router
+from app.routes.consultas import router as consultas_router
+from app.routes.agenda import router as agenda_router
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
@@ -24,10 +29,13 @@ async def lifespan(application: FastAPI):
     application.state.usuarios = carregar_usuarios(settings.users_file)
     application.state.dummy_hash = gerar_hash(token_urlsafe(24))
     application.state.mfa = MFAStore()
-    yield
-
-from app.routes.consultas import router as consultas_router
-from app.routes.agenda import router as agenda_router
+    engine = criar_engine(settings.database_url.get_secret_value())
+    application.state.engine = engine
+    try:
+        inicializar_banco(engine)
+        yield
+    finally:
+        engine.dispose()
 
 app = FastAPI(
     lifespan=lifespan,
@@ -39,6 +47,17 @@ app = FastAPI(
                                                  "schema": {"type": "integer", "minimum": 1}}}}},
 )
 
+def conflito_agenda_response(_request, _error):
+    return JSONResponse(status_code=409, content={"detail": "Horário indisponível para este profissional."})
+
+
+def banco_indisponivel_response(_request, _error):
+    return JSONResponse(status_code=503, content={"detail": "Banco temporariamente ocupado. Tente novamente."},
+                        headers={"Retry-After": "5"})
+
+
+app.add_exception_handler(ConflitoAgenda, conflito_agenda_response)
+app.add_exception_handler(BancoIndisponivel, banco_indisponivel_response)
 app.add_exception_handler(OAuthClientError, oauth_error_response)
 app.add_exception_handler(RequestValidationError, validation_error_response)
 app.add_middleware(JWTMiddleware)

@@ -1,6 +1,6 @@
 # API de Agendamento de Consultas Médicas
 
-API REST desenvolvida com FastAPI para agendamento de consultas médicas em uma rede de clínicas. Os Exercícios 1 e 2 entregam o CRUD modular, respostas JSON com campos controlados e agenda diária HTML com herança Jinja2 e escape de saída. O Exercício 6 adiciona bcrypt, JWT, MFA administrativo simulado e autorização por papel/vínculo/recurso. Persistência relacional permanece futura; execute localmente com dados fictícios.
+API REST desenvolvida com FastAPI para agendamento de consultas médicas em uma rede de clínicas. Os Exercícios 1 e 2 entregam o CRUD modular, respostas JSON com campos controlados e agenda diária HTML com herança Jinja2 e escape de saída. O Exercício 6 adiciona bcrypt, JWT, MFA administrativo simulado e autorização por papel/vínculo/recurso. O Exercício 11 persiste consultas com SQLModel e SQLite; execute localmente com dados fictícios.
 
 ## Requisitos
 
@@ -85,11 +85,11 @@ A aplicação segue a organização modular de responsabilidades separadas:
 
 [docs/cia-dfd.md](docs/cia-dfd.md) analisa confidencialidade, integridade e disponibilidade, mapeia OWASP/NIST SSDF/MITRE a controles existentes e apresenta o DFD do incremento atual. A fonte editável está em [docs/dfd-atual.mmd](docs/dfd-atual.mmd); exportação e revisão estão em [evidencias/ex03/README.md](evidencias/ex03/README.md).
 
-A exportação do Ex. 3 preserva JSON, HTML e memória daquele baseline. A fonte atual inclui identidade/políticas e sessão do Ex. 6; M2M e persistência relacional permanecem futuras. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
+A exportação do Ex. 3 preserva JSON, HTML e memória daquele baseline. A fonte atual inclui identidade/políticas, M2M e persistência SQLModel/SQLite. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
 
 ## Modelagem de ameaças — Exercício 4
 
-[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. A versão inicial registra JWT, M2M e SQL como futuros naquele baseline. A extensão 1.2 registra autenticação efetiva e os riscos residuais do Ex. 6; a memória continua temporária.
+[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. A versão inicial registra JWT, M2M e SQL como futuros naquele baseline. As extensões registram autenticação, M2M, hardening e a migração SQLModel, distinguindo o histórico do estado atual.
 
 [evidencias/ex04/README.md](evidencias/ex04/README.md) registra a revisão e preserva a versão inicial para comparar com os incrementos seguintes. Os testes existentes de filtragem JSON e escape HTML estão vinculados a TM-004/TM-005 como evidências históricas. As mitigações futuras e os respectivos testes não estão marcados como executados.
 
@@ -101,7 +101,7 @@ Nesse baseline histórico, o código permanecia no estado funcional dos Exercíc
 
 ## Autenticação e autorização — Exercício 6
 
-[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening e SQLModel permanecem nos próximos exercícios; o Ex. 7 implementa M2M.
+[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening e SQLModel foram acrescentados nos Ex. 10/11; o Ex. 7 implementa M2M.
 
 ## Laboratório M2M — Exercício 7
 
@@ -121,7 +121,7 @@ O cenário de paciente autenticado é demonstrado somente em experimento didáti
 
 Schemas de consultas e formulário M2M rejeitam extras; status permite apenas `agendada`, `cancelada`, `realizada`, e username do login usa regex ASCII. Middleware JWT estabelece identidade humana/M2M uma vez por requisição; ownership continua centralizado antes de acesso/mutação. Cookie é exclusivo da agenda e não contorna um cabeçalho inválido. HTML legado mantém auto-escape.
 
-[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi adotado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening foi implementado no Ex. 10; persistência SQLModel Ex. 11 e aceite acadêmico dos experimentos continuam pendentes. Não há aprovação de deploy.
+[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi adotado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening foi implementado no Ex. 10; SQLModel foi integrado no Ex. 11 e o aceite acadêmico dos experimentos continua pendente. Não há aprovação de deploy.
 
 ## Hardening — Exercício 10
 
@@ -131,7 +131,15 @@ DENY e nosniff acompanham as respostas; HSTS é enviado somente em HTTPS. O Uvic
 
 Login humano, M2M e MFA compartilham cinco requisições por minuto por IP; as demais rotas têm 60. Excesso retorna 429 com `Retry-After`. Valores configuráveis por `LOGIN_RATE_LIMIT`/`GENERAL_RATE_LIMIT`; contador em memória para processo único, com limitações documentadas.
 
-[Decisões e limites](docs/hardening.md) e [evidências](evidencias/ex10/README.md): 163 testes passaram e 35 observações HTTP foram reproduzidas. Persistência SQLModel e pipeline/auditoria continuam nas etapas seguintes.
+[Decisões e limites](docs/hardening.md) e [evidências](evidencias/ex10/README.md): 163 testes passaram e 35 observações HTTP foram reproduzidas. A persistência foi integrada no Ex. 11; pipeline/auditoria continuam nas etapas seguintes.
+
+## Persistência segura — Exercício 11
+
+SQLModel com SQLite local, configurado por `DATABASE_URL` em `.env`; o exemplo usa `sqlite:///.local/consultas.db`. Não há usuário/senha de banco SQLite. O startup cria diretório/tabelas e cadastros fictícios ausentes; consultas persistem após reinício. `create_all` não migra schema existente. Não versionar ou incluir banco, `.env` ou cadastro no ZIP.
+
+CRUD, agenda e disponibilidade usam sessões injetadas; consultas são parametrizadas. Datas são normalizadas em UTC no banco e retornadas no fuso da clínica. Sobreposição de 30 minutos do mesmo profissional retorna 409, inclusive na atualização/reativação; cancelada libera. Escritas reservam transação SQLite antes da verificação; banco ocupado após timeout retorna 503.
+
+[Decisões, schema, transações e limites](docs/persistencia.md); [evidências](evidencias/ex11/README.md): 181 testes passaram e 13 observações HTTP em dois processos demonstraram persistência, parametrização e controles anteriores. Testes usam arquivos temporários, sem alterar `.local` real. Scripts anteriores de evidência devem rodar nos respectivos baselines, sem sobrescrever o histórico; `evidencias/ex11/reproduzir.py` reproduz o incremento atual.
 
 ## Vídeo de apresentação
 

@@ -48,3 +48,7 @@ htmlcov/
 .local/
 .env.*
 !.env.example
+
+# Arquivos auxiliares de SQLite
+*.db-*
+*.sqlite3-*

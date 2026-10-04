@@ -1,4 +1,4 @@
-%% Versão atual: Exercício 7. Exportações anteriores preservadas em evidências.
+%% Versão atual: Exercício 11. Exportações anteriores preservadas em evidências.
 flowchart LR
     E01["E-01 Consumidor JSON<br/>Frontend ou cliente HTTP"]
     E02["E-02 Navegador da recepção<br/>Cliente HTML"]
@@ -27,13 +27,15 @@ flowchart LR
         P01("P-01 API de consultas<br/>HTTP + schemas de entrada/saída")
         P02("P-02 Agenda HTML<br/>Dia local + projeção + Jinja2")
         P03("P-03 Acesso a consultas<br/>Funções CRUD e leitura diária")
-        D01[("D-01 Memória temporária<br/>Consultas completas + contador<br/>TB-02: limite lógico de divulgação")]
         P01 -->|"F-03 Operação autorizada e dados validados"| P03
         P03 -->|"F-04 Consulta completa ou resultado"| P01
         P02 -->|"F-07 Leitura autorizada e dia local"| P03
         P03 -->|"F-08 Consultas completas do dia"| P02
-        P03 -->|"F-09 Leitura / gravação / remoção"| D01
-        D01 -->|"F-10 Registros internos e contador"| P03
+        P03 -->|"F-09 SQL parametrizado; sessão/transação"| D01
+        D01 -->|"F-10 Registros internos; sem segredos"| P03
+    end
+    subgraph TB04["TB-04: processo / arquivo local, acesso controlado pelo SO; sem rede de banco"]
+        D01[("D-01 SQLite relacional<br/>Consultas, pacientes e profissionais<br/>PK/FK/CHECK; UTC; escrita serializada")]
     end
     E01 -->|"F-01 Bearer, JSON, IDs e filtros - HTTP local"| P01
     P01 -->|"F-02 JSON filtrado ou erro / 204"| E01

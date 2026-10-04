@@ -4,10 +4,13 @@ from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlsplit
 from pydantic import Field, SecretStr, field_validator, model_validator
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import ArgumentError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", hide_input_in_errors=True)
+    database_url: SecretStr = SecretStr("sqlite:///.local/consultas.db")
     jwt_secret: SecretStr
     jwt_issuer: str = "medical-appointment-api"
     jwt_audience: str = "clinic-human-clients"
@@ -21,6 +24,20 @@ class Settings(BaseSettings):
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
     login_rate_limit: int = Field(default=5, ge=1, le=10000)
     general_rate_limit: int = Field(default=60, ge=1, le=10000)
+
+    @field_validator("database_url")
+    @classmethod
+    def banco_sqlite_local(cls, value: SecretStr) -> SecretStr:
+        try:
+            url = make_url(value.get_secret_value())
+            valido = (url.drivername == "sqlite" and bool(url.database)
+                      and url.database != ":memory:" and not url.username
+                      and not url.password and not url.host and not url.query)
+        except ArgumentError as error:
+            raise ValueError("Informe uma URL de arquivo SQLite local válida.") from error
+        if not valido:
+            raise ValueError("Esta versão utiliza somente arquivo SQLite local, sem credenciais.")
+        return value
 
     @model_validator(mode="after")
     def limite_credenciais_mais_restritivo(self):

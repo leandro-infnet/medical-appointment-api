@@ -107,3 +107,7 @@ Entrega em [threat-model.md](threat-model.md), decisão DEC-16 e [evidências Ex
 | REQ-05.3: vetores nos três eixos | VD-01–04 (design), VI-01–04 (implementação), VF-01–04 (infraestrutura), ligados a TM/CTRL/TEST | R09 |
 
 Entrega em [arquitetura-seguranca.md](arquitetura-seguranca.md), fonte [particoes-seguranca.mmd](particoes-seguranca.mmd), DEC-17 e [evidências Ex. 5](../evidencias/ex05/README.md). A arquitetura identifica decisões prévias ao Ex. 6, sem implementar JWT, sessão HTML, middleware ou SQLModel.
+
+## Atualização — Exercício 11
+
+O estado atual substitui D-01 por SQLModel/SQLite local, com PK/FK/CHECK, sessão injetada, parâmetros vinculados, reserva transacional de escrita e conflito 409. CRUD, agenda e M2M leem o mesmo banco. TB-04 representa processo/arquivo sob permissões do SO, sem servidor de banco; a fonte atual é `docs/dfd-atual.mmd`. Seções anteriores e exportações descrevem os respectivos baselines históricos. [Persistência](persistencia.md) registra DEC-23, reinício verificado, rollback, concorrência e riscos residuais. Backup, auditoria persistente e deploy não foram comprovados.

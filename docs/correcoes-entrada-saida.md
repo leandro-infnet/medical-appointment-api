@@ -112,3 +112,7 @@ Os resultados reais, comandos e versões constam em [evidências do incremento](
 ## Evolução após o Exercício 10
 
 VUL-002/003 receberam headers/CORS e limite diferenciado, verificados conforme [hardening](hardening.md). A ausência desses controles descrita acima corresponde ao fim do Ex. 9. Permanecem as ressalvas acadêmicas SQL/XSS/BOLA e de interpretação do endpoint adicional; SQLModel real continua para Ex. 11. Suíte atual: 163 casos passando, sem comprovação de TLS real ou liberação externa.
+
+## Integração SQL efetiva — Exercício 11
+
+SQLModel/SQLite substituiu a memória e fechou a pendência técnica de queries reais parametrizadas: payload SQL no motivo é vinculado como valor, não amplia acesso nem altera a query; ID/filtro com operadores retorna 422. Ownership, contratos e HTML continuam verificados. CHECK impede status legado inválido na persistência atual; a regressão de auto-escape usa projeção legada mockada, sem desabilitar a constraint. [Verificação real](../evidencias/ex11/README.md) e [decisões](persistencia.md). O ANTES SQL continua experimento didático histórico, cuja aceitação acadêmica não é presumida.

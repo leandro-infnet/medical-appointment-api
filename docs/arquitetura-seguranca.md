@@ -179,3 +179,7 @@ CTRL-10/TM-014/TEST-11 foram implementados/verificados; a agenda não se tornou 
 ## Evolução — Exercícios 9/10
 
 Middleware JWT centralizado estabelece principal, e políticas de recurso mantêm ownership antes de exposição/mutação. `app/network.py` envolve essa fronteira com headers, CORS e cota local de requisições; configurações e contador são preparados no lifespan. Não há novo serviço, frontend ou banco nesta evolução. Controles CTRL-01/02/05/07/11 têm regressões, com TLS, banco/concorrência e múltiplos workers ainda não demonstrados. [Correções](correcoes-entrada-saida.md) e [hardening](hardening.md) descrevem estado atual e limites.
+
+## Atualização — Exercício 11
+
+O estado atual substitui D-01 por SQLModel/SQLite local, com PK/FK/CHECK, sessão injetada, parâmetros vinculados, reserva transacional de escrita e conflito 409. CRUD, agenda e M2M leem o mesmo banco. TB-04 representa processo/arquivo sob permissões do SO, sem servidor de banco; a fonte atual é `docs/dfd-atual.mmd`. Seções anteriores e exportações descrevem os respectivos baselines históricos. [Persistência](persistencia.md) registra DEC-23, reinício verificado, rollback, concorrência e riscos residuais. Backup, auditoria persistente e deploy não foram comprovados.

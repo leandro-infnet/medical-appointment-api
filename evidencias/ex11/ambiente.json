@@ -1,0 +1,11 @@
+{
+  "python": "3.14.4",
+  "sqlite": "3.46.1",
+  "pacotes": {
+    "sqlmodel": "0.0.47",
+    "SQLAlchemy": "2.0.54",
+    "pydantic": "2.13.5",
+    "fastapi": "0.141.1",
+    "pytest": "9.1.1"
+  }
+}

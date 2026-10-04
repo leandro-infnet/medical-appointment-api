@@ -1,0 +1,79 @@
+{
+  "etapas_em_processos_distintos": [
+    {
+      "etapa": "criar",
+      "casos": [
+        {
+          "cenario": "Criar com literal SQL como dado",
+          "status": 201
+        }
+      ],
+      "queries": [
+        {
+          "sql": "INSERT INTO consultas (paciente_id, profissional_id, data_hora, motivo, status, observacoes_internas, criado_em, atualizado_em) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          "payload_e_parametro": true,
+          "valores": "omitidos para minimizar dados"
+        }
+      ]
+    },
+    {
+      "etapa": "ler",
+      "casos": [
+        {
+          "cenario": "Consulta preservada em novo processo",
+          "status": 200
+        },
+        {
+          "cenario": "Ownership preservado no banco",
+          "status": 404
+        },
+        {
+          "cenario": "ID com operador SQL rejeitado",
+          "status": 422
+        },
+        {
+          "cenario": "Filtro com operador SQL rejeitado",
+          "status": 422
+        },
+        {
+          "cenario": "Sobreposição bloqueada",
+          "status": 409
+        },
+        {
+          "cenario": "Agenda lê o banco com projeção mínima",
+          "status": 200
+        },
+        {
+          "cenario": "M2M usa a mesma persistência",
+          "status": 200
+        },
+        {
+          "cenario": "Atualizar no banco",
+          "status": 200
+        },
+        {
+          "cenario": "Cancelamento libera horário",
+          "status": 201
+        },
+        {
+          "cenario": "Reativação conflitante bloqueada",
+          "status": 409
+        },
+        {
+          "cenario": "Excluir no banco",
+          "status": 204
+        },
+        {
+          "cenario": "Exclusão persistida",
+          "status": 404
+        }
+      ],
+      "queries": []
+    }
+  ],
+  "limites": [
+    "SQLite local com dados fictícios em diretório temporário.",
+    "Nenhum banco, segredo, token ou cadastro é copiado para a evidência.",
+    "Reinício demonstrado com TestClient em processos distintos, sem deploy."
+  ]
+}

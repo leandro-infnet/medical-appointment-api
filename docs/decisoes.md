@@ -150,3 +150,13 @@ Limites escolhidos para o exercício: cinco requisições/minuto por IP comparti
 Alternativas: serviço externo de contagem não é necessário para demonstração em um processo; contador por username sozinho permitiria bloquear conta de terceiro. Sem infraestrutura de proxy definida, usar endereço da conexão e `--no-proxy-headers` no Uvicorn local. Não adicionar Redis, frontend, TLS fictício ou requisitos numéricos atribuídos à disciplina.
 
 Consequências: NAT compartilha cotas; múltiplos workers/reinícios/ataque distribuído não são cobertos. HTTPS do TestClient demonstra headers, não handshake TLS. VUL-002/003 têm controles verificados no escopo local; riscos de implantação seguem abertos. [Hardening](hardening.md) e evidências Ex. 10 registram testes e parâmetros.
+
+## DEC-23 — SQLite/SQLModel e conflito de intervalos (Exercício 11)
+
+Contexto: substituir memória por banco relacional, sessões injetadas e parâmetros vinculados, preservando controles anteriores. SQLite local foi escolhido para a entrega acadêmica; PostgreSQL e camadas genéricas não são necessários neste incremento. `DATABASE_URL` vem de BaseSettings/`.env`; SQLite não usa credenciais de conexão. O caminho padrão não é segredo. Nenhum `.env`, banco ou cadastro entra na entrega.
+
+Escolha: tabelas internas separadas dos contratos Pydantic; cadastros fictícios idempotentes, PK/FK/CHECK, UTC explícito e conversão para o fuso da clínica. Vínculos de autorização continuam no cadastro confiável do servidor, sem endpoint de escrita. Sessão por requisição e engine por lifespan. A memória final foi removida; reproduções antigas exigem seus baselines.
+
+Regra de sobreposição aprovada pelo responsável pelo projeto: 30 minutos por profissional, cancelada libera, demais estados aprovados bloqueiam, adjacência permitida. Criação/PATCH/reativação conflitantes geram 409. `BEGIN IMMEDIATE` reserva a escrita antes de ownership e conflito; falha provoca rollback. SQLite BUSY/LOCKED após timeout gera 503, não 404/409. A garantia exige que as escritas de negócio passem por esta API; SQL externo não possui constraint de exclusão.
+
+Consequências: SQLite permanece local e serializa escritores; não equivale a capacidade de produção. `create_all` não migra schema existente. Backup/restore, permissões operacionais, auditoria persistente e deploy continuam pendentes. Verificações: 181 testes e 13 observações em dois processos; detalhes em [persistência](persistencia.md).

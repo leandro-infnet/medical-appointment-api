@@ -195,10 +195,13 @@ def test_cookie_invalido_negado(anonimo, autenticar, modo):
     assert anonimo.get("/agenda").status_code == 401
 
 
-def test_recurso_sem_vinculo_nao_basta_profissional_id(client):
+def test_recurso_sem_vinculo_nao_basta_profissional_id(client, db_session):
     from app.database.consultas import criar_consulta
     from app.models.consultas import ConsultaCreate
-    consulta = criar_consulta(ConsultaCreate(**{**PAYLOAD, "paciente_id": 999}))
+    from app.models.tabelas import PacienteTabela
+    db_session.add(PacienteTabela(id=999, nome="Paciente fictício sem vínculo", email="ficticio@example.org"))
+    db_session.commit()
+    consulta = criar_consulta(db_session, ConsultaCreate(**{**PAYLOAD, "paciente_id": 999}))
     assert client.get(f"/consultas/{consulta.id}").status_code == 404
     assert client.get("/consultas").json() == []
 

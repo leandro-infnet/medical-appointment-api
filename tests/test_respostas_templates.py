@@ -33,7 +33,7 @@ def criar(client, horario="2026-10-03T09:00:00"):
     return resposta
 
 
-def test_respostas_excluem_campos_internos_sem_apagar_armazenamento(client):
+def test_respostas_excluem_campos_internos_sem_apagar_armazenamento(client, db_session):
     criada = criar(client)
     consulta_id = criada.json()["id"]
     respostas = [
@@ -47,7 +47,7 @@ def test_respostas_excluem_campos_internos_sem_apagar_armazenamento(client):
     campos = {"id", "paciente_id", "profissional_id", "data_hora", "motivo", "status"}
     for resposta in respostas:
         assert set(resposta) == campos
-    armazenada = obter_consulta_por_id(consulta_id)
+    armazenada = obter_consulta_por_id(db_session, consulta_id)
     assert armazenada is not None
     assert armazenada.observacoes_internas == "Nota interna atualizada"
     assert armazenada.criado_em is not None
@@ -110,19 +110,17 @@ def test_agenda_converte_instante_utc_antes_de_filtrar_dia(client, recepcao_head
     "<script>alert(1)</script>",
     '<img src=x onerror="alert(1)">',
 ])
-def test_agenda_escapa_texto_malicioso_armazenado(client, recepcao_headers, payload):
+def test_agenda_escapa_texto_malicioso_armazenado(client, recepcao_headers, payload, monkeypatch):
     consulta_id = criar(client).json()["id"]
     resposta = client.patch(f"/consultas/{consulta_id}", json={"status": payload})
     assert resposta.status_code == 422
-    armazenada = obter_consulta_por_id(consulta_id)
-    assert armazenada is not None
-    # Simula dado legado anterior à allowlist, sem abrir o contrato HTTP atual.
-    from app.database.memoria import _consultas, _lock
-    with _lock:
-        _consultas[consulta_id]["status"] = payload
-    legado = obter_consulta_por_id(consulta_id)
-    assert legado is not None
-    assert legado.status == payload
+    # Simula projeção de dado legado para verificar o template; o banco atual
+    # também impede status inválido por CHECK, sem desabilitar essa constraint.
+    from app.models.consultas import Consulta
+    legado = Consulta(id=consulta_id, paciente_id=1, profissional_id=1,
+                      data_hora=datetime(2026, 10, 3, 9), motivo="Dado legado fictício", status=payload,
+                      observacoes_internas=None)
+    monkeypatch.setattr("app.routes.agenda.listar_consultas_do_dia", lambda session, dia: [legado])
     pagina = client.get("/agenda?dia=2026-10-03", headers=recepcao_headers)
     assert payload not in pagina.text
     html = InspecionarHTML()
