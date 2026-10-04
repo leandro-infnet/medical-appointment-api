@@ -30,14 +30,13 @@ def identidade(token: str | None, settings: Settings, cadastro: dict[str, Usuari
         raise HTTPException(401, "Autenticação necessária ou inválida.",
             headers={"WWW-Authenticate": "Bearer"}) from None
 
-def usuario_atual(token: Annotated[str | None, Depends(bearer)], settings: SettingsDep,
-                  cadastro: UsuariosDep) -> Usuario:
-    return identidade(token, settings, cadastro)
+def usuario_atual(request: Request, _token: Annotated[str | None, Depends(bearer)]) -> Usuario:
+    usuario = getattr(request.state, "usuario", None)
+    if usuario is None:
+        raise HTTPException(401, "Autenticação necessária ou inválida.",
+                            headers={"WWW-Authenticate": "Bearer"})
+    return usuario
 
 UsuarioDep = Annotated[Usuario, Depends(usuario_atual)]
 
-def usuario_agenda(request: Request, token: Annotated[str | None, Depends(bearer)],
-                   settings: SettingsDep, cadastro: UsuariosDep) -> Usuario:
-    return identidade(token or request.cookies.get("agenda_session"), settings, cadastro)
-
-AgendaDep = Annotated[Usuario, Depends(usuario_agenda)]
+AgendaDep = UsuarioDep

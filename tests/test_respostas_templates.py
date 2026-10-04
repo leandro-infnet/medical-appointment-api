@@ -113,10 +113,16 @@ def test_agenda_converte_instante_utc_antes_de_filtrar_dia(client, recepcao_head
 def test_agenda_escapa_texto_malicioso_armazenado(client, recepcao_headers, payload):
     consulta_id = criar(client).json()["id"]
     resposta = client.patch(f"/consultas/{consulta_id}", json={"status": payload})
-    assert resposta.status_code == 200
+    assert resposta.status_code == 422
     armazenada = obter_consulta_por_id(consulta_id)
     assert armazenada is not None
-    assert armazenada.status == payload
+    # Simula dado legado anterior à allowlist, sem abrir o contrato HTTP atual.
+    from app.database.memoria import _consultas, _lock
+    with _lock:
+        _consultas[consulta_id]["status"] = payload
+    legado = obter_consulta_por_id(consulta_id)
+    assert legado is not None
+    assert legado.status == payload
     pagina = client.get("/agenda?dia=2026-10-03", headers=recepcao_headers)
     assert payload not in pagina.text
     html = InspecionarHTML()

@@ -1,5 +1,6 @@
 """Login humano, conclusão de MFA e sessão de leitura da agenda."""
 from typing import Annotated
+from re import fullmatch
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
 from fastapi.security import OAuth2PasswordRequestFormStrict
 from app.auth.dependencies import SettingsDep, UsuariosDep, UsuarioDep
@@ -8,7 +9,7 @@ from app.auth.policies import exigir_papel
 from app.auth.tokens import emitir_token, emitir_token_m2m, DISPONIBILIDADE_SCOPE
 from app.auth.m2m import autenticar_cliente, OAuthClientError
 from app.settings import Settings
-from app.models.identidades import MFAChallengeResponse, MFAInput, Papel, TokenResponse, Usuario, M2MTokenResponse
+from app.models.identidades import MFAChallengeResponse, MFAInput, Papel, TokenResponse, Usuario, M2MTokenResponse, M2MTokenInput, USERNAME_PATTERN
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 
@@ -17,9 +18,13 @@ def resposta_token(usuario: Usuario, settings: Settings, *, mfa: bool = False) -
                          expires_in=settings.access_token_minutes * 60)
 
 @router.post("/token", response_model=TokenResponse | MFAChallengeResponse,
-             responses={202: {"model": MFAChallengeResponse}, 401: {"description": "Credenciais inválidas"}})
+             responses={202: {"model": MFAChallengeResponse},
+                        401: {"description": "Credenciais inválidas"},
+                        422: {"description": "Formulário inválido ou username fora do formato permitido."}})
 def login(form: Annotated[OAuth2PasswordRequestFormStrict, Depends()], request: Request,
           response: Response, settings: SettingsDep, cadastro: UsuariosDep):
+    if fullmatch(USERNAME_PATTERN, form.username) is None:
+        raise HTTPException(422, "Formato de username inválido.")
     response.headers["Cache-Control"] = "no-store"
     response.headers["Pragma"] = "no-cache"
     usuario = cadastro.get(form.username)
@@ -68,9 +73,10 @@ def encerrar_sessao_agenda(usuario: UsuarioDep, settings: SettingsDep, response:
                401: {"description": "Credenciais do cliente inválidas."}})
 async def login_m2m(request: Request, response: Response, settings: SettingsDep,
               autenticado: Annotated[None, Depends(autenticar_cliente)],
-              grant_type: Annotated[str, Form()], scope: Annotated[str | None, Form()] = None):
-    if grant_type != "client_credentials":
+              dados: Annotated[M2MTokenInput, Form()]):
+    if dados.grant_type != "client_credentials":
         raise OAuthClientError("unsupported_grant_type")
+    scope = dados.scope
     # Form converte string vazia em default; presença precisa ser conferida no corpo.
     if scope is None and "scope" in await request.form():
         scope = ""

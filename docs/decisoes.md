@@ -128,3 +128,15 @@ Contexto: ownership e auto-escape já existem, mas o cenário acadêmico exige B
 Fixado OWASP Top 10:2021 para comparar categorias distintas, com API1:2023 identificado como referencial separado de BOLA. Encontrados A01 histórico, A05 e A07 atuais, com localizações e observações reproduzidas. SQL Injection e XSS não foram inventados: memória não executa SQL e a agenda escapa o payload. Campos extras ignorados são lacuna de contrato, sem elevação de privilégio demonstrada.
 
 Consequências: fontes de cada baseline têm SHA-256 e snapshots literais; nenhuma correção ou regressão vulnerável entrou em app/. Atributo Git de whitespace é limitado aos snapshots para conservar inclusive espaços da fonte histórica, não aos arquivos de aplicação. Ex. 9 reutiliza payloads e esclarece SQL/XSS; Ex. 10 trata headers/throttling; Ex. 12 prioriza findings com CVSS/negócio. [Relatório da revisão](vulnerabilidades.md) registra evidência, estado e limite acadêmico.
+
+## DEC-21 — Contratos estritos e middleware JWT do Ex. 9
+
+Contexto: consultas e formulário M2M ignoravam extras, status era texto livre e os validadores JWT eram chamados por dependências. Escolha: middleware ASGI puro estabelece identidade por segmento protegido e dependências consomem esse principal; políticas existentes continuam verificando papel, vínculo e objeto antes de leitura/mutação. Não criar ownership baseado só no caminho nem duplicar decode nas dependências.
+
+Regras aprovadas: status `agendada`, `cancelada`, `realizada`; username ASCII com regex, sem regex restritiva de texto clínico. POST/PATCH JSON passam a rejeitar extras; omissão de campo no PATCH conserva semântica parcial e nulo só apaga notas. Cookie da agenda mantém escopo e não contorna Authorization inválido.
+
+Endpoint adicional aprovado: formulário `/auth/m2m/token`, não citado como finding de extras no Ex. 8. Modelo `M2MTokenInput` permite somente grant_type/scope; preserva Basic, protocolo de grant e distinção de scope omitido/vazio. Baseline real reproduzido a partir dos snapshots SHA-256 prova que o extra antes era ignorado. Inventário já continha a rota; interpretação literal de nunca citada permanece pendente.
+
+Experimento aprovado: SQLite isolado e fictício para mostrar concatenação vulnerável e parametrização corrigida, preservando SQLModel para Ex. 11. BOLA com paciente permanece didático isolado. Alternativa de antecipar banco relacional foi recusada nesta etapa; enfraquecer rotas reais para criar ANTES foi descartado. Auto-escape existente é preservado, não inventado como correção nova de XSS explorado.
+
+Consequências: novos recursos protegidos devem integrar middleware e política; overrides de Depends não alteram automaticamente middleware. Dado legado exige defesa de saída mesmo com allowlist. R14–R16 e aceite acadêmico dos experimentos permanecem com lacunas registradas; headers/throttling abertos para Ex. 10. [Análise e comparações](correcoes-entrada-saida.md) explicam limites.

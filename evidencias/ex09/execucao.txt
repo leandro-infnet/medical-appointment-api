@@ -1,0 +1,5 @@
+Baseline real M2M: controle positivo e campo extra ignorado verificados; tokens omitidos.
+HTTP atual: 16 observações verificadas; SQL isolado: ataque e controle positivo verificados.
+Pacientes isolados: 4 observações verificadas; aceite acadêmico pendente.
+Endpoint adicional M2M: 2 observações no baseline real e 2 depois da correção.
+Dados fictícios; segredos omitidos; resultados anteriores apenas preservados.

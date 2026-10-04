@@ -113,9 +113,15 @@ def test_cancelada_libera_outros_estados_bloqueiam_e_profissionais_isolados(clie
         assert response.status_code == 200
         return response.json()["intervalos"]
     assert len(slots(2)) == 20
-    for estado in ["agendada", "realizada", "estado-desconhecido"]:
+    for estado in ["agendada", "realizada"]:
         assert client.patch(path, json={"status": estado}).status_code == 200
         assert len(slots()) == 18
+    assert client.patch(path, json={"status": "estado-desconhecido"}).status_code == 422
+    # Dado legado desconhecido continua bloqueando por precaução.
+    from app.database.memoria import _consultas, _lock
+    with _lock:
+        _consultas[criada.json()["id"]]["status"] = "estado-desconhecido"
+    assert len(slots()) == 18
     assert client.patch(path, json={"status": "cancelada"}).status_code == 200
     assert len(slots()) == 20
 
@@ -138,9 +144,11 @@ def test_parametros_e_anonimo_negados(anonimo):
     assert anonimo.get(DISPONIBILIDADE_PATH, params={**PARAMS, "profissional_id": 999}, headers=headers).status_code == 404
 
 
-def test_cliente_desativado_sem_fallback(anonimo):
+def test_cliente_desativado_sem_fallback(anonimo, monkeypatch):
     token = obter_token(anonimo).json()["access_token"]
     settings = get_settings().model_copy(update={"m2m_client_secret_hash": None})
+    # Middleware ASGI executa antes da resolução de Depends do FastAPI.
+    monkeypatch.setattr("app.auth.middleware.get_settings", lambda: settings)
     anonimo.app.dependency_overrides[get_settings] = lambda: settings
     try:
         assert anonimo.post(TOKEN_PATH, data={"grant_type": "client_credentials"}, auth=("laboratorio_parceiro", "senha-ficticia-testes")).status_code == 401

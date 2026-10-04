@@ -1,0 +1,11 @@
+{
+  "python": "3.14.4",
+  "sqlite": "3.46.1",
+  "pacotes": {
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.5",
+    "PyJWT": "2.15.1",
+    "bcrypt": "5.0.0",
+    "pytest": "9.1.1"
+  }
+}

@@ -10,6 +10,7 @@ from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel, OAuthFlowClien
 from app.auth.dependencies import SettingsDep
 from app.auth.passwords import verificar_senha
 from app.auth.tokens import DISPONIBILIDADE_SCOPE, validar_token_m2m
+from app.settings import Settings
 
 class OAuthClientError(HTTPException):
     def __init__(self, error: str, status_code: int = 400):
@@ -53,8 +54,7 @@ def autenticar_cliente(credentials: Annotated[HTTPBasicCredentials | None, Depen
         raise OAuthClientError("invalid_client", 401)
 
 
-def laboratorio(security_scopes: SecurityScopes, settings: SettingsDep,
-                authorization: Annotated[str | None, Depends(client_bearer)]) -> dict:
+def identidade_laboratorio(authorization: str | None, settings: Settings) -> dict:
     try:
         if authorization is None:
             raise jwt.InvalidTokenError()
@@ -65,6 +65,15 @@ def laboratorio(security_scopes: SecurityScopes, settings: SettingsDep,
     except jwt.InvalidTokenError:
         raise HTTPException(401, "Token do laboratório inválido ou ausente.",
                             headers={"WWW-Authenticate": "Bearer"}) from None
+    return claims
+
+
+def laboratorio(security_scopes: SecurityScopes, request: Request,
+                _authorization: Annotated[str | None, Depends(client_bearer)]) -> dict:
+    claims = getattr(request.state, "laboratorio", None)
+    if claims is None:
+        raise HTTPException(401, "Token do laboratório inválido ou ausente.",
+                            headers={"WWW-Authenticate": "Bearer"})
     concedidos = set(claims["scope"].split())
     if concedidos - {DISPONIBILIDADE_SCOPE} or not set(security_scopes.scopes).issubset(concedidos):
         raise HTTPException(403, "Escopo insuficiente ou não permitido.",

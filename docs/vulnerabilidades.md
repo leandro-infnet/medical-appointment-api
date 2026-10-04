@@ -120,3 +120,11 @@ Isso ensina a diferença entre autenticação e ownership com o ator do cenário
 - [OWASP Top 10:2021 A07](https://owasp.org/Top10/2021/A07_2021-Identification_and_Authentication_Failures/): tentativas automatizadas e falta de proteção de login.
 
 [Evidências do Ex. 8](../evidencias/ex08/README.md) e [rastreabilidade](rastreabilidade.md) registram estado efetivamente observado, propostas e pendências. O relatório não declara liberação para produção ou conformidade regulatória.
+
+## Evolução — Exercício 9
+
+A [análise de correções](correcoes-entrada-saida.md) registra middleware JWT integrado ao ownership, rejeição de extras e allowlists, mantendo intactas as observações históricas acima. OBS-001 agora é rejeitada na criação; PATCH compartilha a correção. OBS-002 agora é rejeitada na entrada de status, e dados legados continuam escapados. VUL-001 permanece mitigada; VUL-002 e VUL-003 continuam abertos para Ex. 10.
+
+**OBS-006 — contrato de formulário M2M:** nova revisão do baseline real preservado verificou `/auth/m2m/token` com Basic válido e `papel=administrador`: 200 e extra ignorado, sem elevação de privilégio. Correção no Ex. 9: modelo de Form com `extra='forbid'` retorna 422; grant/scope permitidos conservam 200. É expansão do padrão OBS-001, não quarta categoria OWASP inventada. Evidência em `evidencias/ex09/m2m-antes.json` e `resultados.json`. A rota estava no inventário, mas não havia sido citada como finding de extras; escolha aprovada, interpretação literal acadêmica pendente.
+
+DEMO-001 ganhou contraparte isolada com ownership; DEMO-002 demonstra SQL concatenado versus parametrizado somente em SQLite fictício. Não reclassificar esses experimentos como vulnerabilidades encontradas em `app/`. Não afirmar exploração/correção de XSS real onde o auto-escape já funcionava.
