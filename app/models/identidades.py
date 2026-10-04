@@ -2,6 +2,8 @@
 from enum import StrEnum
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, model_validator
 
+USERNAME_PATTERN = r"[a-z0-9_]{1,64}"
+
 class Papel(StrEnum):
     PROFISSIONAL = "profissional"
     RECEPCAO = "recepcionista"
@@ -39,3 +41,9 @@ class MFAInput(BaseModel):
 
 class M2MTokenResponse(TokenResponse):
     scope: str
+
+
+class M2MTokenInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    grant_type: str
+    scope: str | None = None

@@ -1,6 +1,6 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
-> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11/12 registram o estado efetivo e evidências dos Ex. 6/7; prevalece sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–14 registram evolução e evidências dos Ex. 6–9; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
 
 
 ## 1. Escopo, baseline e método
@@ -279,3 +279,18 @@ Baseline `c68979a6242e8772627f03def1a8ea565e715dae`, sem alteração de arquitet
 | OBS-003 | TM-015; CTRL-08; TEST-13 | Ausência de SQL atual; não alegar SQL Injection nesta memória |
 
 Não foram criados novos ativos, atores reais ou superfícies servidas pela API. DEMO-001 não entra no DFD ou em app/main.py: é experimento isolado, não quarto finding nem mudança do domínio. O mapa permanece válido para Ex. 9/10/11/12/13. Sem CVSS, scan, gate ou liberação externa executados nesta revisão.
+
+## 14. Correções centrais — Exercício 9 / versão 1.5
+
+Middleware ASGI em P-03, `app/auth/middleware.py`, reaproveita validação humana/M2M. Não cria consumidor, banco relacional ou novo fluxo externo; autorização de objetos permanece em P-01 com política central. Experimentos isolados não integram o DFD servido.
+
+| Finding / Threat | Controle e teste | Estado do incremento |
+| --- | --- | --- |
+| VUL-001 / TM-002/003 | CTRL-01/02, TEST-04/05/07/08/09 | JWT no middleware e ownership antes de dados/mutação; válido não implica acesso ao objeto |
+| OBS-001/006 / TM-006 | CTRL-05, TEST-12 | Extra proibido em POST/PATCH/form M2M, status permitido e username validado; positivos preservados |
+| OBS-002 / TM-005 | CTRL-04/05, TEST-03 | Payload de status agora 422; legado continua escapado; XSS explorado não foi encontrado antes |
+| OBS-003 / TM-015 | CTRL-08, TEST-13 | DEMO-002 mostra SQL parametrizado isolado; integração SQLModel pendente Ex. 11 |
+| TM-014 | CTRL-10, TEST-11 | Identidade M2M no middleware e scope na dependência; cruzamento humano/M2M continua negado |
+| VUL-002/003 / TM-012/016/008 | CTRL-11/07, TEST-15/14 | Abertos até hardening Ex. 10; não declarar todos os findings corrigidos |
+
+R14–R16 têm controles e regressões rastreados em [correções de entrada/saída](correcoes-entrada-saida.md), com aceite acadêmico dos experimentos e interpretação do endpoint adicional pendentes. TM-011 recebe CTRL-09/TEST-22: handler 422 omite input/contexto/corpo, verificado em JSON/Form; outras falhas e futuras mensagens customizadas ainda requerem revisão. TM-007 exige auditoria persistente, TM-009/010 banco/concorrência. Sem scan, CVSS, gate ou liberação.

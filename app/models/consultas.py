@@ -1,8 +1,8 @@
 """Modelos Pydantic para o recurso de Consultas Médicas."""
 
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field, field_validator
+from typing import Literal, Optional
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class ConsultaBase(BaseModel):
@@ -13,6 +13,7 @@ class ConsultaBase(BaseModel):
 
 
 class ConsultaCreate(ConsultaBase):
+    model_config = ConfigDict(extra="forbid")
     observacoes_internas: Optional[str] = Field(
         None,
         max_length=500,
@@ -21,8 +22,9 @@ class ConsultaCreate(ConsultaBase):
 
 
 class ConsultaUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     data_hora: Optional[datetime] = Field(None, description="Nova data e horário")
-    status: Optional[str] = Field(None, description="Novo status da consulta (ex: agendada, cancelada, realizada)")
+    status: Literal["agendada", "cancelada", "realizada"] | None = Field(None, description="Novo status permitido")
     motivo: Optional[str] = Field(None, min_length=3, max_length=255, description="Novo motivo")
     observacoes_internas: Optional[str] = Field(None, max_length=500, description="Atualização das notas internas")
 

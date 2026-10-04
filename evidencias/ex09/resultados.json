@@ -1,0 +1,569 @@
+{
+  "http_atual": [
+    {
+      "cenario": "Controle positivo: criar",
+      "metodo": "POST",
+      "url": "/consultas",
+      "status": 201
+    },
+    {
+      "cenario": "OBS-001: mesmo papel extra agora rejeitado",
+      "metodo": "POST",
+      "url": "/consultas",
+      "status": 422
+    },
+    {
+      "cenario": "Endpoint adicional PATCH: papel extra rejeitado",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 422
+    },
+    {
+      "cenario": "Endpoint adicional PATCH: troca de vínculo rejeitada",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 422
+    },
+    {
+      "cenario": "VUL-001: leitura anônima do mesmo ID bloqueada",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 401
+    },
+    {
+      "cenario": "VUL-001: mutação anônima do mesmo ID bloqueada",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 401
+    },
+    {
+      "cenario": "Ownership: outra identidade não lê",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 404
+    },
+    {
+      "cenario": "Ownership: outra identidade não altera",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 404
+    },
+    {
+      "cenario": "Ownership: outra identidade não remove",
+      "metodo": "DELETE",
+      "url": "/consultas/1",
+      "status": 404
+    },
+    {
+      "cenario": "OBS-002: mesmo payload de status rejeitado",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 422
+    },
+    {
+      "cenario": "Allowlist: agendada",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 200
+    },
+    {
+      "cenario": "Allowlist: realizada",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 200
+    },
+    {
+      "cenario": "Allowlist: cancelada",
+      "metodo": "PATCH",
+      "url": "/consultas/1",
+      "status": 200
+    },
+    {
+      "cenario": "Regex: username com operador SQL rejeitado",
+      "metodo": "POST",
+      "url": "/auth/token",
+      "status": 422
+    },
+    {
+      "cenario": "Middleware: token adulterado",
+      "metodo": "GET",
+      "url": "/consultas/1",
+      "status": 401
+    },
+    {
+      "cenario": "Saída: legado com mesmo payload continua escapado",
+      "metodo": "GET",
+      "url": "/agenda",
+      "status": 200
+    }
+  ],
+  "sql_isolado": {
+    "id": "DEMO-002",
+    "natureza": "didático isolado; não é finding SQL da aplicação",
+    "payload": "1 OR 1=1",
+    "antes_ids": [
+      1,
+      2
+    ],
+    "depois_ids": [],
+    "controle_positivo_ids": [
+      1
+    ],
+    "correcao": "placeholder ? com valores separados do SQL",
+    "limite": "Não demonstra migração SQLModel, ownership SQL ou aceitação acadêmica."
+  },
+  "pacientes_isolados_depois": [
+    {
+      "cenario": "DEMO-001: paciente 1 lê próprio registro",
+      "metodo": "GET",
+      "url": "/experimento/consultas/1",
+      "status": 200
+    },
+    {
+      "cenario": "DEMO-001: somente ID trocado para 2, mesmo token",
+      "metodo": "GET",
+      "url": "/experimento/consultas/2",
+      "status": 404
+    },
+    {
+      "cenario": "DEMO-001: paciente 2 lê próprio registro",
+      "metodo": "GET",
+      "url": "/experimento/consultas/2",
+      "status": 200
+    },
+    {
+      "cenario": "DEMO-001: somente ID trocado para 1, mesmo token",
+      "metodo": "GET",
+      "url": "/experimento/consultas/1",
+      "status": 404
+    }
+  ],
+  "endpoint_adicional_m2m": {
+    "antes": [
+      {
+        "cenario": "Controle positivo M2M",
+        "metodo": "POST",
+        "url": "/auth/m2m/token",
+        "status": 200
+      },
+      {
+        "cenario": "Mesmo campo extra M2M",
+        "metodo": "POST",
+        "url": "/auth/m2m/token",
+        "status": 200
+      }
+    ],
+    "depois": [
+      {
+        "cenario": "Controle positivo M2M",
+        "metodo": "POST",
+        "url": "/auth/m2m/token",
+        "status": 200
+      },
+      {
+        "cenario": "Mesmo campo extra M2M",
+        "metodo": "POST",
+        "url": "/auth/m2m/token",
+        "status": 422
+      }
+    ]
+  },
+  "antes_preservado_ex08": {
+    "historico": {
+      "natureza": "código histórico real; sem autenticação, não é paciente autenticado",
+      "casos": [
+        {
+          "cenario": "Histórico real: leitura do recurso 1 sem identidade",
+          "metodo": "GET",
+          "url": "/consultas/1",
+          "status": 200,
+          "corpo": {
+            "paciente_id": 1,
+            "profissional_id": 1,
+            "data_hora": "2026-10-15T10:00:00",
+            "motivo": "Registro fictício paciente 1",
+            "id": 1,
+            "status": "agendada"
+          }
+        },
+        {
+          "cenario": "Histórico real: alterar apenas ID permite ler paciente 2 sem identidade",
+          "metodo": "GET",
+          "url": "/consultas/2",
+          "status": 200,
+          "corpo": {
+            "paciente_id": 2,
+            "profissional_id": 2,
+            "data_hora": "2026-10-15T10:00:00",
+            "motivo": "Registro fictício paciente 2",
+            "id": 2,
+            "status": "agendada"
+          }
+        },
+        {
+          "cenario": "Histórico real: mutação do recurso 2 sem identidade",
+          "metodo": "PATCH",
+          "url": "/consultas/2",
+          "status": 200,
+          "corpo": {
+            "paciente_id": 2,
+            "profissional_id": 2,
+            "data_hora": "2026-10-15T10:00:00",
+            "motivo": "Alteração indevida fictícia",
+            "id": 2,
+            "status": "agendada"
+          }
+        }
+      ]
+    },
+    "atual": {
+      "natureza": "aplicação atual; dados/segredos fictícios efêmeros; sem correção neste exercício",
+      "casos": [
+        {
+          "cenario": "Atual: proprietário autorizado lê",
+          "metodo": "GET",
+          "url": "/consultas/1",
+          "status": 200,
+          "corpo": {
+            "paciente_id": 1,
+            "profissional_id": 1,
+            "data_hora": "2026-10-15T10:00:00",
+            "motivo": "Dado clínico fictício protegido",
+            "id": 1,
+            "status": "agendada"
+          }
+        },
+        {
+          "cenario": "Atual: outra identidade não lê ID conhecido",
+          "metodo": "GET",
+          "url": "/consultas/1",
+          "status": 404,
+          "corpo": {
+            "detail": "Consulta não encontrada."
+          }
+        },
+        {
+          "cenario": "Atual: outra identidade não altera",
+          "metodo": "PATCH",
+          "url": "/consultas/1",
+          "status": 404,
+          "corpo": {
+            "detail": "Consulta não encontrada."
+          }
+        },
+        {
+          "cenario": "Atual: outra identidade não remove",
+          "metodo": "DELETE",
+          "url": "/consultas/1",
+          "status": 404,
+          "corpo": {
+            "detail": "Consulta não encontrada."
+          }
+        },
+        {
+          "cenario": "Atual: anônimo não lê",
+          "metodo": "GET",
+          "url": "/consultas/1",
+          "status": 401,
+          "corpo": {
+            "detail": "Autenticação necessária ou inválida."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 1/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 2/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 3/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 4/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 5/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 6/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 7/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 8/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 9/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 10/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 11/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 12/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 13/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 14/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 15/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 16/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 17/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 18/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 19/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: tentativa inválida 20/20 sem throttling",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 401,
+          "corpo": {
+            "detail": "Credenciais inválidas."
+          }
+        },
+        {
+          "cenario": "VUL-003: login correto após 20 erros não exige espera",
+          "metodo": "POST",
+          "url": "/auth/token",
+          "status": 200,
+          "corpo": "[token omitido; senha correta conhecida, não descoberta]"
+        },
+        {
+          "cenario": "VUL-002: HTML autenticado sem headers de proteção",
+          "metodo": "GET",
+          "url": "/agenda",
+          "status": 200,
+          "corpo": {
+            "headers": {
+              "x-frame-options": null,
+              "x-content-type-options": null,
+              "strict-transport-security": null,
+              "content-security-policy": null
+            },
+            "html": "[HTML mínimo; conteúdo omitido]"
+          }
+        },
+        {
+          "cenario": "VUL-002: headers também ausentes no erro",
+          "metodo": "GET",
+          "url": "/consultas/1",
+          "status": 401,
+          "corpo": {
+            "headers": {
+              "x-frame-options": null,
+              "x-content-type-options": null,
+              "strict-transport-security": null,
+              "content-security-policy": null
+            }
+          }
+        },
+        {
+          "cenario": "OBS-001: campo extra ignorado; não promove identidade",
+          "metodo": "POST",
+          "url": "/consultas",
+          "status": 201,
+          "corpo": {
+            "paciente_id": 1,
+            "profissional_id": 1,
+            "data_hora": "2026-10-15T10:00:00",
+            "motivo": "Entrada fictícia",
+            "id": 2,
+            "status": "agendada"
+          }
+        },
+        {
+          "cenario": "OBS-002: payload persistido é escapado; não é XSS explorado",
+          "metodo": "GET",
+          "url": "/agenda",
+          "status": 200,
+          "corpo": {
+            "payload": "<script>alert(1)</script>",
+            "exibicao_escapada": true
+          }
+        }
+      ]
+    },
+    "didatico": {
+      "natureza": "experimento criado para ensino; não é finding no código atual nem histórico; aceitação acadêmica pendente",
+      "casos": [
+        {
+          "cenario": "Didático: paciente 1 lê registro próprio",
+          "metodo": "GET",
+          "url": "/experimento/consultas/1",
+          "status": 200,
+          "corpo": {
+            "id": 1,
+            "paciente_id": 1,
+            "resumo_clinico": "Relato fictício A"
+          }
+        },
+        {
+          "cenario": "Didático: mesmo token do paciente 1, somente ID trocado para 2",
+          "metodo": "GET",
+          "url": "/experimento/consultas/2",
+          "status": 200,
+          "corpo": {
+            "id": 2,
+            "paciente_id": 2,
+            "resumo_clinico": "Relato fictício B"
+          }
+        },
+        {
+          "cenario": "Didático: paciente 2 lê registro próprio",
+          "metodo": "GET",
+          "url": "/experimento/consultas/2",
+          "status": 200,
+          "corpo": {
+            "id": 2,
+            "paciente_id": 2,
+            "resumo_clinico": "Relato fictício B"
+          }
+        },
+        {
+          "cenario": "Didático: mesmo token do paciente 2, somente ID trocado para 1",
+          "metodo": "GET",
+          "url": "/experimento/consultas/1",
+          "status": 200,
+          "corpo": {
+            "id": 1,
+            "paciente_id": 1,
+            "resumo_clinico": "Relato fictício A"
+          }
+        }
+      ]
+    }
+  },
+  "limites": [
+    "XSS real já escapava antes; não houve exploração demonstrada.",
+    "Paciente autenticado existe somente em experimento isolado.",
+    "SQLModel e persistência da aplicação permanecem para Ex. 11."
+  ]
+}

@@ -116,3 +116,9 @@ Para habilitar localmente, execute `.venv/bin/python -m app.auth.provision_m2m`,
 [docs/vulnerabilidades.md](docs/vulnerabilidades.md) analisa três categorias distintas de OWASP Top 10:2021: acesso por objeto no histórico e headers/throttling ausentes no baseline atual. [Evidências](evidencias/ex08/README.md) guardam snapshots com revisão/hash, payloads, respostas, execução e print, sem scanner ou mudanças em `app/`.
 
 O cenário de paciente autenticado é demonstrado somente em experimento didático separado, autorizado pelo responsável pelo projeto. A aplicação não ganhou papel/portal de paciente; aceitação acadêmica desse enquadramento permanece pendente. O relatório não inventa SQL Injection ou XSS explorado e identifica quais correções pertencem às próximas etapas.
+
+## Correções de entrada e saída — Exercício 9
+
+Schemas de consultas e formulário M2M rejeitam extras; status permite apenas `agendada`, `cancelada`, `realizada`, e username do login usa regex ASCII. Middleware JWT estabelece identidade humana/M2M uma vez por requisição; ownership continua centralizado antes de acesso/mutação. Cookie é exclusivo da agenda e não contorna um cabeçalho inválido. HTML legado mantém auto-escape.
+
+[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi aprovado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening Ex. 10 e persistência SQLModel Ex. 11 continuam pendentes, assim como aceite acadêmico dos experimentos; não há aprovação de deploy.

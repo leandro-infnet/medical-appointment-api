@@ -3,8 +3,11 @@
 from contextlib import asynccontextmanager
 from secrets import token_urlsafe
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from app.errors import validation_error_response
 from app.auth.mfa import MFAStore
 from app.auth.m2m import OAuthClientError, oauth_error_response
+from app.auth.middleware import JWTMiddleware
 from app.auth.passwords import gerar_hash
 from app.database.identidades import carregar_usuarios
 from app.settings import get_settings
@@ -31,6 +34,8 @@ app = FastAPI(
 )
 
 app.add_exception_handler(OAuthClientError, oauth_error_response)
+app.add_exception_handler(RequestValidationError, validation_error_response)
+app.add_middleware(JWTMiddleware)
 
 app.include_router(consultas_router)
 app.include_router(agenda_router)

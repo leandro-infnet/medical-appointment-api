@@ -1,0 +1,14 @@
+[
+  {
+    "cenario": "Controle positivo M2M",
+    "metodo": "POST",
+    "url": "/auth/m2m/token",
+    "status": 200
+  },
+  {
+    "cenario": "Mesmo campo extra M2M",
+    "metodo": "POST",
+    "url": "/auth/m2m/token",
+    "status": 200
+  }
+]
