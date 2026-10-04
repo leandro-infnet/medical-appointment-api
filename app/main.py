@@ -11,6 +11,7 @@ from app.auth.middleware import JWTMiddleware
 from app.auth.passwords import gerar_hash
 from app.database.identidades import carregar_usuarios
 from app.settings import get_settings
+from app.network import NetworkMiddleware, RateLimiter
 from app.routes.auth import router as auth_router
 from app.routes.admin import router as admin_router
 from app.routes.disponibilidade import router as disponibilidade_router
@@ -18,6 +19,8 @@ from app.routes.disponibilidade import router as disponibilidade_router
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     settings = get_settings()
+    application.state.settings = settings
+    application.state.rate_limiter = RateLimiter(settings.login_rate_limit, settings.general_rate_limit)
     application.state.usuarios = carregar_usuarios(settings.users_file)
     application.state.dummy_hash = gerar_hash(token_urlsafe(24))
     application.state.mfa = MFAStore()
@@ -31,11 +34,15 @@ app = FastAPI(
     title="API de Agendamento de Consultas Médicas",
     version="0.1.0",
     description="API RESTful segura para agendamento de consultas em clínicas médicas.",
+    responses={429: {"description": "Limite de requisições excedido.",
+                     "headers": {"Retry-After": {"description": "Segundos até nova tentativa.",
+                                                 "schema": {"type": "integer", "minimum": 1}}}}},
 )
 
 app.add_exception_handler(OAuthClientError, oauth_error_response)
 app.add_exception_handler(RequestValidationError, validation_error_response)
 app.add_middleware(JWTMiddleware)
+app.add_middleware(NetworkMiddleware)
 
 app.include_router(consultas_router)
 app.include_router(agenda_router)

@@ -175,3 +175,7 @@ CTRL-01/02 passaram a implementados/verificados por pytest e reprodução HTTP; 
 O parceiro agora cruza TB-03 por Basic/Client Credentials e bearer exclusivo, validado em P-04. P-06 acrescenta cálculo de intervalos e projeção mínima, com F-26–33 no DFD editável. P-03/D-01 permanecem no mesmo processo em memória. Exportações Ex. 3/5/6 são históricas e foram preservadas.
 
 CTRL-10/TM-014/TEST-11 foram implementados/verificados; a agenda não se tornou pública nem o administrador ganhou acesso clínico. A disponibilidade pode revelar ocupação indiretamente, mas não paciente/motivo. Integridade da reserva, durabilidade, TLS e limites operacionais não são comprovados pelo cálculo. [Contrato e decisões](integracao-m2m.md), threat model 1.3 e evidências Ex. 7 registram o estado atual.
+
+## Evolução — Exercícios 9/10
+
+Middleware JWT centralizado estabelece principal, e políticas de recurso mantêm ownership antes de exposição/mutação. `app/network.py` envolve essa fronteira com headers, CORS e cota local de requisições; configurações e contador são preparados no lifespan. Não há novo serviço, frontend ou banco nesta evolução. Controles CTRL-01/02/05/07/11 têm regressões, com TLS, banco/concorrência e múltiplos workers ainda não demonstrados. [Correções](correcoes-entrada-saida.md) e [hardening](hardening.md) descrevem estado atual e limites.

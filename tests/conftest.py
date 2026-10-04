@@ -26,6 +26,9 @@ def ambiente(tmp_path, monkeypatch):
     monkeypatch.setenv("M2M_CLIENT_ID", "laboratorio_parceiro")
     monkeypatch.setenv("M2M_CLIENT_SECRET_HASH", senha_hash)
     monkeypatch.setenv("M2M_TOKEN_MINUTES", "5")
+    monkeypatch.setenv("CORS_ORIGINS", '["http://localhost:5173"]')
+    monkeypatch.setenv("LOGIN_RATE_LIMIT", "5")
+    monkeypatch.setenv("GENERAL_RATE_LIMIT", "60")
     get_settings.cache_clear()
     reset_banco()
     yield

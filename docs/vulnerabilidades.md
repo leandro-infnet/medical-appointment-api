@@ -2,7 +2,7 @@
 
 ## Resultado e limites da entrega
 
-Foram identificados três padrões de categorias distintas do **OWASP Top 10:2021**: VUL-001/A01 (histórico real), VUL-002/A05 e VUL-003/A07 (versão atual). Não são três falhas abertas na versão atual: a autorização do histórico já foi corrigida no Ex. 6. A edição 2021 é a referência fixada nesta revisão para consistência; não é apresentada como a mais recente nem como edição imposta pela disciplina.
+Foram identificados três padrões de categorias distintas do **OWASP Top 10:2021**: VUL-001/A01 (histórico real), VUL-002/A05 e VUL-003/A07 (baseline Ex. 8). Este relatório preserva aquela revisão; a evolução no Ex. 10 aparece ao final. A autorização do histórico já foi corrigida no Ex. 6. A edição 2021 foi fixada para consistência; não é apresentada como a mais recente nem como edição imposta pela disciplina.
 
 O requisito R13 pede revisão manual de pelo menos três categorias e inclui BOLA; R14 envolve identificação e posterior correção centralizada. O cenário normativo cita paciente autenticado acessando prontuário alheio. **A aplicação real não tem papel de paciente nem prontuário**: oferece consultas e três papéis internos. Um laboratório não é substituto desse paciente.
 
@@ -128,3 +128,9 @@ A [análise de correções](correcoes-entrada-saida.md) registra middleware JWT 
 **OBS-006 — contrato de formulário M2M:** nova revisão do baseline real preservado verificou `/auth/m2m/token` com Basic válido e `papel=administrador`: 200 e extra ignorado, sem elevação de privilégio. Correção no Ex. 9: modelo de Form com `extra='forbid'` retorna 422; grant/scope permitidos conservam 200. É expansão do padrão OBS-001, não quarta categoria OWASP inventada. Evidência em `evidencias/ex09/m2m-antes.json` e `resultados.json`. A rota estava no inventário, mas não havia sido citada como finding de extras; escolha aprovada, interpretação literal acadêmica pendente.
 
 DEMO-001 ganhou contraparte isolada com ownership; DEMO-002 demonstra SQL concatenado versus parametrizado somente em SQLite fictício. Não reclassificar esses experimentos como vulnerabilidades encontradas em `app/`. Não afirmar exploração/correção de XSS real onde o auto-escape já funcionava.
+
+## Evolução — Exercício 10
+
+VUL-002: DENY/nosniff presentes nas respostas verificadas, HSTS de um ano em HTTPS e CORS explícito. VUL-003: as mesmas 20 tentativas agora recebem 401 nas primeiras cinco e 429 nas demais; credencial conhecida volta a funcionar após a janela. Controles e regressões em [hardening](hardening.md) e `evidencias/ex10/`.
+
+Estado: mitigadas/verificadas no escopo local, com riscos de implantação residuais. HSTS não é enviado em HTTP e HTTPS do TestClient não comprova TLS/browser. Contador não coordena workers nem impede IPs distribuídos; sem CVSS/ZAP ou autorização de deploy. As evidências e os estados do baseline Ex. 8 acima não foram reescritos.

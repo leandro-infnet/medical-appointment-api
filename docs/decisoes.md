@@ -140,3 +140,13 @@ Endpoint adicional aprovado: formulário `/auth/m2m/token`, não citado como fin
 Experimento aprovado: SQLite isolado e fictício para mostrar concatenação vulnerável e parametrização corrigida, preservando SQLModel para Ex. 11. BOLA com paciente permanece didático isolado. Alternativa de antecipar banco relacional foi recusada nesta etapa; enfraquecer rotas reais para criar ANTES foi descartado. Auto-escape existente é preservado, não inventado como correção nova de XSS explorado.
 
 Consequências: novos recursos protegidos devem integrar middleware e política; overrides de Depends não alteram automaticamente middleware. Dado legado exige defesa de saída mesmo com allowlist. R14–R16 e aceite acadêmico dos experimentos permanecem com lacunas registradas; headers/throttling abertos para Ex. 10. [Análise e comparações](correcoes-entrada-saida.md) explicam limites.
+
+## DEC-22 — Hardening local e cotas de requisição
+
+Contexto: ausência de headers e sequência de 20 erros de senha sem throttling foram demonstradas no Ex. 8. Escolha: origem de demonstração configurável `http://localhost:5173`, sem wildcard ou credenciais CORS, DENY/nosniff nas respostas e HSTS de um ano somente HTTPS. Não pressupor domínio, certificado, proxy confiável ou frontend implementados.
+
+Limites escolhidos para o exercício: cinco requisições/minuto por IP compartilhadas entre login humano, Client Credentials e MFA; 60/minuto nas demais rotas; preflight atendido antes da autenticação/cota. Janela móvel, relógio monotônico, lock, memória e estado por arranque. Resposta 429 com Retry-After não prolonga a janela. O orçamento MFA por desafio permanece um controle distinto.
+
+Alternativas: serviço externo de contagem não é necessário para demonstração em um processo; contador por username sozinho permitiria bloquear conta de terceiro. Sem infraestrutura de proxy definida, usar endereço da conexão e `--no-proxy-headers` no Uvicorn local. Não adicionar Redis, frontend, TLS fictício ou requisitos numéricos atribuídos à disciplina.
+
+Consequências: NAT compartilha cotas; múltiplos workers/reinícios/ataque distribuído não são cobertos. HTTPS do TestClient demonstra headers, não handshake TLS. VUL-002/003 têm controles verificados no escopo local; riscos de implantação seguem abertos. [Hardening](hardening.md) e evidências Ex. 10 registram testes e parâmetros.

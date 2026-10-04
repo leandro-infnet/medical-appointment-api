@@ -2,7 +2,8 @@
 import re
 from functools import lru_cache
 from pathlib import Path
-from pydantic import Field, SecretStr, field_validator
+from urllib.parse import urlsplit
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -17,6 +18,29 @@ class Settings(BaseSettings):
     m2m_client_id: str = Field(default="laboratorio_parceiro", pattern=r"^[a-z0-9_]+$", max_length=64)
     m2m_client_secret_hash: SecretStr | None = None
     m2m_token_minutes: int = Field(default=5, ge=1, le=15)
+    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
+    login_rate_limit: int = Field(default=5, ge=1, le=10000)
+    general_rate_limit: int = Field(default=60, ge=1, le=10000)
+
+    @model_validator(mode="after")
+    def limite_credenciais_mais_restritivo(self):
+        if self.login_rate_limit >= self.general_rate_limit:
+            raise ValueError("A cota de credenciais deve ser menor que a cota geral.")
+        return self
+
+    @field_validator("cors_origins")
+    @classmethod
+    def origens_explicitas(cls, value: list[str]) -> list[str]:
+        if not value:
+            raise ValueError("Informe pelo menos uma origem CORS explícita.")
+        for origin in value:
+            parsed = urlsplit(origin)
+            if (origin != origin.strip() or "*" in origin or parsed.scheme not in ("http", "https")
+                    or not parsed.hostname or parsed.username is not None or parsed.password is not None
+                    or parsed.path or parsed.query or parsed.fragment):
+                raise ValueError("Origem deve conter somente esquema HTTP(S), host e porta opcional.")
+            _ = parsed.port  # Verifica porta numérica e faixa, sem alterar a origem.
+        return value
 
     @field_validator("m2m_client_secret_hash", mode="before")
     @classmethod

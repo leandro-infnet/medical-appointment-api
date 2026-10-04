@@ -1,0 +1,2 @@
+35 observações verificadas; 20 tentativas de senha e cota geral de 60 incluídas.
+HTTPS somente em processo; segredos omitidos; nenhum scan ou deploy executado.

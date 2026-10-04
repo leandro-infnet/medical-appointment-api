@@ -1,5 +1,7 @@
 # Exercício 9 — Correções de entrada, saída e autorização
 
+Este relatório registra o estado ao fim do Ex. 9. A última seção descreve a evolução no Ex. 10; prevalece sobre o estado histórico dos findings de hardening.
+
 ## 1. Resultado e limites
 
 A API rejeita campos extras em criação e atualização de consultas e no formulário Client Credentials, restringe status a `agendada`, `cancelada` e `realizada` e valida o formato de username no login. O middleware ASGI estabelece identidade humana ou M2M uma vez por requisição. As políticas centralizadas verificam papel, vínculo confiável e ownership antes de acessar os dados. A agenda mantém herança, projeção mínima e auto-escape Jinja2.
@@ -102,7 +104,11 @@ Checklist operacional:
 - [x] Experimentos SQL/BOLA isolados e identificados como didáticos.
 - [ ] Aceite acadêmico dos experimentos e endpoint adicional literal.
 - [ ] XSS/SQL antes/depois na aplicação real, se exigidos como encontrados nela.
-- [ ] Headers/throttling dos findings remanescentes, na etapa Ex. 10.
+- [x] Headers/throttling tratados e verificados no Ex. 10, conforme última seção.
 - [ ] Queries SQLModel e integração relacional, na etapa Ex. 11.
 
 Os resultados reais, comandos e versões constam em [evidências do incremento](../evidencias/ex09/README.md). R14–R16 têm implementação técnica parcial com as lacunas explicitadas, não aprovação acadêmica presumida.
+
+## Evolução após o Exercício 10
+
+VUL-002/003 receberam headers/CORS e limite diferenciado, verificados conforme [hardening](hardening.md). A ausência desses controles descrita acima corresponde ao fim do Ex. 9. Permanecem as ressalvas acadêmicas SQL/XSS/BOLA e de interpretação do endpoint adicional; SQLModel real continua para Ex. 11. Suíte atual: 163 casos passando, sem comprovação de TLS real ou liberação externa.

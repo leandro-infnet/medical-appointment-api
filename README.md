@@ -40,7 +40,7 @@ Passos completos, contas, login, MFA e navegação estão em [docs/autenticacao-
 Para iniciar a aplicação com recarregamento automático (modo de desenvolvimento):
 
 ```bash
-.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --no-proxy-headers
 ```
 
 A documentação interativa OpenAPI (Swagger UI) estará disponível em:
@@ -121,7 +121,17 @@ O cenário de paciente autenticado é demonstrado somente em experimento didáti
 
 Schemas de consultas e formulário M2M rejeitam extras; status permite apenas `agendada`, `cancelada`, `realizada`, e username do login usa regex ASCII. Middleware JWT estabelece identidade humana/M2M uma vez por requisição; ownership continua centralizado antes de acesso/mutação. Cookie é exclusivo da agenda e não contorna um cabeçalho inválido. HTML legado mantém auto-escape.
 
-[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi aprovado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening Ex. 10 e persistência SQLModel Ex. 11 continuam pendentes, assim como aceite acadêmico dos experimentos; não há aprovação de deploy.
+[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi adotado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening foi implementado no Ex. 10; persistência SQLModel Ex. 11 e aceite acadêmico dos experimentos continuam pendentes. Não há aprovação de deploy.
+
+## Hardening — Exercício 10
+
+CORS permite somente as origens configuradas em `CORS_ORIGINS`, inicialmente `http://localhost:5173`. Essa é uma origem de demonstração; não há frontend adicional. A agenda mantém seu cookie no mesmo site e a API usa bearer.
+
+DENY e nosniff acompanham as respostas; HSTS é enviado somente em HTTPS. O Uvicorn HTTP local não comprova TLS/HSTS em navegador. Na execução direta, `--no-proxy-headers` evita que headers enviados pelo cliente alterem esquema/IP percebidos.
+
+Login humano, M2M e MFA compartilham cinco requisições por minuto por IP; as demais rotas têm 60. Excesso retorna 429 com `Retry-After`. Valores configuráveis por `LOGIN_RATE_LIMIT`/`GENERAL_RATE_LIMIT`; contador em memória para processo único, com limitações documentadas.
+
+[Decisões e limites](docs/hardening.md) e [evidências](evidencias/ex10/README.md): 163 testes passaram e 35 observações HTTP foram reproduzidas. Persistência SQLModel e pipeline/auditoria continuam nas etapas seguintes.
 
 ## Vídeo de apresentação
 
