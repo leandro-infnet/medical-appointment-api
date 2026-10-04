@@ -122,3 +122,7 @@ O cenário de paciente autenticado é demonstrado somente em experimento didáti
 Schemas de consultas e formulário M2M rejeitam extras; status permite apenas `agendada`, `cancelada`, `realizada`, e username do login usa regex ASCII. Middleware JWT estabelece identidade humana/M2M uma vez por requisição; ownership continua centralizado antes de acesso/mutação. Cookie é exclusivo da agenda e não contorna um cabeçalho inválido. HTML legado mantém auto-escape.
 
 [Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi aprovado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening Ex. 10 e persistência SQLModel Ex. 11 continuam pendentes, assim como aceite acadêmico dos experimentos; não há aprovação de deploy.
+
+## Vídeo de apresentação
+
+O vídeo de apresentação será publicado nesta [pasta do Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
