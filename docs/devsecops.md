@@ -74,9 +74,11 @@ Os cinco novos casos HTTP expandem o teste administrativo Ex. 6 para outros veto
 
 ## GitHub, merge e pendências
 
-**Não houve push, run remoto ou alteração de proteção da branch nesta implementação local.** Depois do push/PR, guardar URL/ID do run e artefato `relatorios-seguranca`. No GitHub, configurar proteção/ruleset de `main` com **Require status checks to pass**, exigindo o check **Security gate** que aparecer após a primeira execução. Verificar o nome efetivo e exigir branch atualizada; considerar restrição de bypass para administradores. Se plano/permissão impedir, registrar a limitação para R21.
+A execução remota [37868988723](https://github.com/leandro-infnet/medical-appointment-api/actions/runs/37868988723), no commit `df35db5d98ad2e9e173bc3498cc257f28e06cb43`, foi aprovada. O artefato `relatorios-seguranca` está preservado em `evidencias/ex12/github-actions/`: 214 testes sem falhas ou skips, quatro findings LOW do Bandit e nenhuma vulnerabilidade retornada pelo pip-audit.
 
-Sem essa configuração externa, falhar o workflow **não impede merge**. Não há print/run/merge bloqueado inventado; configuração e evidências remotas continuam pendentes. Não criar vulnerabilidade na API para provar vermelho. Os testes unitários provam o avaliador e a SCA real do pip antigo prova bloqueio local; isso não é run GitHub Actions.
+A [evidência GitHub Actions](../evidencias/ex12/github-actions.md) registra a criação da proteção de `main`: PR obrigatório, branch atualizada, check **Security gate** obrigatório e bypass desabilitado inclusive para administradores. As capturas também mostram aprovação no PR #12 e na main após seu merge. Isso documenta a configuração e o caminho de sucesso; ainda não foi demonstrado um PR com merge bloqueado por check reprovado.
+
+**Pendência de evidência R21:** registrar um run reprovado e a indicação de merge bloqueado no PR. O gate vermelho local e os testes do avaliador já demonstram rejeição pela política, mas não substituem essa observação remota. Uma demonstração controlada pode usar um PR temporário, destinado a ser fechado sem merge, com um teste deliberadamente falho e claramente identificado como experimento. Guardar URL do run/PR, relatório e captura do bloqueio; fechar o PR sem integrar o teste. Esse ensaio demonstra bloqueio por falha de teste, não uma vulnerabilidade real nem um finding HIGH de scanner. Não enfraquecer a proteção nem introduzir falhas na API para produzir a evidência. A criação desse PR não foi realizada nesta revisão.
 
 ## Referências primárias
 
