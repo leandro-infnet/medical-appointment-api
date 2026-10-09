@@ -1,0 +1,19 @@
+....................................................F................... [ 33%]
+........................................................................ [ 66%]
+.......................................................................  [100%]
+=================================== FAILURES ===================================
+________________ test_falha_controlada_para_demonstrar_bloqueio ________________
+tests/test_gate_demonstracao.py:3: in test_falha_controlada_para_demonstrar_bloqueio
+    assert False, "Falha deliberada para verificar o check obrigatorio"
+E   AssertionError: Falha deliberada para verificar o check obrigatorio
+E   assert False
+=============================== warnings summary ===============================
+../../../../../opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/fastapi/testclient.py:1
+  /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_gate_demonstracao.py::test_falha_controlada_para_demonstrar_bloqueio - AssertionError: Falha deliberada para verificar o check obrigatorio
+assert False
+1 failed, 214 passed, 1 warning in 41.20s

@@ -1,0 +1,11 @@
+{
+  "aprovado": false,
+  "exit_codes": {
+    "pytest": 1,
+    "bandit": 1,
+    "sca": 0
+  },
+  "motivos": [
+    "Teste obrigatório falhou."
+  ]
+}
