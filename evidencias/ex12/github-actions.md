@@ -25,6 +25,7 @@ e aprovação do check `Security gate`, sem bypass por administradores.
 - [Check obrigatório e bypass desabilitado](github-actions/images/image-03.png).
 - [Security gate aprovado no PR #12](github-actions/images/image-04.png).
 - [Security gate aprovado na main após o merge](github-actions/images/image-05.png).
+- [PR #15: Security gate reprovado e merge bloqueado](github-actions-failed/images/image-06.png).
 
-As imagens comprovam a configuração registrada. Não foi demonstrada
-uma tentativa de merge com o check reprovado.
+O PR #15 demonstrou bloqueio de merge após reprovação do check
+obrigatório por um teste deliberadamente falho.
