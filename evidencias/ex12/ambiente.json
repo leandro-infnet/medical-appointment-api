@@ -1,0 +1,15 @@
+{
+  "python": "3.14.4",
+  "sqlite": "3.46.1",
+  "pacotes": {
+    "bandit": "1.9.4",
+    "pip-audit": "2.10.1",
+    "cvss": "3.6",
+    "PyYAML": "6.0.3",
+    "defusedxml": "0.7.1",
+    "pytest": "9.1.1",
+    "fastapi": "0.141.1",
+    "sqlmodel": "0.0.47",
+    "pip": "26.2.1"
+  }
+}

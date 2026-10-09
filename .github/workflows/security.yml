@@ -1,0 +1,38 @@
+name: Seguranca
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, 'feat/**', 'docs/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-gate:
+    name: Security gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Atualizar ferramenta de instalacao
+        run: python -m pip install --upgrade 'pip>=26.2,<27'
+      - name: Instalar dependencias
+        run: python -m pip install -e '.[dev,security]'
+      - name: Testes, SAST, SCA e gate
+        run: python scripts/security_gate.py
+      - name: Preservar relatorios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-seguranca
+          path: reports/security/
+          if-no-files-found: error
+          retention-days: 14

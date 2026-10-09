@@ -1,0 +1,23 @@
+[
+  {
+    "id": "VUL-001",
+    "versao": "3.1",
+    "vetor": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N",
+    "score_base": 9.1,
+    "escopo": "risco histórico modelado; premissas e limitações em docs/devsecops.md"
+  },
+  {
+    "id": "VUL-002",
+    "versao": "3.1",
+    "vetor": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:N",
+    "score_base": 0.0,
+    "escopo": "provisório: ausência de headers observada, sem impacto C/I/A demonstrado; reavaliar implantação"
+  },
+  {
+    "id": "VUL-003",
+    "versao": "3.1",
+    "vetor": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N",
+    "score_base": 7.4,
+    "escopo": "risco histórico modelado; premissas e limitações em docs/devsecops.md"
+  }
+]

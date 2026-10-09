@@ -52,3 +52,6 @@ htmlcov/
 # Arquivos auxiliares de SQLite
 *.db-*
 *.sqlite3-*
+
+# Relatórios transitórios de CI; evidências revisadas ficam em evidencias/
+reports/

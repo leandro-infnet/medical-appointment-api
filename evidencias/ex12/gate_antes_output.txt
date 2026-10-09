@@ -1,0 +1,16 @@
+{
+  "aprovado": false,
+  "exit_codes": {
+    "pytest": 0,
+    "bandit": 1,
+    "sca": 1
+  },
+  "motivos": [
+    "SCA pendente de correção/triagem: PYSEC-2026-1795",
+    "SCA pendente de correção/triagem: PYSEC-2026-1796",
+    "SCA pendente de correção/triagem: PYSEC-2026-196",
+    "SCA pendente de correção/triagem: PYSEC-2026-2875",
+    "SCA pendente de correção/triagem: PYSEC-2026-2876",
+    "SCA pendente de correção/triagem: PYSEC-2026-3721"
+  ]
+}

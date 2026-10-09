@@ -141,6 +141,18 @@ CRUD, agenda e disponibilidade usam sessões injetadas; consultas são parametri
 
 [Decisões, schema, transações e limites](docs/persistencia.md); [evidências](evidencias/ex11/README.md): 181 testes passaram e 13 observações HTTP em dois processos demonstraram persistência, parametrização e controles anteriores. Testes usam arquivos temporários, sem alterar `.local` real. Scripts anteriores de evidência devem rodar nos respectivos baselines, sem sobrescrever o histórico; `evidencias/ex11/reproduzir.py` reproduz o incremento atual.
 
+## DevSecOps — Exercício 12
+
+O workflow `.github/workflows/security.yml` executa pytest, Bandit e pip-audit em PRs para main e pushes das branches do projeto. Bloqueia testes falhos/pulados, Bandit HIGH, vulnerabilidade SCA não triada ou análise inválida; preserva relatórios mesmo com reprovação. Não faz deploy e não usa secrets de produção.
+
+```bash
+.venv/bin/python -m pip install --upgrade 'pip>=26.2,<27'
+.venv/bin/python -m pip install -e '.[dev,security]'
+.venv/bin/python scripts/security_gate.py
+```
+
+[Política, fases SDLC, CVSS, impacto e matriz de testes](docs/devsecops.md); [evidências locais](evidencias/ex12/README.md). Os relatórios transitórios ficam em `reports/security/`. Para impedir merge, é necessário configurar o check **Security gate** como obrigatório na proteção de main após o primeiro run remoto. Essa configuração e evidência remota estão pendentes. ZAP passivo fica no Ex. 13; IAST é proposta não executada.
+
 ## Vídeo de apresentação
 
 O vídeo de apresentação será publicado nesta [pasta do Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
