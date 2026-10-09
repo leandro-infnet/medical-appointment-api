@@ -160,3 +160,11 @@ Escolha: tabelas internas separadas dos contratos Pydantic; cadastros fictícios
 Regra de sobreposição aprovada pelo responsável pelo projeto: 30 minutos por profissional, cancelada libera, demais estados aprovados bloqueiam, adjacência permitida. Criação/PATCH/reativação conflitantes geram 409. `BEGIN IMMEDIATE` reserva a escrita antes de ownership e conflito; falha provoca rollback. SQLite BUSY/LOCKED após timeout gera 503, não 404/409. A garantia exige que as escritas de negócio passem por esta API; SQL externo não possui constraint de exclusão.
 
 Consequências: SQLite permanece local e serializa escritores; não equivale a capacidade de produção. `create_all` não migra schema existente. Backup/restore, permissões operacionais, auditoria persistente e deploy continuam pendentes. Verificações: 181 testes e 13 observações em dois processos; detalhes em [persistência](persistencia.md).
+
+## DEC-24 — Pipeline e critério de bloqueio (Exercício 12)
+
+Escolha: GitHub Actions com Python 3.14, pytest obrigatório, Bandit em app/scripts e pip-audit das distribuições instaladas. Relatórios e códigos originais são preservados; execução termina reprovada para HIGH nativo do Bandit, qualquer advisory SCA não triado, teste falho/pulado ou análise operacionalmente inválida. Não converter severidades nativas em CVSS nem tratar score desconhecido como baixo. Sem exceções automáticas.
+
+Justificativa: histórico de acesso indevido (VUL-001), repetição de login (VUL-003) e headers ausentes (VUL-002) exige regressões de negócio que SAST/SCA não cobrem integralmente. CVSS v3.1 9,1/7,4/0,0 provisório ordena risco modelado; premissas/impacto separados em [DevSecOps](devsecops.md). ZAP entra na integração final Ex. 13; IAST instrumentado é candidato de homologação, não executado. Atualização do pip trata advisories reais relatados na cadeia local de instalação.
+
+Consequências: scanner indisponível bloqueia, nenhum segredo de produção no CI, relatórios são artefatos temporários. R21 exige proteção de branch externa: workflow sozinho não impede merge. Run/check obrigatório e bloqueio remoto permanecem pendentes; nenhum deploy autorizado.

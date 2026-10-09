@@ -1,4 +1,4 @@
-# Rastreabilidade — Exercícios 1 a 11
+# Rastreabilidade — Exercícios 1 a 12
 
 Esta matriz registra código e documentação efetivamente entregues. Os requisitos estão descritos em [requisitos.md](requisitos.md), e os controles e cenários de teste planejados estão em [threat-model.md](threat-model.md). Os Threat IDs do Ex. 4 identificam riscos e controles, sem declarar a execução de testes futuros.
 
@@ -6,6 +6,9 @@ Esta matriz registra código e documentação efetivamente entregues. Os requisi
 
 | Requisito | Exercício | Implementação / arquivo | Teste | Threat ID | Evidência | Rubrica / risco residual |
 | --- | --- | --- | --- | --- | --- | --- |
+| REQ-12.1: modalidades e priorização | 12 | `docs/devsecops.md`, DEC-24; SAST/SCA executados, DAST/IAST posicionados | Vetores CVSS v3.1 calculados, evidência histórica e premissas | VUL-001–003; TM-002/003/012/016 | `evidencias/ex12/cvss.json`, relatórios antes/depois | R19/R20; scores condicionais não alegam exploit |
+| REQ-12.2: security gate | 12 | `.github/workflows/security.yml`, `scripts/security_gate.py`, extra security | `test_security_gate.py`; aprovação/bloqueio, análise inválida, skips/exit codes e relatório antigo | CTRL-07/08/11 e regressões críticas | Logs/JUnit/JSON reais e gate local vermelho/verde | R21 parcial: run remoto/proteção/check obrigatório pendentes |
+| REQ-12.3: expansão STRIDE | 12 | `tests/test_regressoes_stride.py` + suíte anterior no gate | Cinco novos casos HTTP: GET/PATCH/DELETE cruzados, claim de papel e erro sem dado/gravação | TM-002/003/006/011/013, CTRL-01/02/05/09 | JUnit/pytest do Ex. 12 | R22; não substitui ZAP/IAST |
 | REQ-11.1: SQLModel relacional, sessão e configuração | 11 | `models/tabelas.py`, `database/session.py`, `settings.py`, `.env.example`; CRUD/HTML/M2M no SQLite | TEST-01/07/13/16/21: contratos, FK/CHECK, parâmetros, rollback, sessões, reinício, concorrência e 503 | TM-002/003/009/010/015, CTRL-02/08/09 | `evidencias/ex11/`: 181 testes e 13 observações; INSERT vinculado e dois processos | R18; SQLite local, escrita pela API; backup/operação externa pendentes |
 | REQ-10.1: CORS e headers | 10 | `app/network.py`, `Settings`, `.env.example` | TEST-15: origem/método/header permitidos e negados; HTML e erros; HSTS somente HTTPS | TM-012, CTRL-11 | `evidencias/ex10/respostas_http.json`, pytest e relatório | R17; HTTPS em processo não comprova TLS real |
 | REQ-10.2: limite diferenciado | 10 | `RateLimiter`, cotas por conexão e lifespan | TEST-14: 5/60 por minuto, grupo humano/M2M/MFA, 429/Retry-After, recuperação, IP e isolamento | TM-016/008, CTRL-07 | 20 tentativas comparadas ao baseline Ex. 8; JSON/execução/pytest | R17; NAT, workers e ataque distribuído residuais |
@@ -60,3 +63,5 @@ Esta matriz registra código e documentação efetivamente entregues. Os requisi
 **Exercício 10:** 163 testes passaram e 35 observações HTTP foram reproduzidas. VUL-002/003 mitigadas/verificadas no escopo local; preflight não consome cota nem exige JWT, CORS não substitui ownership, HSTS apenas em HTTPS. Dois avisos de dependências permanecem; sem TLS real, ZAP, teste de carga ou deploy. Decisões em DEC-22 e `docs/hardening.md`; futuras etapas continuam necessárias.
 
 **Exercício 11:** 181 testes passaram, incluindo dezoito casos novos de SQLite, e 13 observações HTTP foram reproduzidas em dois processos distintos. Memória substituída, DFD atualizado, sessão injetada, FK/CHECK, rollback e sobreposição concorrente verificados. Configuração não contém credenciais SQLite; nenhum banco/segredo na evidência. Parametrização real fecha a lacuna técnica SQLModel dos Ex. 8/9, sem resolver a aceitação acadêmica do ANTES didático ou do cenário paciente. Auditoria persistente, backup, ZAP/gate e deploy continuam pendentes. [Decisões e riscos](persistencia.md).
+
+**Exercício 12:** implementação local de workflow/gate, SAST/SCA e expansão de pytest. O gate foi bloqueado por advisories reportados para pip 25.1.1; ferramenta atualizada para 26.2.1 e nova execução aprovada, 214 testes passando, preservada em `evidencias/ex12/depois/`. Política, scores CVSS históricos, impacto e triagem em `docs/devsecops.md`. Runs GitHub/check obrigatório, DAST e IAST não foram executados nesta etapa; R21 permanece parcial até evidência remota/proteção.

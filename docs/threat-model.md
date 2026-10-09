@@ -1,6 +1,6 @@
 # Exercício 4 — Misuse cases e threat model STRIDE
 
-> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–16 registram evolução e evidências dos Ex. 6–11; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
+> Histórico: seções 1–10 preservam o planejamento dos Ex. 4/5. As seções 11–17 registram evolução e evidências dos Ex. 6–12; prevalecem sobre estados anteriores “futuro/planejado”. O snapshot inicial permanece em `evidencias/ex04/`.
 
 
 ## 1. Escopo, baseline e método
@@ -320,3 +320,11 @@ D-01 passa de memória para SQLite em arquivo. TB-04 é o acesso processo/arquiv
 | TM-007/011/012 | CTRL-08/09 | SQLite ocupado retorna erro mínimo 503; banco não é trilha de auditoria. Permissões de arquivo, backup/restore e segurança operacional pendentes |
 
 Verificações: 181 testes, 13 observações HTTP em dois processos e versões reais preservadas em Ex. 11. [Persistência](persistencia.md) distingue configuração externa, credenciais não aplicáveis ao SQLite, garantia transacional e limitações. ZAP, CVSS, gate e liberação ainda não executados nesta etapa.
+
+## 17. Verificação contínua — Exercício 12 / versão 1.8
+
+Não há novos atores, rotas ou fluxos clínicos. O pipeline externo verifica código/dependências e testes com dados efêmeros; não possui credenciais de produção ou faz deploy. `docs/devsecops.md` liga modalidades/SDLC, política, CVSS/impacto e matriz TM→teste→evidência.
+
+TM-002/003 recebe GET/PATCH/DELETE cruzados com alheio/inexistente indistinguíveis e nenhuma mutação/listagem indevida. TM-013 verifica que claim extra de administrador/MFA em token controlado não substitui papel confiável. TM-006/011 verifica erro sem eco sensível nem gravação. TEST-07/08/09/10/12/22 são ampliados, além das regressões JWT/M2M/SQL/XSS/rede existentes. Falha dessas verificações bloqueia integração independentemente do score.
+
+Bandit HIGH e todo advisory SCA não triado bloqueiam; análises inválidas/ausentes e testes pulados também. CVSS histórico 9,1/0,0 provisório/7,4 é avaliação de risco com premissas explícitas; não conversão das severidades nativas nem relato de exploração não executada. Gate exercitado localmente com scanners reais e vulnerabilidades de tooling antes/depois; testes de decisão também usam fixtures fictícias identificadas. TM-007, TLS real/implantação, DAST/ZAP, IAST e avaliação de liberação continuam residuais/pendentes. Check GitHub obrigatório não foi configurado nesta implementação.
