@@ -1,6 +1,6 @@
-# Evidências do Exercício 3 — CIA e DFD
+# Evidências — Exercício 3
 
-## Artefatos entregues
+Análise documental: CIA-01–08, OWASP/SSDF/CWE e DFD F-01–10/TB-01–04; R05/R06. [Relatório](../../docs/cia-dfd.md).
 
 | Artefato | Finalidade / rubrica |
 | --- | --- |
@@ -11,13 +11,9 @@
 | [Revisão documental](revisao_documental.md) | Verificações dos percursos, dados, controles, fronteiras e limites da etapa |
 | [Baseline e hashes](baseline.txt) | Commit/branch analisados e hashes do relatório, fonte e código inspecionado |
 
-O relatório é o documento técnico desta etapa e deve acompanhar estes artefatos no ZIP. Não é necessário duplicá-lo nesta pasta. Evidências de execução dos controles reutilizadas: [JSON/HTML Ex. 2](../ex02/README.md), [pytest Ex. 2](../ex02/pytest_output.txt) e [fundação Ex. 1](../ex01/README.md).
+## Exportação histórica
 
-## Renderização efetivamente executada
-
-Mermaid **10.9.3** foi obtido como ferramenta temporária de exportação, sem alteração das dependências Python. Um HTML temporário carregou a fonte `.mmd` com `mermaid.render`, `securityLevel: 'strict'`, `htmlLabels: false` e `startOnLoad: false`. O Chromium executou a renderização com orçamento virtual de 10 segundos e produziu DOM e screenshot. O indicador `data-rendered="true"` foi conferido; o SVG foi extraído do DOM renderizado e salvo.
-
-Comando final de captura utilizado, na raiz (arquivos temporários removidos após exportação):
+Mermaid 10.9.3 em HTML local: securityLevel strict, htmlLabels false, startOnLoad false. Chromium renderizou com orçamento de 10 s; SVG extraído do DOM e PNG inspecionado. Comando usado:
 
 ```bash
 chromium --headless --disable-gpu --no-sandbox \
@@ -27,11 +23,6 @@ chromium --headless --disable-gpu --no-sandbox \
   "file://$PWD/.dfd-render-ex03.html"
 ```
 
-`--no-sandbox` foi usado para renderizar exclusivamente fonte local fictícia, sem navegar entradas externas; não é recomendação de navegação de produção. Houve aviso DBus, sem impedir a exportação. Para visualizar novamente, abrir `dfd-atual.svg` ou o Mermaid do relatório em um visualizador compatível. Para atualizar a exportação, usar a fonte `.mmd` com Mermaid 10.9.3; conservar IDs e conferir novamente fluxos e fronteiras. Ferramentas de renderização não fazem parte da API.
+Arquivos temporários da exportação foram removidos. no-sandbox foi usado apenas no conteúdo fictício local; não configura a API. Para nova exportação, renderizar a fonte Mermaid e conferir IDs/fluxos. Os arquivos desta pasta preservam a arquitetura daquele baseline, não o DFD final.
 
-## Critérios atendidos
-
-- **R05:** análise de C/I/A com consequências e limites, mais controle → código → teste/evidência em OWASP, NIST SSDF e MITRE. As fontes oficiais estão ligadas aos itens no relatório.
-- **R06:** DFD básico com dados de pacientes, consumidores, processos, depósito, fluxos direcionados e trust boundary externa. O limite lógico dos dados internos é explicitamente distinto de isolamento de processo; parceiro e banco são futuros.
-
-O Ex. 3 altera documentação e artefatos de evidência. Não altera endpoints, modelos, templates nem testes da aplicação. Não houve nova execução de pytest, Uvicorn, ZAP, teste de carga ou teste concorrente. O baseline de testes do Ex. 2 permanece histórico: 16 testes passaram. A ausência de autorização e a perda dos dados após reinício continuam registradas, sem alegação de liberação para produção.
+A etapa não executou pytest/scanner/ataques. Testes citados dos Ex. 1/2 são históricos. Baseline e revisão registram as verificações documentais.

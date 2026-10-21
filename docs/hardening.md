@@ -1,67 +1,33 @@
-# Exercício 10 — Rede e proteção contra abuso
+# Hardening — Exercício 10
 
-## Configuração e justificativa
+## Configuração adotada
 
-| Controle | Configuração adotada | Motivo |
+| Controle | Valor | Justificativa |
 | --- | --- | --- |
-| CORS | `CORS_ORIGINS=["http://localhost:5173"]` | Origem explícita de demonstração; não há frontend novo |
-| Métodos | GET, POST, PATCH, DELETE | Operações usadas pela aplicação |
-| Headers de entrada | Authorization e Content-Type, além dos headers CORS simples | Bearer e JSON/Form existentes |
-| Credenciais CORS | `allow_credentials=False` | API usa bearer explícito; cookie permanece exclusivo da agenda no mesmo site |
-| Headers de saída expostos | Retry-After | Consumidor permitido pode conhecer quando tentar novamente |
-| Frame | `X-Frame-Options: DENY` | A agenda não precisa ser embutida em frames |
-| MIME | `X-Content-Type-Options: nosniff` | Impedir inferência indevida do tipo de conteúdo |
-| HSTS | `max-age=31536000`, somente HTTPS | Política de um ano, sem assumir controle de subdomínios ou preload |
-| Credenciais | 5 requisições em 60 segundos por IP | Limitar a sequência de força bruta observada no Ex. 8 |
-| Geral | 60 requisições em 60 segundos por IP | Diferenciar leitura/CRUD dos endpoints de credenciais |
+| CORS | `CORS_ORIGINS=["http://localhost:5173"]` | Origem exata de demonstração; sem wildcard |
+| Métodos/headers | GET/POST/PATCH/DELETE; Authorization/Content-Type | Contratos JSON/Form existentes |
+| Credenciais CORS | false; expõe Retry-After | Bearer explícito; cookie somente na agenda de mesma origem |
+| Enquadramento/MIME | X-Frame-Options DENY; X-Content-Type-Options nosniff | Agenda sem frames; impedir inferência de MIME |
+| HSTS | max-age=31536000, somente HTTPS | Um ano; sem pressupor subdomínios/preload |
+| Credenciais | 5 requisições/60 s/IP | Limitar repetição observada no Ex. 8 |
+| Geral | 60 requisições/60 s/IP | Cota menos restritiva para as demais operações |
 
-Origem, limites e valores dos headers são **recomendações de engenharia adotadas no projeto**; o enunciado exige os controles, sem determinar esses números. São parâmetros para demonstração local, não capacidade ou adequação de produção medida. Os limites podem ser alterados por `LOGIN_RATE_LIMIT` e `GENERAL_RATE_LIMIT`; a janela permanece 60 segundos. Settings rejeita cotas não positivas ou uma cota de credenciais igual/maior que a geral.
+Valores são decisões de projeto; a exigência acadêmica é implementar os controles. `Settings` rejeita origens malformadas/wildcard e cota de credenciais igual/maior que a geral. Limites configuráveis por `LOGIN_RATE_LIMIT` e `GENERAL_RATE_LIMIT`.
 
-`Settings` valida origens HTTP(S) completas, sem wildcard, usuário/senha, caminho ou fragmentos, com porta válida. Configuração por `.env.example` é pública; `.env` e credenciais locais nunca entram no Git ou ZIP.
+## Ordem e comportamento
 
-## Fluxo HTTP
+`app/network.py`: headers → CORS/preflight → rate limiting → JWT → validação/autorização/operação. Preflight permitido não exige token nem consome cota; origem/método/header proibido retorna 400. Requisição simples de origem negada pode receber 200 sem ACAO. CORS não dispensa JWT nem impede cliente HTTP direto.
 
-`app/network.py` usa middleware ASGI e o `CORSMiddleware` do Starlette. A composição é:
+Login humano, M2M e MFA compartilham a cota de credenciais. Janela móvel usa relógio monotônico e lock; excesso retorna 429, Retry-After e no-store antes de bcrypt/operação. Negativas 429 não prolongam janela. Chave usa endereço da conexão; executar Uvicorn direto com `--no-proxy-headers` evita confiar em encaminhamento enviado pelo cliente.
 
-```text
-Headers de segurança
-    → CORS / preflight
-        → rate limiting
-            → middleware JWT
-                → validação, autorização e operação
-```
+HSTS depende de HTTPS; não habilita TLS nem protege a primeira conexão HTTP. TestClient em HTTPS verifica header, não certificado/browser. Com proxy futuro, definir origem confiável e validar esquema/IP.
 
-Preflight permitido responde sem exigir JWT e não consome cota; preflight com origem, método ou header proibido retorna 400. Uma requisição simples de origem externa pode continuar retornando HTTP 200, mas sem `Access-Control-Allow-Origin`. CORS restringe o acesso do navegador à resposta, não autentica o cliente nem impede chamadas de curl/laboratório.
+## Evidências e limites
 
-Origin permitido não dispensa bearer: `/consultas` sem JWT continua 401. Métodos/scopes/papéis e ownership existentes permanecem aplicados. Os headers acompanham preflight, HTML autorizado e respostas verificadas 200, 400, 401, 403, 404, 422 e 429. Exceções internas inesperadas/500 e comportamento de proxy serão revisados na integração/auditoria final; não extrapolar essa cobertura.
+- VUL-002/TM-012/TEST-15: DENY/nosniff em sucesso/erros; HSTS em HTTPS em processo, ausente em HTTP; CORS permitido/negado.
+- VUL-003/TM-016/008/TEST-14: das mesmas 20 falhas de login, cinco 401 e demais 429; login conhecido permitido após a janela.
+- [Ex. 10](../evidencias/ex10/README.md): 163 testes e 35 observações HTTP, incluindo status 200/400/401/403/404/422/429 e recuperação por relógio controlado.
 
-## Limitação de requisições
+Contador em memória é local a um processo: NAT compartilha cota; reinício/workers/IPs distribuídos limitam a proteção. Sem teste de capacidade ou TLS real. No capstone, CSP da agenda e no-store das respostas protegidas foram acrescentados; detalhes e riscos no [relatório final](relatorio-capstone.md).
 
-O limitador usa janela móvel de 60 segundos, relógio monotônico, filas de instantes e lock para a checagem/gravação conjunta. Cada cliente tem duas cotas independentes: `credenciais` e `geral`.
-
-- `/auth/token`, `/auth/m2m/token` e `/auth/mfa` compartilham a cota de cinco, incluindo sucesso, erro de credencial e entrada inválida. Evita transferir tentativas de login para outro endpoint de autenticação.
-- As demais requisições, incluindo diagnóstico e documentação, usam a cota de 60. Preflight CORS é atendido antes do limitador.
-- Ao exceder a cota, retornar 429, `Retry-After` inteiro arredondado para cima e `Cache-Control: no-store`, antes de bcrypt/JWT/operação.
-- Negativas 429 não acrescentam tentativas nem prolongam a janela. Requisições aceitas voltam a consumir cota após o período pertinente.
-- A chave usa o endereço de `request.client`; `X-Forwarded-For` não é lido pelo limitador. A configuração padrão de proxy do Uvicorn pode transformar esse endereço; para a demonstração direta, usar `--no-proxy-headers`.
-- Estado novo a cada lifespan; entradas inativas são removidas. Não há persistência ou coordenação entre processos.
-
-**Limitações:** usuários atrás de NAT compartilham IP e podem bloquear uns aos outros; atacante distribuído pode trocar IPs; reiniciar o processo ou usar vários workers altera a proteção. Muitos IPs ativos ainda podem pressionar memória/CPU. Não apresentar esse contador como defesa completa de disponibilidade ou bloqueio definitivo de força bruta. Estes riscos devem entrar na decisão do Capstone.
-
-## HTTPS e HSTS
-
-HSTS é enviado somente quando o esquema ASGI é HTTPS. Não habilita TLS, não protege a primeira conexão HTTP e não substitui certificado válido. IPs não são hosts HSTS de navegador. A evidência usa `https://clinica.example` no TestClient para verificar a resposta, sem handshake, certificado ou navegador real. O HTTP local recebe DENY/nosniff, sem HSTS.
-
-Com proxy TLS futuro, confiar apenas no proxy configurado e verificar a representação correta do esquema/IP. `includeSubDomains`, preload e redirecionamento HTTPS não foram adicionados sem um domínio/topologia de implantação definidos. A especificação é a [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797), especialmente tratamento em transporte seguro/inseguro; o [CORS do FastAPI](https://fastapi.tiangolo.com/tutorial/cors/) descreve a configuração de origens e credenciais.
-
-## Findings e rastreabilidade
-
-| Finding / requisito | Ameaça / controle / teste | Resultado |
-| --- | --- | --- |
-| VUL-002 / R17 | TM-012, CTRL-11, TEST-15 | DENY/nosniff nas respostas verificadas; HSTS em HTTPS em processo; TLS real pendente |
-| VUL-003 / R17 | TM-016/008, CTRL-07, TEST-14 | Das mesmas 20 tentativas inválidas, primeiras cinco → 401, demais → 429; senha correta aguarda janela; depois → 200 |
-| CORS / REQ-10 | CTRL-11, TEST-15 | Origem exata e preflight verificados; origem negada sem concessão; JWT permanece obrigatório |
-
-`tests/test_hardening.py` acrescenta 31 casos. A suíte integrada passou em **163 testes**, com dois avisos de dependências. Um teste anterior de cinco erros MFA avança somente o relógio do limitador: verifica o orçamento do desafio sem ser interrompido pela cota HTTP; a cota real é exercitada pelos testes de hardening.
-
-[Evidências](../evidencias/ex10/README.md): 35 observações HTTP, versão/configuração, sequência de abuso, recuperação, HTML e saída pytest. Nenhum teste de carga, scan ZAP, TLS real, pipeline ou deploy foi executado neste exercício. SQLModel continua no Ex. 11; lacunas acadêmicas dos Ex. 8/9 permanecem explicitadas nos respectivos relatórios.
+Referências: [RFC 6797 HSTS](https://www.rfc-editor.org/rfc/rfc6797), [FastAPI CORS](https://fastapi.tiangolo.com/tutorial/cors/).

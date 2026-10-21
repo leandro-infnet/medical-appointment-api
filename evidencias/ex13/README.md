@@ -6,8 +6,8 @@
 - Digest efetivamente usado: `sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6`.
 - ZAP **2.17.0**, `mode=safe`, active scanners desabilitados, sem spider/active scan.
 - Alvo `http://127.0.0.1:8001`; proxy/API ZAP `http://127.0.0.1:8090`.
-- Cada execução iniciou aplicação com banco/cadastro temporários e credenciais fictícias aleatórias descartadas ao encerrar. MFA simulado, cinco emissões/conclusões no grupo de credenciais, quotas normais 5/60. Cookie Secure desabilitado somente neste ambiente HTTP local.
-- 25 requisições controladas por execução: raiz, schema, Swagger, login profissional/recepção/admin, MFA, CRUD, agenda bearer/cookie, M2M, vínculo proibido, campo extra, papéis e tokens de finalidade incompatível.
+- Banco/cadastro/credenciais efêmeros; MFA simulado, quotas 5/60; Secure=false somente neste HTTP local.
+- 25 requisições por execução: raiz/schema/Swagger, login/MFA, CRUD, cookie/agenda, M2M e negativas de vínculo/papel/campo extra/finalidade.
 - Não houve download/execução de JS do CDN pelo navegador nem verificação de TLS. XSS/SQL/ownership são complementados pelos testes existentes, não comprovados por um scan passivo.
 
 Comandos executados (Docker precisa de acesso ao daemon; portas devem estar livres):
@@ -23,7 +23,7 @@ docker run --rm -d --name at-capstone-zap --network host \
 .venv/bin/python scripts/zap_passivo.py --output evidencias/ex13/zap-depois
 ```
 
-O script usa a API local do ZAP, cria uma nova sessão e apaga somente essa sessão de scan; usar instância dedicada. Não utilizar servidor/banco real. Para reproduzir no futuro, preferir o digest acima e diretórios novos em `reports/`; o script recusa sobrescrever diretório existente. `--network host` corresponde à execução Linux, não é instrução portátil para todo Docker Desktop. API sem chave é exclusiva de loopback e de instância temporária.
+Usar instância ZAP dedicada: o script cria uma nova sessão e recusa sobrescrever diretório de saída. Reprodução futura: mesmo digest, portas livres e saída nova em `reports/`. Comandos correspondem a Linux com network host; API sem chave apenas em loopback temporário.
 
 | Artefato | Conteúdo |
 | --- | --- |
@@ -50,4 +50,4 @@ Comando executado após os testes adicionais de login/scopes e organização do 
 
 Resultado: 233 passed, dois avisos de depreciação; Bandit com seis LOW (dois novos no executor de tráfego), SCA sem findings, gate aprovado. A triagem dos LOW e a decisão residual DAST estão no relatório final.
 
-A instância temporária foi encerrada com `docker stop at-capstone-zap`. A separação do gerador de tráfego no script foi conferida em `reports/capstone-verificacao/`, com as mesmas 25 requisições e 14 instâncias de alertas; esse diretório é transitório e não integra a entrega. Após ajuste do formulário do teste de login, os 19 casos de `tests/test_capstone.py` passaram novamente.
+A instância foi encerrada com `docker stop at-capstone-zap`. O script reorganizado foi conferido em saída transitória, com 25 requisições/14 alertas. Após ajuste do formulário de login, os 19 testes de capstone passaram novamente.

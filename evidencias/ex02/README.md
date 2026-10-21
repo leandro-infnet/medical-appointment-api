@@ -1,6 +1,6 @@
-# Evidências do Exercício 2
+# Evidências — Exercício 2
 
-## Resultado e rubrica
+16 testes aprovados; response models com seis campos, Jinja2 com herança e auto-escape. R02–R04; justificativa em [DEC-13](../../docs/decisoes.md).
 
 | Critério | Implementação | Evidência |
 | --- | --- | --- |
@@ -8,21 +8,11 @@
 | R03: justificar risco de exposição | [DEC-13](../../docs/decisoes.md): o contrato anterior declarava notas e auditoria; allowlist própria reduz vazamentos | Evidência histórica do Ex. 1 comparada com JSON atual e teste de preservação do armazenamento |
 | R04: herança Jinja2 e proteção XSS | `agenda.html` estende `base.html`; auto-escape explícito e contexto mínimo | [agenda_xss.html](agenda_xss.html), [agenda_xss.png](agenda_xss.png), [payloads.json](payloads.json), testes com script e imagem/handler |
 
-## Artefatos efetivamente gerados
+`pytest_output.txt` registra a suíte; `ambiente_versao.txt` registra versões; `agenda_vazia.html` mostra dia sem consultas. O PNG foi capturado do HTML local recebido da rota, com script exibido como texto.
 
-- [pytest_output.txt](pytest_output.txt): `.venv/bin/python -m pytest tests/ -v`; **16 passed**, dois avisos de depreciação de Starlette/httpx e alias AnyIO. A primeira execução detectou apenas uma diferença de representação de entidades HTML no teste; a verificação final usa parsing HTML para comprovar texto e ausência das tags executáveis.
-- [ambiente_versao.txt](ambiente_versao.txt): versões instaladas desta etapa; Python 3.14.4. `pip install -e '.[dev]'` concluiu, incluindo tzdata.
-- [respostas_http.json](respostas_http.json): respostas HTTP reais em processo via TestClient (POST, GET individual/listagem, PATCH e agenda), campos armazenados e campos mínimos no contexto HTML.
-- [payloads.json](payloads.json): criação fictícia e ataque didático no status; sem dados ou credenciais reais.
-- [agenda_xss.html](agenda_xss.html): corpo recebido da rota; `<script>alert(1)</script>` persistido em memória é recebido como `&lt;script&gt;alert(1)&lt;/script&gt;`.
-- [agenda_vazia.html](agenda_vazia.html): estado vazio de outro dia.
-- [agenda_xss.png](agenda_xss.png): screenshot real do HTML acima aberto no Chromium headless, com o script apresentado como texto. O print foi inspecionado; não é uma imagem simulada.
+## Reprodução histórica
 
-## Como reproduzir o baseline histórico
-
-O script abaixo pertence à versão do Ex. 2, anterior à autenticação, e deve rodar naquele baseline. Na aplicação autenticada, use `evidencias/ex06/reproduzir.py`. Preserve as saídas históricas sem regenerá-las no incremento atual.
-
-Na raiz, com dependências instaladas:
+Usar baseline do Ex. 2, anterior à autenticação; comandos originais:
 
 ```bash
 .venv/bin/python -m pytest tests/ -v
@@ -33,12 +23,4 @@ chromium --headless --disable-gpu --no-sandbox \
   "file://$PWD/evidencias/ex02/agenda_xss.html"
 ```
 
-`--no-sandbox` foi usado somente para a captura local de um arquivo fictício; não é configuração recomendada para navegar conteúdo externo. Chromium gerou o PNG apesar de avisos do Snap/DBus. Adapte o executável ao sistema; Chromium é auxiliar para evidência, não dependência da API.
-
-O gerador utiliza processo e memória próprios, limpa antes/depois e não afeta um servidor Uvicorn em execução. A captura usa o HTML salvo; o formulário no screenshot não representa uma sessão conectada ao servidor. Para demonstração interativa, iniciar Uvicorn conforme README, criar uma consulta e abrir `/agenda?dia=2026-10-03`.
-
-## Limites e continuidade
-
-A memória representa persistência apenas durante este processo; SQLModel será introduzido no Ex. 11. O status ainda aceita texto livre, comportamento anterior utilizado no experimento; catálogo de estados será definido antes da validação estrita. Autenticação e autorização estão pendentes para o Ex. 6: minimização/escape não impedem acesso anônimo nem BOLA. Fuso provisório: `America/Sao_Paulo` (DEC-14).
-
-Rastreabilidade: [docs/rastreabilidade.md](../../docs/rastreabilidade.md). Reutilizar testes e payloads na modelagem de ameaças, correção XSS e auditoria final, preservando estas evidências históricas.
+Preservar as saídas anteriores. Chromium é ferramenta de captura, não dependência da API; no-sandbox foi limitado ao HTML local fictício. O screenshot não é login/navegação conectada.

@@ -1,168 +1,85 @@
 # API de Agendamento de Consultas Médicas
 
-API REST desenvolvida com FastAPI para agendamento de consultas médicas em uma rede de clínicas. Os Exercícios 1 e 2 entregam o CRUD modular, respostas JSON com campos controlados e agenda diária HTML com herança Jinja2 e escape de saída. O Exercício 6 adiciona bcrypt, JWT, MFA administrativo simulado e autorização por papel/vínculo/recurso. O Exercício 11 persiste consultas com SQLModel e SQLite; execute localmente com dados fictícios.
+API REST em FastAPI, com CRUD de consultas, agenda HTML em Jinja2 e disponibilidade para laboratório via OAuth 2.0 M2M. Consultas persistem em SQLModel/SQLite; autenticação usa bcrypt, JWT e MFA administrativo simulado.
 
-## Requisitos
+## Instalação e execução local
 
-- Python 3.11+ (desenvolvido e testado com Python 3.14)
-- Ambiente virtual isolado (`.venv`)
+Python 3.11+; desenvolvimento e testes em Python 3.14. Dependências declaradas no `pyproject.toml`, sem lockfile.
 
-## Instalação
-
-1. Clone o repositório e navegue até a pasta do projeto:
-```bash
-cd /caminho/do/projeto
-```
-
-2. Crie e ative o ambiente virtual:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+pip install -e '.[dev]'
+cp .env.example .env
 ```
 
-3. Instale as dependências:
+Configurar `JWT_SECRET` com chave aleatória de pelo menos 32 bytes e `MFA_SIMULATED_CODE` com seis dígitos fictícios. Para gerar uma chave local:
+
 ```bash
-pip install -e ".[dev]"
+.venv/bin/python -c 'import secrets; print(secrets.token_urlsafe(48))'
+.venv/bin/python -m app.auth.provision
 ```
 
-O manifesto declara versões mínimas. As versões usadas na demonstração do Exercício 1 estão em `evidencias/ex01/ambiente_versao.txt`; ainda não há lockfile.
-
-As versões do Exercício 2 constam em `evidencias/ex02/ambiente_versao.txt`. `tzdata` fornece a base de fusos IANA quando ela não existe no sistema operacional.
-
-## Configurar identidade antes de executar
-
-Copie `.env.example` para `.env`, defina a chave JWT aleatória e o código MFA fictício e execute `.venv/bin/python -m app.auth.provision`. Para cookie da agenda em HTTP local, configure explicitamente `AGENDA_COOKIE_SECURE=false`; o padrão exige HTTPS. Sem configuração/cadastro válido, o startup falha. Senhas são solicitadas sem eco e ficam somente como bcrypt no cadastro ignorado `.local/usuarios.json`.
-
-Passos completos, contas, login, MFA e navegação estão em [docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md). Nunca incluir `.env`, cadastro, credenciais reais ou tokens no repositório/ZIP.
-
-## Execução do Servidor
-
-Para iniciar a aplicação com recarregamento automático (modo de desenvolvimento):
+O provisionamento solicita senhas sem eco e cria `.local/usuarios.json` com hashes bcrypt. Configuração/cadastro inválidos impedem o startup. Para agenda no navegador em HTTP local, usar `AGENDA_COOKIE_SECURE=false`; o padrão é HTTPS.
 
 ```bash
 .venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --no-proxy-headers
 ```
 
-A documentação interativa OpenAPI (Swagger UI) estará disponível em:
-- [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+Documentação: [Swagger](http://127.0.0.1:8000/docs), [ReDoc](http://127.0.0.1:8000/redoc) e `/openapi.json`.
 
-## Consultas e agenda diária
+**Excluir `.env`, bancos, cadastro de contas, segredos, ambiente virtual e caches do Git/ZIP.** Manter `.env.example` sem credenciais reais.
 
-As respostas de criação, listagem, leitura e atualização contêm somente `id`, `paciente_id`, `profissional_id`, `data_hora`, `motivo` e `status`. `observacoes_internas`, `criado_em` e `atualizado_em` permanecem no armazenamento, mas não saem no JSON.
+## Acesso e regras
 
-Após login como recepção e criação da sessão em `POST /auth/agenda-session`, abra [http://127.0.0.1:8000/agenda](http://127.0.0.1:8000/agenda) para o dia atual da clínica, ou `/agenda?dia=2026-10-03` para uma data explícita. A página apresenta horário, IDs de consulta/paciente/profissional e status; não recebe motivo clínico nem notas internas. Data inválida resulta em HTTP 422; dia vazio tem mensagem própria.
+| Consumidor | Operação permitida |
+| --- | --- |
+| Profissional | CRUD JSON somente de consultas dos pacientes vinculados a ele |
+| Recepção | Agenda diária HTML, sem motivo clínico ou notas internas |
+| Administrador | `/admin/status` após MFA simulado, sem acesso clínico |
+| Laboratório | Somente disponibilidade, com scope `disponibilidade:ler` |
 
-**Decisão de domínio aprovada para a demonstração (DEC-19):** `America/Sao_Paulo` como fuso da clínica. Horários sem offset são interpretados nesse fuso; horários com offset são convertidos antes de filtrar o dia. Esta convenção não foi imposta pela disciplina; foi aprovada no incremento de disponibilidade. A escolha é explicada em [docs/decisoes.md](docs/decisoes.md).
+- CRUD: `POST /consultas`, `GET /consultas`, `GET/PATCH/DELETE /consultas/{id}`.
+- JSON de sucesso: `id`, `paciente_id`, `profissional_id`, `data_hora`, `motivo`, `status`. Notas internas e timestamps ficam fora da resposta.
+- Agenda: após login como `recepcao`, executar `POST /auth/agenda-session` com bearer e abrir `/agenda?dia=2026-10-20`. Logout: `DELETE /auth/agenda-session` com bearer.
+- Login admin: `/auth/token` devolve desafio 202; concluir `/auth/mfa` antes de usar o bearer administrativo.
+- Consultas de 30 minutos no fuso `America/Sao_Paulo`; canceladas liberam horário. Sobreposição para o mesmo profissional gera 409, inclusive no PATCH.
+- Disponibilidade: dias úteis, 08h–18h, por profissional. A consulta de disponibilidade não reserva horário; o CRUD não restringe expediente/fim de semana.
 
-A agenda é restrita à recepção autenticada. CRUD JSON exige bearer profissional e vínculo confiável. Escape HTML evita interpretação das entradas como marcação; não substitui controle de acesso.
+[Contrato humano](docs/autenticacao-autorizacao.md) e [contrato M2M](docs/integracao-m2m.md).
 
-## Execução dos Testes Automatizados
+### Habilitar laboratório
 
-Para rodar a suíte de testes com pytest:
+Executar `.venv/bin/python -m app.auth.provision_m2m`, copiar o hash para `M2M_CLIENT_SECRET_HASH` no `.env` e reiniciar. Sem hash, M2M fica desativado. Solicitar token em `POST /auth/m2m/token` com Basic e formulário `grant_type=client_credentials`; usar o bearer em `/disponibilidade?dia=2026-10-20&profissional_id=1`.
 
-```bash
-.venv/bin/python -m pytest tests/ -v
-```
-
-## Estrutura de Módulos
-
-A aplicação segue a organização modular de responsabilidades separadas:
-- `app/main.py`: Ponto de entrada e composição da aplicação FastAPI.
-- `app/routes/`: Roteadores HTTP (`APIRouter`) tratando requisições, status e parâmetros.
-- `app/models/`: Schemas Pydantic para validação de entrada e saída.
-- `app/database/`: Camada de gerenciamento de dados e persistência.
-- `app/templates/`: Layout HTML compartilhado (`base.html`) e agenda que o estende, com auto-escape explícito.
-- `docs/`: Documentação técnica de arquitetura, requisitos e decisões.
-- `evidencias/`: Evidências de execução de cada exercício do Assessment.
-- `tests/`: Suíte de testes automatizados com pytest.
-
-## Evidências do Exercício 2
-
-[evidencias/ex02/README.md](evidencias/ex02/README.md) relaciona requisitos, testes, respostas HTTP, HTML e screenshot real. O script `evidencias/ex02/reproduzir.py` é histórico e deve ser executado no baseline do Ex. 2, sem autenticação. Não executá-lo na versão atual nem sobrescrever evidências antigas. A reprodução autenticada está em `evidencias/ex06/reproduzir.py`.
-
-## Análise de segurança — Exercício 3
-
-[docs/cia-dfd.md](docs/cia-dfd.md) analisa confidencialidade, integridade e disponibilidade, mapeia OWASP/NIST SSDF/MITRE a controles existentes e apresenta o DFD do incremento atual. A fonte editável está em [docs/dfd-atual.mmd](docs/dfd-atual.mmd); exportação e revisão estão em [evidencias/ex03/README.md](evidencias/ex03/README.md).
-
-A exportação do Ex. 3 preserva JSON, HTML e memória daquele baseline. A fonte atual inclui identidade/políticas, M2M e persistência SQLModel/SQLite. IDs de ativos, processos, fluxos e fronteiras serão reutilizados no STRIDE do Exercício 4. O mapeamento e seus limites constam em [docs/rastreabilidade.md](docs/rastreabilidade.md).
-
-## Modelagem de ameaças — Exercício 4
-
-[docs/threat-model.md](docs/threat-model.md) consolida 12 misuse cases, as seis categorias STRIDE nos três processos reais do DFD, 16 ameaças e sua relação com ativos, superfícies, controles, testes e riscos residuais. A versão inicial registra JWT, M2M e SQL como futuros naquele baseline. As extensões registram autenticação, M2M, hardening e a migração SQLModel, distinguindo o histórico do estado atual.
-
-[evidencias/ex04/README.md](evidencias/ex04/README.md) registra a revisão e preserva a versão inicial para comparar com os incrementos seguintes. Os testes existentes de filtragem JSON e escape HTML estão vinculados a TM-004/TM-005 como evidências históricas. As mitigações futuras e os respectivos testes não estão marcados como executados.
-
-## Arquitetura de segurança — Exercício 5
-
-[docs/arquitetura-seguranca.md](docs/arquitetura-seguranca.md) descreve partições, fluxos, fronteiras e doze vetores nos eixos design, implementação e infraestrutura. Localiza CTRL-01–11 e registra decisões de identidade, autorização por recurso, autenticação HTML, middleware, rede e persistência que orientarão os incrementos seguintes.
-
-Nesse baseline histórico, o código permanecia no estado funcional dos Exercícios 1/2; os componentes futuros estão identificados como planejados. Fonte Mermaid, SVG, screenshot e revisão estão em [evidencias/ex05/README.md](evidencias/ex05/README.md), com rastreabilidade R09 em [docs/rastreabilidade.md](docs/rastreabilidade.md).
-
-## Autenticação e autorização — Exercício 6
-
-[docs/autenticacao-autorizacao.md](docs/autenticacao-autorizacao.md) descreve a matriz aprovada, RBAC com ownership/atributos, contrato JWT, MFA simulado e cookie exclusivo da agenda. [evidencias/ex06/README.md](evidencias/ex06/README.md) reúne verificações HTTP, ambiente e pytest. O diagnóstico administrativo não concede acesso clínico. Hardening e SQLModel foram acrescentados nos Ex. 10/11; o Ex. 7 implementa M2M.
-
-## Laboratório M2M — Exercício 7
-
-Client Credentials em `POST /auth/m2m/token`, autenticado com Basic; bearer com audiência/tipo próprios e somente `disponibilidade:ler`. O laboratório consulta `GET /disponibilidade?dia=2026-10-15&profissional_id=1` e não acessa consultas clínicas, agenda humana ou administração.
-
-Para habilitar localmente, execute `.venv/bin/python -m app.auth.provision_m2m`, copie o hash para `M2M_CLIENT_SECRET_HASH` no `.env` e reinicie o servidor. Sem hash, o M2M fica desativado e a autenticação humana continua funcionando. O segredo nunca entra no frontend, Git ou ZIP.
-
-[Contrato, fluxo e regras aprovadas](docs/integracao-m2m.md): blocos de 30 minutos, dias úteis 08h–18h, fuso da clínica e cancelamento liberando horário. [Evidências do Ex. 7](evidencias/ex07/README.md) preservam execução HTTP/pytest sem bearer ou credenciais. Disponibilidade não é reserva nem garantia contra concorrência.
-
-## Revisão manual OWASP — Exercício 8
-
-[docs/vulnerabilidades.md](docs/vulnerabilidades.md) analisa três categorias distintas de OWASP Top 10:2021: acesso por objeto no histórico e headers/throttling ausentes no baseline atual. [Evidências](evidencias/ex08/README.md) guardam snapshots com revisão/hash, payloads, respostas, execução e print, sem scanner ou mudanças em `app/`.
-
-O cenário de paciente autenticado é demonstrado somente em experimento didático separado, autorizado pelo responsável pelo projeto. A aplicação não ganhou papel/portal de paciente; aceitação acadêmica desse enquadramento permanece pendente. O relatório não inventa SQL Injection ou XSS explorado e identifica quais correções pertencem às próximas etapas.
-
-## Correções de entrada e saída — Exercício 9
-
-Schemas de consultas e formulário M2M rejeitam extras; status permite apenas `agendada`, `cancelada`, `realizada`, e username do login usa regex ASCII. Middleware JWT estabelece identidade humana/M2M uma vez por requisição; ownership continua centralizado antes de acesso/mutação. Cookie é exclusivo da agenda e não contorna um cabeçalho inválido. HTML legado mantém auto-escape.
-
-[Correções, comparações e pendências](docs/correcoes-entrada-saida.md) e [evidências reproduzíveis](evidencias/ex09/README.md) distinguem código real de SQL/BOLA didáticos isolados. `/auth/m2m/token` foi adotado como endpoint adicional para corrigir o mesmo padrão de extras. Hardening foi implementado no Ex. 10; SQLModel foi integrado no Ex. 11 e o aceite acadêmico dos experimentos continua pendente. Não há aprovação de deploy.
-
-## Hardening — Exercício 10
-
-CORS permite somente as origens configuradas em `CORS_ORIGINS`, inicialmente `http://localhost:5173`. Essa é uma origem de demonstração; não há frontend adicional. A agenda mantém seu cookie no mesmo site e a API usa bearer.
-
-DENY e nosniff acompanham as respostas; HSTS é enviado somente em HTTPS. O Uvicorn HTTP local não comprova TLS/HSTS em navegador. Na execução direta, `--no-proxy-headers` evita que headers enviados pelo cliente alterem esquema/IP percebidos.
-
-Login humano, M2M e MFA compartilham cinco requisições por minuto por IP; as demais rotas têm 60. Excesso retorna 429 com `Retry-After`. Valores configuráveis por `LOGIN_RATE_LIMIT`/`GENERAL_RATE_LIMIT`; contador em memória para processo único, com limitações documentadas.
-
-[Decisões e limites](docs/hardening.md) e [evidências](evidencias/ex10/README.md): 163 testes passaram e 35 observações HTTP foram reproduzidas. A persistência foi integrada no Ex. 11; pipeline/auditoria continuam nas etapas seguintes.
-
-## Persistência segura — Exercício 11
-
-SQLModel com SQLite local, configurado por `DATABASE_URL` em `.env`; o exemplo usa `sqlite:///.local/consultas.db`. Não há usuário/senha de banco SQLite. O startup cria diretório/tabelas e cadastros fictícios ausentes; consultas persistem após reinício. `create_all` não migra schema existente. Não versionar ou incluir banco, `.env` ou cadastro no ZIP.
-
-CRUD, agenda e disponibilidade usam sessões injetadas; consultas são parametrizadas. Datas são normalizadas em UTC no banco e retornadas no fuso da clínica. Sobreposição de 30 minutos do mesmo profissional retorna 409, inclusive na atualização/reativação; cancelada libera. Escritas reservam transação SQLite antes da verificação; banco ocupado após timeout retorna 503.
-
-[Decisões, schema, transações e limites](docs/persistencia.md); [evidências](evidencias/ex11/README.md): 181 testes passaram e 13 observações HTTP em dois processos demonstraram persistência, parametrização e controles anteriores. Testes usam arquivos temporários, sem alterar `.local` real. Scripts anteriores de evidência devem rodar nos respectivos baselines, sem sobrescrever o histórico; `evidencias/ex11/reproduzir.py` reproduz o incremento atual.
-
-## DevSecOps — Exercício 12
-
-O workflow `.github/workflows/security.yml` executa pytest, Bandit e pip-audit em PRs para main e pushes das branches do projeto. Bloqueia testes falhos/pulados, Bandit HIGH, vulnerabilidade SCA não triada ou análise inválida; preserva relatórios mesmo com reprovação. Não faz deploy e não usa secrets de produção.
+## Testes e pipeline
 
 ```bash
-.venv/bin/python -m pip install --upgrade 'pip>=26.2,<27'
+.venv/bin/python -m pytest tests/ -q
 .venv/bin/python -m pip install -e '.[dev,security]'
+.venv/bin/python -m pip install --upgrade 'pip>=26.2,<27'
 .venv/bin/python scripts/security_gate.py
 ```
 
-[Política, fases SDLC, CVSS, impacto e matriz de testes](docs/devsecops.md); [evidências locais](evidencias/ex12/README.md). Os relatórios transitórios ficam em `reports/security/`. Para impedir merge, é necessário configurar o check **Security gate** como obrigatório na proteção de main após o primeiro run remoto. Essa configuração e evidência remota estão pendentes. ZAP passivo fica no Ex. 13; IAST é proposta não executada.
+GitHub Actions executa pytest, Bandit e pip-audit. Falhas/skips, Bandit HIGH, advisory SCA não triado ou análise incompleta bloqueiam o gate. A proteção da `main` exige o check **Security gate**; o [PR de demonstração](evidencias/ex12/github-actions.md) registra merge bloqueado. Relatórios transitórios: `reports/security/`.
 
-## Vídeo de apresentação
+## Documentação e evidências
 
-O vídeo de apresentação será publicado nesta [pasta do Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
+| Tema | Documento |
+| --- | --- |
+| Escopo e permissões | [Requisitos](docs/requisitos.md) |
+| Fundamentos e arquitetura | [CIA/DFD](docs/cia-dfd.md), [STRIDE](docs/threat-model.md), [partições](docs/arquitetura-seguranca.md) |
+| Revisão e correções | [Vulnerabilidades](docs/vulnerabilidades.md), [entrada/saída](docs/correcoes-entrada-saida.md) |
+| Controles | [Hardening](docs/hardening.md), [persistência](docs/persistencia.md), [DevSecOps](docs/devsecops.md) |
+| Decisões e entrega final | [Decisões](docs/decisoes.md), [rastreabilidade](docs/rastreabilidade.md), [OpenAPI](docs/auditoria-openapi.md), [capstone](docs/relatorio-capstone.md) |
 
-## Capstone — Exercício 13
+`app/routes/` trata HTTP; `models/` separa contratos/tabelas; `database/` gerencia sessões e operações; `auth/` centraliza identidade/políticas; `templates/` contém o HTML. Testes em `tests/`, evidências por etapa em `evidencias/ex01/` a `ex13/`. Scripts históricos devem rodar nos respectivos baselines, preservando as saídas anteriores.
 
-A auditoria final inclui testes unitários com mocking, revisão OpenAPI e ZAP passivo com tráfego autenticado e dados fictícios. A agenda recebeu CSP restritiva e as respostas protegidas usam `Cache-Control: no-store`. Contratos OpenAPI documentam cookie da agenda e erros de acesso.
+## Entrega
 
-- [Relatório final, findings e riscos residuais](docs/relatorio-capstone.md).
-- [Auditoria OpenAPI](docs/auditoria-openapi.md).
-- [Evidências e comandos de reprodução do ZAP](evidencias/ex13/README.md).
+O [capstone](docs/relatorio-capstone.md) registra ZAP passivo antes/depois, mocking, auditoria OpenAPI e riscos residuais. **Produção bloqueada:** TLS real, identidade/MFA de produção, auditoria persistente e recuperação operacional pendentes. O gate aprovado não encerra esses riscos.
 
-**Produção bloqueada:** TLS real, identidade/MFA de produção, auditoria persistente e recuperação operacional não estão demonstrados. Gate aprovado permite avaliar integração de código, não autoriza deploy. Vídeo no YouTube não listado e ZIP final permanecem pendentes.
+- [ ] Vídeo de até cinco minutos, no YouTube não listado, com link na entrega.
+- [ ] ZIP final `leandro_medeiros_DR2_AT.ZIP`, revisado e sem segredos.
+
+[Pasta de apoio ao vídeo no Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
