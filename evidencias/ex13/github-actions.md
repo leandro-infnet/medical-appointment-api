@@ -22,6 +22,6 @@ O exit 1 do Bandit corresponde aos LOW preservados; o gate aplica a política de
 ## Capturas
 
 - [ ] PR #17 com Security gate aprovado.
-- [ ] Execução na main após o merge (complementar).
+- [x] [Security gate aprovado na main após o merge do PR #17](github-actions/images/image-02.png), commit `b42c54d`.
 
 Configuração de proteção e demonstração de merge bloqueado estão nas [evidências do Ex. 12](../ex12/github-actions.md).
