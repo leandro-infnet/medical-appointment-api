@@ -1,0 +1,1379 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de Agendamento de Consultas Médicas",
+    "description": "API RESTful segura para agendamento de consultas em clínicas médicas.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/consultas": {
+      "post": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Criar uma nova consulta médica",
+        "description": "Registra uma nova consulta vinculando paciente e profissional de saúde.",
+        "operationId": "endpoint_criar_consulta_consultas_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsultaCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultaResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação necessária ou inválida."
+          },
+          "403": {
+            "description": "Papel ou vínculo não autorizado."
+          },
+          "503": {
+            "description": "Banco temporariamente ocupado."
+          },
+          "409": {
+            "description": "Intervalo já ocupado pelo profissional."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Listar consultas médicas",
+        "description": "Retorna a lista de consultas cadastradas com filtros opcionais.",
+        "operationId": "endpoint_listar_consultas_consultas_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "paciente_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filtrar por ID do paciente",
+              "title": "Paciente Id"
+            },
+            "description": "Filtrar por ID do paciente"
+          },
+          {
+            "name": "profissional_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filtrar por ID do profissional",
+              "title": "Profissional Id"
+            },
+            "description": "Filtrar por ID do profissional"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConsultaResponse"
+                  },
+                  "title": "Response Endpoint Listar Consultas Consultas Get"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação necessária ou inválida."
+          },
+          "403": {
+            "description": "Papel ou vínculo não autorizado."
+          },
+          "503": {
+            "description": "Banco temporariamente ocupado."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consultas/{consulta_id}": {
+      "get": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Obter detalhes de uma consulta",
+        "description": "Retorna os dados de uma consulta específica a partir de seu ID.",
+        "operationId": "endpoint_obter_consulta_consultas__consulta_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consulta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Consulta Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultaResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação necessária ou inválida."
+          },
+          "403": {
+            "description": "Papel ou vínculo não autorizado."
+          },
+          "503": {
+            "description": "Banco temporariamente ocupado."
+          },
+          "404": {
+            "description": "Consulta inexistente ou não autorizada."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Atualizar uma consulta médica",
+        "description": "Atualiza parcialmente campos permitidos de uma consulta existente.",
+        "operationId": "endpoint_atualizar_consulta_consultas__consulta_id__patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consulta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Consulta Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsultaUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultaResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação necessária ou inválida."
+          },
+          "403": {
+            "description": "Papel ou vínculo não autorizado."
+          },
+          "503": {
+            "description": "Banco temporariamente ocupado."
+          },
+          "404": {
+            "description": "Consulta inexistente ou não autorizada."
+          },
+          "409": {
+            "description": "Intervalo já ocupado pelo profissional."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Remover/cancelar uma consulta",
+        "description": "Remove a consulta médica pelo seu ID.",
+        "operationId": "endpoint_remover_consulta_consultas__consulta_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consulta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Consulta Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação necessária ou inválida."
+          },
+          "403": {
+            "description": "Papel ou vínculo não autorizado."
+          },
+          "503": {
+            "description": "Banco temporariamente ocupado."
+          },
+          "404": {
+            "description": "Consulta inexistente ou não autorizada."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agenda": {
+      "get": {
+        "tags": [
+          "Agenda"
+        ],
+        "summary": "Consultar agenda diária",
+        "operationId": "endpoint_agenda_agenda_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          },
+          {
+            "AgendaCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dia",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Dia local da clínica (AAAA-MM-DD)",
+              "title": "Dia"
+            },
+            "description": "Dia local da clínica (AAAA-MM-DD)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ou cookie de agenda inválido ou ausente."
+          },
+          "403": {
+            "description": "Acesso exclusivo da recepção."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/token": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login",
+        "operationId": "login_auth_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_auth_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/TokenResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MFAChallengeResponse"
+                    }
+                  ],
+                  "title": "Response Login Auth Token Post"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MFAChallengeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          },
+          "422": {
+            "description": "Formulário inválido ou username fora do formato permitido."
+          }
+        }
+      }
+    },
+    "/auth/mfa": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Completar Mfa",
+        "operationId": "completar_mfa_auth_mfa_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MFAInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Desafio inválido, expirado ou código incorreto."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/agenda-session": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Criar Sessao Agenda",
+        "operationId": "criar_sessao_agenda_auth_agenda_session_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida ou ausente."
+          },
+          "403": {
+            "description": "Acesso exclusivo da recepção."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Encerrar Sessao Agenda",
+        "operationId": "encerrar_sessao_agenda_auth_agenda_session_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida ou ausente."
+          },
+          "403": {
+            "description": "Acesso exclusivo da recepção."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/m2m/token": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login M2M",
+        "operationId": "login_m2m_auth_m2m_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MTokenInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/M2MTokenResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Grant ou escopo não permitido."
+          },
+          "401": {
+            "description": "Credenciais do cliente inválidas."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ClientCredentialsAuthentication": []
+          }
+        ]
+      }
+    },
+    "/admin/status": {
+      "get": {
+        "tags": [
+          "Administração"
+        ],
+        "summary": "Status Administrativo",
+        "operationId": "status_administrativo_admin_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Status Administrativo Admin Status Get"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida ou ausente."
+          },
+          "403": {
+            "description": "Papel administrativo necessário."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/disponibilidade": {
+      "get": {
+        "tags": [
+          "Laboratório"
+        ],
+        "summary": "Disponibilidade",
+        "operationId": "disponibilidade_disponibilidade_get",
+        "security": [
+          {
+            "LaboratorioOAuth2": [
+              "disponibilidade:ler"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dia",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Dia local da clínica",
+              "title": "Dia"
+            },
+            "description": "Dia local da clínica"
+          },
+          {
+            "name": "profissional_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "title": "Profissional Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisponibilidadeResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token de cliente inválido ou ausente."
+          },
+          "403": {
+            "description": "Escopo insuficiente."
+          },
+          "404": {
+            "description": "Profissional não cadastrado."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Saúde"
+        ],
+        "summary": "Root",
+        "description": "Endpoint raiz para verificação de status do serviço.",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de requisições excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até nova tentativa.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1.0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_login_auth_token_post": {
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "pattern": "^password$",
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "grant_type",
+          "username",
+          "password"
+        ],
+        "title": "Body_login_auth_token_post"
+      },
+      "ConsultaCreate": {
+        "properties": {
+          "paciente_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Paciente Id",
+            "description": "ID do paciente associado à consulta"
+          },
+          "profissional_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Profissional Id",
+            "description": "ID do profissional de saúde responsável"
+          },
+          "data_hora": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Data Hora",
+            "description": "Data e horário agendados para a consulta"
+          },
+          "motivo": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Motivo",
+            "description": "Motivo ou especialidade da consulta"
+          },
+          "observacoes_internas": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observacoes Internas",
+            "description": "Notas de auditoria ou observações internas da equipe médica"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "paciente_id",
+          "profissional_id",
+          "data_hora",
+          "motivo"
+        ],
+        "title": "ConsultaCreate"
+      },
+      "ConsultaResponse": {
+        "properties": {
+          "paciente_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Paciente Id",
+            "description": "ID do paciente associado à consulta"
+          },
+          "profissional_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Profissional Id",
+            "description": "ID do profissional de saúde responsável"
+          },
+          "data_hora": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Data Hora",
+            "description": "Data e horário agendados para a consulta"
+          },
+          "motivo": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Motivo",
+            "description": "Motivo ou especialidade da consulta"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Identificador único da consulta"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Estado atual da consulta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "paciente_id",
+          "profissional_id",
+          "data_hora",
+          "motivo",
+          "id",
+          "status"
+        ],
+        "title": "ConsultaResponse",
+        "description": "Contrato JSON: somente campos destinados ao consumidor da API."
+      },
+      "ConsultaUpdate": {
+        "properties": {
+          "data_hora": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Hora",
+            "description": "Nova data e horário"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "agendada",
+                  "cancelada",
+                  "realizada"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "Novo status permitido"
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo",
+            "description": "Novo motivo"
+          },
+          "observacoes_internas": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observacoes Internas",
+            "description": "Atualização das notas internas"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ConsultaUpdate"
+      },
+      "DisponibilidadeResponse": {
+        "properties": {
+          "profissional_id": {
+            "type": "integer",
+            "title": "Profissional Id"
+          },
+          "dia": {
+            "type": "string",
+            "format": "date",
+            "title": "Dia"
+          },
+          "fuso": {
+            "type": "string",
+            "title": "Fuso"
+          },
+          "intervalos": {
+            "items": {
+              "$ref": "#/components/schemas/IntervaloLivre"
+            },
+            "type": "array",
+            "title": "Intervalos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "profissional_id",
+          "dia",
+          "fuso",
+          "intervalos"
+        ],
+        "title": "DisponibilidadeResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "IntervaloLivre": {
+        "properties": {
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Inicio"
+          },
+          "fim": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fim"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inicio",
+          "fim"
+        ],
+        "title": "IntervaloLivre"
+      },
+      "M2MTokenInput": {
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "title": "Grant Type"
+          },
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "grant_type"
+        ],
+        "title": "M2MTokenInput"
+      },
+      "M2MTokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in",
+          "scope"
+        ],
+        "title": "M2MTokenResponse"
+      },
+      "MFAChallengeResponse": {
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "title": "Challenge Id"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In",
+            "default": 300
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "default": "Segundo fator simulado necessário."
+          }
+        },
+        "type": "object",
+        "required": [
+          "challenge_id"
+        ],
+        "title": "MFAChallengeResponse"
+      },
+      "MFAInput": {
+        "properties": {
+          "challenge_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Challenge Id"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 6,
+            "minLength": 6,
+            "format": "password",
+            "title": "Code",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "challenge_id",
+          "code"
+        ],
+        "title": "MFAInput"
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in"
+        ],
+        "title": "TokenResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "auth/token"
+          }
+        }
+      },
+      "AgendaCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "agenda_session"
+      },
+      "ClientCredentialsAuthentication": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "LaboratorioOAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "scopes": {
+              "disponibilidade:ler": "Ler intervalos livres sem dados de pacientes"
+            },
+            "tokenUrl": "auth/m2m/token"
+          }
+        }
+      }
+    }
+  }
+}

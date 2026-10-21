@@ -1,6 +1,6 @@
-# Evidências do Exercício 5 — Arquitetura de segurança
+# Evidências — Exercício 5
 
-## Artefatos e rubrica
+Análise documental: partições e doze vetores de design/implementação/infraestrutura; R09. [Relatório](../../docs/arquitetura-seguranca.md).
 
 | Artefato | Demonstração de R09 |
 | --- | --- |
@@ -10,13 +10,9 @@
 | [Revisão documental](revisao_documental.md) | Correspondência com código/DFD/threat model e conferência dos três eixos |
 | [Baseline e hashes](baseline.txt) | Commit analisado, hashes dos documentos/código/artefatos e verificações executadas |
 
-Documentos relacionados: [CIA/DFD](../../docs/cia-dfd.md), [threat model](../../docs/threat-model.md), [decisões DEC-17](../../docs/decisoes.md) e [rastreabilidade](../../docs/rastreabilidade.md). Snapshot do modelo 1.0 e evidências dos incrementos anteriores permanecem históricos; não foram reescritos.
+## Exportação histórica
 
-## Renderização realizada
-
-Mermaid **10.9.3**, já disponível temporariamente fora das dependências da API, renderizou a fonte em um HTML local com `securityLevel: 'strict'`, `htmlLabels: false` e `startOnLoad: false`. Chromium headless produziu DOM e PNG; `data-rendered="true"` confirmou conclusão e o SVG foi extraído do DOM. O print foi inspecionado: atuais dentro de TB-01; memória marcada com TB-02 lógico; plano futuro separado com linhas pontilhadas.
-
-Comando de captura executado (arquivos temporários removidos após exportação):
+Mermaid 10.9.3 em HTML local: securityLevel strict, htmlLabels false, startOnLoad false. Chromium renderizou com orçamento de 10 s; SVG extraído do DOM e PNG inspecionado. Comando usado:
 
 ```bash
 chromium --headless --disable-gpu --no-sandbox \
@@ -26,10 +22,6 @@ chromium --headless --disable-gpu --no-sandbox \
   "file://$PWD/.particoes-render-ex05.html"
 ```
 
-`--no-sandbox` foi usado apenas para renderizar fonte local fictícia, não como configuração de navegação externa ou da aplicação. Para consultar novamente o resultado, abrir o SVG/PNG ou o bloco Mermaid do relatório; para atualizar o desenho, usar a fonte `.mmd` com um renderizador compatível e conferir as relações antes de exportar.
+Arquivos temporários da exportação foram removidos. no-sandbox foi usado apenas no conteúdo fictício local; não configura a API. Para nova exportação, renderizar a fonte Mermaid e conferir IDs/fluxos. Os arquivos desta pasta preservam a arquitetura daquele baseline, não o DFD final.
 
-## Verificação e limites
-
-Foram examinados quatro vetores por eixo (design, implementação e infraestrutura), os controles CTRL-01–11, fluxos F-01–10 e fronteiras atuais/lógicas/futuras. A análise de acesso permitido/proibido é design planejado, não execução de rotas já protegidas. A aplicação ainda não possui JWT, sessão HTML, M2M, SQLModel, hardening ou ambiente de produção demonstrado.
-
-Testes JSON/XSS dos Ex. 1/2 são evidências históricas citadas no relatório. Nesta etapa não houve pytest, scan, carga, teste concorrente, autenticação ou query relacional. Não há scores CVSS, novas vulnerabilidades demonstradas ou autorização de deploy.
+A etapa não executou pytest/scanner/ataques. Testes citados dos Ex. 1/2 são históricos. Baseline e revisão registram as verificações documentais.

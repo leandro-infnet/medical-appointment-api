@@ -1,113 +1,54 @@
-# Requisitos e Escopo — API de Agendamento de Consultas
+# Requisitos e escopo
 
-## 1. Visão Geral e Contexto
+API de agendamento para clínicas, com frontend consumidor JSON, agenda HTML da recepção e laboratório parceiro M2M. A aplicação usa dados fictícios; prontuário e portal de paciente não fazem parte do produto.
 
-O produto é uma API REST desenvolvida em FastAPI para digitalização do agendamento de consultas médicas em uma rede de clínicas. Lida com dados de pacientes e profissionais de saúde, que exigem controles de segurança. Este documento registra requisitos e decisões de projeto; não comprova conformidade com a LGPD. Até o Exercício 2, as rotas não tinham autenticação. No Exercício 6, RF-03/RF-04 foram implementados; no Ex. 7, RF-05 também; o contrato efetivo está em [autenticação e autorização](autenticacao-autorizacao.md).
+## Permissões
 
-### Consumidores do Sistema
-1. **Frontend JSON:** Aplicação consumidora das rotas REST da API.
-2. **Página HTML da Recepção:** Interface interna (Jinja2) para consulta da agenda diária pelos recepcionistas.
-3. **Laboratório Parceiro M2M:** Integração máquina-a-máquina restrita à consulta de horários disponíveis.
+| Ator | Consultas JSON | Agenda HTML | Administração | Disponibilidade M2M |
+| --- | --- | --- | --- | --- |
+| Profissional | CRUD dos pacientes vinculados ao próprio profissional | Não | Não | Não |
+| Recepção | Não | Leitura mínima do dia | Não | Não |
+| Administrador | Não | Não | Diagnóstico após MFA simulado | Não |
+| Laboratório | Não | Não | Não | Leitura com scope próprio |
+| Anônimo | Não | Não | Não | Não |
 
-### Atores Internos do Domínio
-- **Recepcionista:** Consulta agenda diária com informações mínimas necessárias para recepção.
-- **Profissional de Saúde:** Cria, visualiza e gerencia consultas médicas dos seus próprios pacientes.
-- **Administrador:** Possui acesso a pelo menos uma rota administrativa restrita, com MFA simulado; as operações administrativas específicas ainda serão definidas.
+O frontend usa a identidade humana; não recebe permissão própria. Paciente autenticado aparece apenas no experimento BOLA do Ex. 8. O aceite acadêmico desse recorte permanece pendente.
 
----
+## Dados
 
-## 2. Matriz Inicial de Atores x Operações x Recursos
+| Classe | Campos / tratamento |
+| --- | --- |
+| Identificação e vínculo | IDs de paciente/profissional, horário e status; vinculam pessoas ao atendimento |
+| Saúde | `motivo`, `observacoes_internas`; acesso profissional restrito |
+| Dados internos | Notas, `criado_em`, `atualizado_em`; ausentes da saída JSON/agenda |
+| Segredos | Senhas, hashes, chave JWT, tokens e MFA; fora dos logs, Git e ZIP |
+| Disponibilidade | Profissional, dia, fuso e intervalos livres; sem paciente/motivo |
 
-As linhas humanas representam a matriz implementada no Ex. 6; laboratório está implementado no Ex. 7 somente para disponibilidade. Paciente continua futuro; permissões desse ator não são controles já implementados. O Assessment não define todas as permissões: decisões ausentes precisam ser registradas antes da implementação. Em particular, o paciente autenticado é citado no cenário BOLA do Exercício 8, mas não faz parte dos três papéis internos definidos inicialmente.
+IDs numéricos não tornam dados anônimos. Nome, contato e prontuário não são campos do contrato de consultas.
 
-| Ator | Criar Consulta | Visualizar Próprias Consultas | Visualizar Consultas Alheias | Agenda Diária HTML | Rota Administrativa | Consultar Disponibilidade (M2M) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Profissional** | Permitido (seus pacientes) | Permitido (somente próprias e vinculadas) | Negado conforme ownership | Negado | Negado | Negado |
-| **Recepcionista** | Negado | Negado | Negado | Permitido (leitura do dia) | Negado | Negado |
-| **Administrador** | Negado | Negado | Negado | Negado | Permitido (diagnóstico com MFA) | Negado |
-| **Laboratório M2M**| Negado | Negado | Negado | Negado | Negado | Permitido (escopo restrito) |
-| **Paciente Autenticado** | A definir | A definir: acesso ao próprio prontuário | Negado (Cenário BOLA Ex. 8) | A definir | Negado | A definir |
-| **Anônimo** | Negado | Negado | Negado | Negado | Negado | Negado |
+## Requisitos funcionais
 
----
-
-## 3. Classificação dos Dados
-
-1. **Dados Pessoais:** Nome do paciente, identificador, contato.
-2. **Dados Sensíveis de Saúde:** Consultas, especialidade/motivo, histórico/prontuário clínico.
-3. **Credenciais e Segredos:** Senhas com hash bcrypt, chaves de assinatura JWT, tokens M2M, códigos MFA.
-4. **Campos Internos de Auditoria:** `observacoes_internas`, `criado_em` e `atualizado_em` existem no modelo interno, mas foram excluídos das respostas JSON pelo `ConsultaResponse` no Exercício 2. Outros campos, como IP de origem e versão de registro, são apenas possibilidades futuras. A agenda também exclui motivo clínico e notas internas de seu contexto.
-5. **Dados de Disponibilidade:** Apenas intervalos livres de agenda (sem expor paciente ou motivo).
-
----
-
-## 4. Requisitos Funcionais
-
-Os itens desta seção representam o **alvo do Assessment completo**; RF-01–05 estão implementados e verificados; RF-06 continua futuro.
-
-- **RF-01:** Prover CRUD RESTful completo de consultas médicas (`POST`, `GET`, `GET /{id}`, `PATCH /{id}`, `DELETE /{id}`) com validação explícita de schemas.
-- **RF-02:** Controlar exposição de dados via `response_model` no JSON e renderizar agenda diária HTML com Jinja2 com auto-escape.
-- **RF-03:** Prover autenticação humana via `OAuth2PasswordBearer`, JWT com expiração e simulação de MFA administrativo.
-- **RF-04:** Prover autorização baseada em papéis e controle de acesso em nível de objeto (ownership).
-- **RF-05:** Prover autenticação M2M (OAuth2 Client Credentials) com escopos restritos para o laboratório parceiro.
-- **RF-06:** Persistir dados relacionais com SQLModel, queries parametrizadas e injeção de dependência de sessão.
-
----
-
-## 5. Requisitos Não Funcionais e Segurança
-
-Estes controles serão implementados progressivamente. A lista não afirma que já estão ativos na fundação do Exercício 1.
-
-- **RNF-01 (Arquitetura):** Modularização estrita em `routes/`, `models/`, `database/`, `auth/` e `middleware/`.
-- **RNF-02 (Defesa em Profundidade):** Validação estrita de entrada (`extra='forbid'`, allowlists, regex) e auto-escape contra XSS.
-- **RNF-03 (Hardening de Rede):** CORS com origens explícitas, cabeçalhos de segurança (HSTS, X-Frame-Options, X-Content-Type-Options) e rate limiting em endpoints sensíveis (login).
-- **RNF-04 (Configuração Segura):** Segredos e credenciais via `pydantic-settings` (`BaseSettings`) lendo `.env`, com `.env.example` versionado.
-- **RNF-05 (Pipeline e Auditoria):** Pipeline DevSecOps com security gate automatizado e auditoria passiva via OWASP ZAP.
-
-## 6. Verificação do Exercício 2
-
-| Cenário | Comportamento esperado | Verificação |
+| ID | Requisito | Implementação |
 | --- | --- | --- |
-| Entidade contém notas e datas internas | JSON contém somente os seis campos contratados, sem apagar dados internos | `test_respostas_excluem_campos_internos_sem_apagar_armazenamento` |
-| Agenda contém consultas de dias/horários distintos | Só o dia solicitado, em ordem local; contexto mínimo | `test_agenda_filtra_dia_ordena_e_minimiza_contexto` |
-| Instante UTC pertence ao dia anterior local | Conversão precede filtro de dia | `test_agenda_converte_instante_utc_antes_de_filtrar_dia` |
-| Status contém script ou imagem com handler | Conteúdo armazenado é exibido como texto, sem tags executáveis | `test_agenda_escapa_texto_malicioso_armazenado` |
-| Dia vazio, omitido ou inválido | Mensagem de vazio, dia atual local ou 422, respectivamente | Demais testes de agenda |
+| RF-01 | CRUD RESTful validado por APIRouter | `app/routes/consultas.py` |
+| RF-02 | Response models e agenda diária Jinja2 com herança/escape | `models/consultas.py`, `routes/agenda.py`, `templates/` |
+| RF-03 | OAuth2PasswordBearer, bcrypt, JWT expirável e MFA simulado | `app/auth/`, `routes/auth.py` |
+| RF-04 | Papéis e ownership por vínculo confiável | `auth/policies.py`, `database/identidades.py` |
+| RF-05 | OAuth Client Credentials, scopes/claims M2M distintos | `auth/m2m.py`, `routes/disponibilidade.py` |
+| RF-06 | SQLModel relacional, parâmetros e sessão injetada | `database/session.py`, `database/consultas.py`, `models/tabelas.py` |
 
-Referências e resultados: [decisões DEC-13/14](decisoes.md), [rastreabilidade](rastreabilidade.md) e [evidências](../evidencias/ex02/README.md). CIA/DFD, misuse cases/STRIDE e partições de segurança estão documentados nos Exercícios 3, 4 e 5; os controles futuros continuam planejados.
+## Requisitos não funcionais
 
-## 7. Fundamentos de segurança — Exercício 3
-
-Análise CIA e DFD atual documentados em [cia-dfd.md](cia-dfd.md). A revisão distingue controles implementados, lacunas e arquitetura futura; não introduz novos controles executáveis.
-
-| Requisito documental | Entrega | Rubrica |
+| ID | Requisito | Verificação |
 | --- | --- | --- |
-| REQ-03.1: CIA da aplicação construída | Cenários CIA-01–08 com ativos, impactos, controles e limites de verificação | R05 |
-| REQ-03.2: OWASP, NIST SSDF e MITRE associados a controles reais | Mapeamento com edição, item, código, teste/evidência e limite; DEC-15 | R05 |
-| REQ-03.3: DFD, fluxos sensíveis e trust boundaries | E-01/02, P-01–03, D-01, F-01–10, TB-01 real e TB-02 lógico; futuras TB-03/04 explicitamente separadas | R06 |
+| RNF-01 | Módulos HTTP, modelos, dados e autenticação separados | Revisão da [arquitetura](arquitetura-seguranca.md) |
+| RNF-02 | Validação explícita, extra forbid, allowlist/regex e escape | `test_seguranca_entrada_saida.py`, `test_respostas_templates.py` |
+| RNF-03 | CORS explícito, headers e rate limiting diferenciado | `test_hardening.py`; TLS real permanece pendente |
+| RNF-04 | BaseSettings/.env, sem credenciais reais na entrega | `test_autorizacao.py`, `test_persistencia.py`; `.env.example` |
+| RNF-05 | Pipeline, gate e auditoria passiva ZAP | `test_security_gate.py`, workflow e evidências Ex. 12/13 |
 
-LAC-01–06 registram autorização ausente, validação parcial, controle de abuso, memória volátil e demais pontos a desenvolver. Não são Threat IDs nem findings de scanner. Sua ligação ao STRIDE do Exercício 4 está no threat model. A aplicação permanece no estado funcional do Exercício 2.
+## Decisões de domínio
 
-## 8. Threat modeling — Exercício 4
+Escolhas de projeto, além dos controles exigidos: vínculos fictícios `(1,1)`, `(2,1)`, `(2,2)`; fuso `America/Sao_Paulo`; duração de 30 minutos; status agendada/cancelada/realizada; cancelada libera horário; sobreposição do mesmo profissional gera 409. Disponibilidade considera dias úteis 08h–18h, mas o CRUD não impõe esse expediente. DELETE remove o registro; cancelamento usa PATCH de status.
 
-| Requisito | Entrega / verificação documental | Rubrica |
-| --- | --- | --- |
-| REQ-04.1: misuse cases relevantes | MU-001–012: ator, precondição, tentativa, resultado proibido e ligação a fluxo/controle/teste; cenários futuros identificados | R07 |
-| REQ-04.2: STRIDE em pelo menos três componentes | P-01/P-02/P-03, com seis categorias examinadas em cada um e 18 linhas de análise | R08 |
-| REQ-04.3: threat model consolidado | AT/SUP/MU/TM/CTRL/TEST rastreáveis; 16 ameaças, estados de mitigação e risco residual; snapshot inicial 1.0 | R08 |
-
-Entrega em [threat-model.md](threat-model.md), decisão DEC-16 e [evidências Ex. 4](../evidencias/ex04/README.md). Novos testes são planejados para seus incrementos; o documento não comprova exploração, correção executada ou CVSS. As permissões de paciente autenticado, vínculo paciente/profissional e regras de disponibilidade permanecem decisões pendentes.
-
-## 9. Arquitetura de segurança — Exercício 5
-
-| Requisito | Entrega / verificação documental | Rubrica |
-| --- | --- | --- |
-| REQ-05.1: partições do sistema | Componentes atuais/futuros, responsabilidade, localização, dados e controles; composição modular no mesmo processo | R09 |
-| REQ-05.2: fluxo entre componentes | Pares F-01–10 do DFD na visão de partições, dados sensíveis e TB atuais/lógicas/futuras | R09 |
-| REQ-05.3: vetores nos três eixos | VD-01–04 (design), VI-01–04 (implementação), VF-01–04 (infraestrutura), ligados a TM/CTRL/TEST | R09 |
-
-Entrega em [arquitetura-seguranca.md](arquitetura-seguranca.md), fonte [particoes-seguranca.mmd](particoes-seguranca.mmd), DEC-17 e [evidências Ex. 5](../evidencias/ex05/README.md). A arquitetura identifica decisões prévias ao Ex. 6, sem implementar JWT, sessão HTML, middleware ou SQLModel.
-
-## Atualização — Exercício 11
-
-O estado atual substitui D-01 por SQLModel/SQLite local, com PK/FK/CHECK, sessão injetada, parâmetros vinculados, reserva transacional de escrita e conflito 409. CRUD, agenda e M2M leem o mesmo banco. TB-04 representa processo/arquivo sob permissões do SO, sem servidor de banco; a fonte atual é `docs/dfd-atual.mmd`. Seções anteriores e exportações descrevem os respectivos baselines históricos. [Persistência](persistencia.md) registra DEC-23, reinício verificado, rollback, concorrência e riscos residuais. Backup, auditoria persistente e deploy não foram comprovados.
+A [matriz de rastreabilidade](rastreabilidade.md) relaciona todos os exercícios à rubrica. [Decisões](decisoes.md) registra alternativas e limites; [capstone](relatorio-capstone.md) consolida findings e decisão de liberação.

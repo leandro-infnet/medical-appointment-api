@@ -27,7 +27,9 @@ templates = Jinja2Templates(env=Environment(
 ))
 
 
-@router.get("/agenda", response_class=HTMLResponse, summary="Consultar agenda diária")
+@router.get("/agenda", response_class=HTMLResponse, summary="Consultar agenda diária",
+            responses={401: {"description": "Bearer ou cookie de agenda inválido ou ausente."},
+                       403: {"description": "Acesso exclusivo da recepção."}})
 def endpoint_agenda(
     request: Request,
     usuario: AgendaDep,

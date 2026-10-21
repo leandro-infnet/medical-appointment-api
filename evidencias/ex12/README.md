@@ -6,12 +6,12 @@ Pipeline em `.github/workflows/security.yml`, política executável em `scripts/
 | --- | --- |
 | `antes/pytest.log`, `pytest.xml` | Suíte real: 214 testes passaram; dois avisos de dependências |
 | `antes/bandit.json`, `bandit.log` | SAST real de app/scripts, quatro findings LOW; triagem abaixo |
-| `antes/sca.json`, `sca.log` | SCA real retornou 12 registros de advisories para pip 25.1.1; seis IDs únicos, sem inventar CVSS ou explorar pacotes |
+| `antes/sca.json`, `sca.log` | SCA real retornou 12 registros de advisories para pip 25.1.1; seis IDs únicos |
 | `antes/gate.json`, `gate_antes_output.txt` | Gate real **bloqueado**, exit 1; motivos vinculados aos seis IDs SCA |
 | `depois/` e `gate_depois_output.txt` | Mesmos comandos após pip 26.2.1: gate aprovado (exit 0), 214 testes passaram, quatro LOW Bandit e nenhuma vulnerabilidade retornada pela SCA |
 | `cvss.json` | Vetores históricos CVSS v3.1 calculados com cvss 3.6; premissas condicionais em devsecops.md |
 | `ambiente.json` | Versões reais após atualização de pip; versão anterior registrada no próprio relatório SCA |
-| `gate_*_avisos.txt` | stderr real do executor; pode estar vazio |
+| `gate_*_avisos.txt` | stderr do script; pode estar vazio |
 
 Comandos efetivamente executados:
 
@@ -21,7 +21,7 @@ Comandos efetivamente executados:
 .venv/bin/python scripts/security_gate.py --output evidencias/ex12/depois
 ```
 
-Não executar esses comandos sobre os diretórios históricos para sobrescrever a evidência. Para nova execução, usar o padrão `reports/security/`, ignorado. O executor escreve logs/JUnit/JSON; stdout/stderr foram redirecionados para os arquivos nomeados acima. O pip foi atualizado para 26.2.1 e o workflow também exige atualização antes da instalação. Não foram alteradas dependências de runtime da aplicação para esconder findings.
+Para reproduzir, usar saída nova em `reports/`, preservando os diretórios históricos. A atualização de pip corrigiu advisories de tooling, sem trocar dependências de runtime.
 
 ## Triagem SAST
 
@@ -33,10 +33,10 @@ Não executar esses comandos sobre os diretórios históricos para sobrescrever 
 
 Os quatro findings permanecem nos JSONs e são aceitáveis para a política definida; HIGH bloquearia independentemente da confiança. Isso não prova que Bandit cobre BOLA, quotas ou todas as falhas possíveis.
 
-## Limites e evidências pendentes
+## Execução remota
 
 Os diretórios `antes/` e `depois/` preservam execuções locais. A execução remota aprovada, o artefato baixado e as capturas de proteção da main estão em [github-actions.md](github-actions.md) e `github-actions/`. O relatório remoto registra 214 testes aprovados, quatro findings LOW do Bandit e nenhuma vulnerabilidade retornada pela SCA.
 
-A proteção exige PR, branch atualizada e check `Security gate`, sem bypass por administradores. Permanece pendente somente a demonstração remota de um PR impedido de fazer merge com check reprovado; não confundir a aprovação mostrada nas imagens com esse cenário negativo.
+A proteção exige PR, branch atualizada e check `Security gate`, sem bypass por administradores. O PR #15 demonstrou merge bloqueado por teste deliberadamente falho: 214 passaram e um falhou. Relatórios em `github-actions-failed/relatorios-seguranca/` e screenshot em `github-actions-failed/images/image-06.png`; links do PR/run em [DevSecOps](../../docs/devsecops.md). O teste temporário não integra a main.
 
-YAML foi analisado localmente com PyYAML e conferidos gatilhos, permissão de leitura, comando do gate e upload `always()`/erro em ausência. Isso não valida infraestrutura hospedada do GitHub. Testes de política usam mocks/relatórios fictícios, identificados no código; são distintos dos scanners reais acima. DAST/ZAP passivo e auditoria final ficam no Ex. 13; IAST é proposta não executada. Nunca incluir `.env`, banco/cadastro real, credenciais ou bearer na entrega.
+O YAML teve gatilhos, permissões, comando do gate e upload conferidos com PyYAML. Mocks do avaliador são separados dos scans reais. ZAP foi executado no Ex. 13; IAST permanece proposto.

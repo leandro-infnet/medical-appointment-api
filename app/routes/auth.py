@@ -1,5 +1,5 @@
 """Login humano, conclusão de MFA e sessão de leitura da agenda."""
-from typing import Annotated
+from typing import Annotated, Any
 from re import fullmatch
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
 from fastapi.security import OAuth2PasswordRequestFormStrict
@@ -12,6 +12,11 @@ from app.settings import Settings
 from app.models.identidades import MFAChallengeResponse, MFAInput, Papel, TokenResponse, Usuario, M2MTokenResponse, M2MTokenInput, USERNAME_PATTERN
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
+
+AGENDA_RESPONSES: dict[int | str, dict[str, Any]] = {
+    401: {"description": "Autenticação inválida ou ausente."},
+    403: {"description": "Acesso exclusivo da recepção."},
+}
 
 def resposta_token(usuario: Usuario, settings: Settings, *, mfa: bool = False) -> TokenResponse:
     return TokenResponse(access_token=emitir_token(usuario, settings, mfa=mfa),
@@ -53,7 +58,7 @@ def completar_mfa(dados: MFAInput, request: Request, response: Response,
         raise HTTPException(401, "Desafio inválido, expirado ou código incorreto.")
     return resposta_token(usuario, settings, mfa=True)
 
-@router.post("/agenda-session", status_code=204)
+@router.post("/agenda-session", status_code=204, responses=AGENDA_RESPONSES)
 def criar_sessao_agenda(usuario: UsuarioDep, settings: SettingsDep, response: Response):
     exigir_papel(usuario, Papel.RECEPCAO)
     response.set_cookie("agenda_session", emitir_token(usuario, settings),
@@ -61,7 +66,7 @@ def criar_sessao_agenda(usuario: UsuarioDep, settings: SettingsDep, response: Re
         path="/agenda", max_age=settings.access_token_minutes * 60)
     response.headers["Cache-Control"] = "no-store"
 
-@router.delete("/agenda-session", status_code=204)
+@router.delete("/agenda-session", status_code=204, responses=AGENDA_RESPONSES)
 def encerrar_sessao_agenda(usuario: UsuarioDep, settings: SettingsDep, response: Response):
     exigir_papel(usuario, Papel.RECEPCAO)
     response.delete_cookie("agenda_session", path="/agenda",

@@ -64,6 +64,11 @@ class NetworkMiddleware:
                 headers = MutableHeaders(scope=message)
                 headers["X-Frame-Options"] = "DENY"
                 headers["X-Content-Type-Options"] = "nosniff"
+                if scope["path"].rstrip("/") == "/agenda":
+                    headers["Content-Security-Policy"] = (
+                        "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'")
+                if any(scope["path"].startswith(prefix) for prefix in ("/consultas", "/auth", "/admin", "/agenda", "/disponibilidade")):
+                    headers["Cache-Control"] = "no-store"
                 if scope["scheme"] == "https":
                     headers["Strict-Transport-Security"] = "max-age=31536000"
             await send(message)

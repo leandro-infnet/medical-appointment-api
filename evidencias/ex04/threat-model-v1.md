@@ -76,7 +76,7 @@ Cada resultado proibido descreve o contrato seguro esperado, mesmo quando o incr
 | MU-005 — cliente enviando HTML malicioso | Status textual é armazenável | PATCH com `<script>alert(1)</script>`; depois abrir agenda | Texto virar script e atuar no navegador da recepção; TM-005 | F-01/09/08/06, TB-01/02 | CTRL-04; TEST-03 histórico já mostra bloqueio; manter texto comum e payload como texto |
 | MU-006 — autor negando alteração | PATCH/DELETE são aceitos; só há datas atuais | Alterar/remover e negar responsabilidade | Não conseguir atribuir ação relevante; TM-007 | F-01/03/09, TB-01 | CTRL-06; teste proposto TEST-19, correlacionando ator/ação/resultado sem registrar segredo |
 | MU-007 — cliente abusando do volume | Sem limite de registros/requisições/lista | Repetir criações e leituras amplas, inclusive agenda | Esgotar recursos e impedir atendimento legítimo; TM-008 | F-01/02/05/06/09, TB-01 | CTRL-07; teste limitado TEST-20; parâmetros a justificar, sem ataque de carga nesta etapa |
-| MU-008 — incidente operacional | Consultas somente no processo em memória | Reiniciar o processo ou distribuir uso entre workers | Perda de consultas ou visões divergentes; TM-010 | D-01, F-09/10 | CTRL-08; TEST-21 proposto para durabilidade/recuperação; não alegar que cliente HTTP pode reiniciar o host |
+| MU-008 — incidente operacional | Consultas somente no processo em memória | Reiniciar o processo ou distribuir uso entre workers | Perda de consultas ou visões divergentes; TM-010 | D-01, F-09/10 | CTRL-08; TEST-21 proposto para durabilidade/recuperação; reinício é incidente operacional, não poder remoto do cliente HTTP |
 | MU-009 — cliente provocando erro | Campo inválido inclui texto fictício sensível | Solicitar validação com dados rejeitados | Repetir dados clínicos no erro/log além do necessário; TM-011 | F-01/02, TB-01 | CTRL-09; TEST-22 proposto; resultado depende de verificar handler efetivo |
 | MU-010 — cliente humano elevando privilégio, futuro | Login/rota admin implementados no Ex. 6 | Usar JWT inválido, papel indevido ou pular MFA | Acesso administrativo sem autorização; TM-013 | SUP-07; novos fluxos pendentes | CTRL-01/02; TEST-04/05/06/10, incluindo caminho permitido |
 | MU-011 — laboratório, futuro | Client Credentials implementado no Ex. 7 | Pedir privilégio humano ou usar token M2M no CRUD | Ler pacientes/notas ou escrever consultas; TM-014 | SUP-08, TB-03 futura | CTRL-10; TEST-11 positivo de disponibilidade e negativo de escrita/acesso clínico |
@@ -143,7 +143,7 @@ AT-01–06 continuam descrevendo apenas o estado atual. Ativos, processos e flux
 
 ## 7. Mitigações, responsabilidade e risco residual
 
-Responsável pela implementação/revisão: aluno desenvolvedor. Aceitação de risco e liberação final serão justificadas no Capstone; esta priorização não aprova deploy.
+Implementação e revisão dos controles integram o desenvolvimento. Aceitação de risco e liberação final ficam para o Capstone.
 
 | Controle | Ação concreta e local esperado | Estado / incremento | Risco residual ou decisão necessária |
 | --- | --- | --- | --- |
@@ -209,3 +209,5 @@ TEST-01 continua regressão funcional do CRUD, sem ameaça presumida. As evidên
 - [x] REQ-04/R07–R08 documentados, com snapshot inicial para comparação no Ex. 12.
 
 Verificações documentais e evidências: [Exercício 4](README.md). Esta versão não declara vulnerabilidades exploradas, scanner executado, CVSS atribuído, conformidade LGPD ou autorização para deploy.
+
+Nota de manutenção: redação revisada; IDs e conclusões técnicas do modelo inicial mantidos. Os hashes de `baseline.txt` registram a versão original.
