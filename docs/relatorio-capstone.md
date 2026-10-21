@@ -66,7 +66,7 @@ O gate CI avalia pytest/SAST/SCA; ZAP é auditoria separada. A aprovação de in
 
 ## Entrega
 
-- [ ] PR/check remoto das alterações finais aprovado.
+- [x] Security gate remoto aprovado no PR #17, commit `c1b98e4`; [registro e relatórios](../evidencias/ex13/github-actions.md).
 - [ ] Vídeo de até cinco minutos, no YouTube não listado, com link na entrega.
 - [ ] ZIP final revisado, sem `.env`, bancos/cadastro real, credenciais, ambiente virtual ou caches.
 

@@ -35,6 +35,7 @@ Usar instância ZAP dedicada: o script cria uma nova sessão e recusa sobrescrev
 | `uvicorn.log` em cada scan | Arranque/encerramento do servidor fictício, sem access log |
 | `gate/` | Validação intermediária: 229 testes, seis LOW e SCA sem findings |
 | `gate-final/` | Validação final: 233 testes, seis LOW, SCA sem findings e gate aprovado |
+| `github-actions/` | Relatórios do run remoto aprovado no PR #17; [link, commit e resultados](github-actions.md) |
 
 O exit 0 do script de tráfego significa conclusão do experimento e correspondência de status esperados, **não aprovação de segurança**. O alerta HIGH de transporte permanece e bloqueia deploy até TLS verificado. O gate CI existente não consome ZAP automaticamente; a decisão DAST faz parte da auditoria final.
 
