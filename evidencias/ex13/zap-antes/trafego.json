@@ -1,0 +1,264 @@
+[
+  {
+    "method": "GET",
+    "path": "/",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/openapi.json",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/docs",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/consultas",
+    "status": 401,
+    "expected": 401,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/token",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/consultas",
+    "status": 201,
+    "expected": 201,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/consultas",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/consultas/1",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/consultas/1",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/consultas",
+    "status": 422,
+    "expected": 422,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/consultas",
+    "status": 403,
+    "expected": 403,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/admin/status",
+    "status": 403,
+    "expected": 403,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/token",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/agenda-session",
+    "status": 204,
+    "expected": 204,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/agenda?dia=2026-10-20",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/auth/agenda-session",
+    "status": 204,
+    "expected": 204,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/token",
+    "status": 202,
+    "expected": 202,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/mfa",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/admin/status",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/auth/m2m/token",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/disponibilidade?dia=2026-10-20&profissional_id=1",
+    "status": 200,
+    "expected": 200,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/disponibilidade?dia=2026-10-20&profissional_id=1",
+    "status": 401,
+    "expected": 401,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/consultas",
+    "status": 401,
+    "expected": 401,
+    "headers": {
+      "cache-control": "no-store",
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/consultas/1",
+    "status": 204,
+    "expected": 204,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/consultas/1",
+    "status": 404,
+    "expected": 404,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff"
+    }
+  }
+]

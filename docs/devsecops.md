@@ -28,7 +28,7 @@ Adotado **CVSS v3.1 Base**, com vetores completos, calculados pela biblioteca `c
 
 VUL-002 usa score provisório limitado ao que foi observado, sem impacto demonstrado; VUL-003 usa avaliação condicional de risco, não score de um exploit confirmado. Se o contexto real de implantação diferir, reavaliar as métricas; não transformar uma ausência de controle automaticamente em dano observado. Risco acadêmico de histórico/paciente didático permanece explícito em `vulnerabilidades.md`.
 
-A ordem de tratamento é VUL-001, VUL-003, VUL-002 pela gravidade modelada; requisitos e impacto podem elevar a urgência de VUL-002 mesmo com score médio. Dados médicos e mutação de agenda justificam bloquear ownership/auth independentemente de score. Não se afirma conformidade LGPD ou sistema seguro por passar no gate.
+A ordem de tratamento é VUL-001, VUL-003, VUL-002 pela gravidade modelada; requisitos e impacto podem elevar a urgência de VUL-002 mesmo com score provisório zero. Dados médicos e mutação de agenda justificam bloquear ownership/auth independentemente de score. Não se afirma conformidade LGPD ou sistema seguro por passar no gate.
 
 ## Política executável e justificativa
 
@@ -76,9 +76,9 @@ Os cinco novos casos HTTP expandem o teste administrativo Ex. 6 para outros veto
 
 A execução remota [37868988723](https://github.com/leandro-infnet/medical-appointment-api/actions/runs/37868988723), no commit `df35db5d98ad2e9e173bc3498cc257f28e06cb43`, foi aprovada. O artefato `relatorios-seguranca` está preservado em `evidencias/ex12/github-actions/`: 214 testes sem falhas ou skips, quatro findings LOW do Bandit e nenhuma vulnerabilidade retornada pelo pip-audit.
 
-A [evidência GitHub Actions](../evidencias/ex12/github-actions.md) registra a criação da proteção de `main`: PR obrigatório, branch atualizada, check **Security gate** obrigatório e bypass desabilitado inclusive para administradores. As capturas também mostram aprovação no PR #12 e na main após seu merge. Isso documenta a configuração e o caminho de sucesso; ainda não foi demonstrado um PR com merge bloqueado por check reprovado.
+A [evidência GitHub Actions](../evidencias/ex12/github-actions.md) registra a criação da proteção de `main`: PR obrigatório, branch atualizada, check **Security gate** obrigatório e bypass desabilitado inclusive para administradores. As capturas também mostram aprovação no PR #12 e na main após seu merge. O bloqueio remoto também foi demonstrado no [PR #15](https://github.com/leandro-infnet/medical-appointment-api/pull/15), run [37883814260](https://github.com/leandro-infnet/medical-appointment-api/actions/runs/37883814260). O experimento teve 214 testes aprovados e uma falha deliberada; `gate.json` reprovou por teste obrigatório falho. A [captura](../evidencias/ex12/github-actions-failed/images/image-06.png) mostra o check Required e merge bloqueado. Relatórios preservados em `evidencias/ex12/github-actions-failed/relatorios-seguranca/`.
 
-**Pendência de evidência R21:** registrar um run reprovado e a indicação de merge bloqueado no PR. O gate vermelho local e os testes do avaliador já demonstram rejeição pela política, mas não substituem essa observação remota. Uma demonstração controlada pode usar um PR temporário, destinado a ser fechado sem merge, com um teste deliberadamente falho e claramente identificado como experimento. Guardar URL do run/PR, relatório e captura do bloqueio; fechar o PR sem integrar o teste. Esse ensaio demonstra bloqueio por falha de teste, não uma vulnerabilidade real nem um finding HIGH de scanner. Não enfraquecer a proteção nem introduzir falhas na API para produzir a evidência. A criação desse PR não foi realizada nesta revisão.
+R21 possui evidências de aprovação, reprovação e proteção aplicada. O teste experimental não integra a main nem a branch de capstone. O bloqueio remoto observado foi por teste falho, não por finding HIGH: os limites de severidade têm testes próprios e o gate SCA vermelho local foi preservado. O experimento não enfraqueceu a API nem alterou a proteção para permitir integração. Nenhum deploy autorizado.
 
 ## Referências primárias
 

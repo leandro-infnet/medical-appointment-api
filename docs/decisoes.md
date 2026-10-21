@@ -167,4 +167,12 @@ Escolha: GitHub Actions com Python 3.14, pytest obrigatório, Bandit em app/scri
 
 Justificativa: histórico de acesso indevido (VUL-001), repetição de login (VUL-003) e headers ausentes (VUL-002) exige regressões de negócio que SAST/SCA não cobrem integralmente. CVSS v3.1 9,1/7,4/0,0 provisório ordena risco modelado; premissas/impacto separados em [DevSecOps](devsecops.md). ZAP entra na integração final Ex. 13; IAST instrumentado é candidato de homologação, não executado. Atualização do pip trata advisories reais relatados na cadeia local de instalação.
 
-Consequências: scanner indisponível bloqueia, nenhum segredo de produção no CI, relatórios são artefatos temporários. R21 exige proteção de branch externa: workflow sozinho não impede merge. Run aprovado e check obrigatório documentados em [evidências remotas](../evidencias/ex12/github-actions.md); demonstração remota de merge bloqueado permanece pendente. Nenhum deploy autorizado.
+Consequências: scanner indisponível bloqueia, nenhum segredo de produção no CI, relatórios são artefatos temporários. R21 exige proteção de branch externa: workflow sozinho não impede merge. Run aprovado e check obrigatório documentados em [evidências remotas](../evidencias/ex12/github-actions.md); merge bloqueado demonstrado no PR #15, com captura e relatórios em `evidencias/ex12/github-actions-failed/`. Nenhum deploy autorizado.
+
+## DEC-25 — Auditoria final e liberação (Exercício 13)
+
+Contexto: gate verde valida testes/SAST/SCA, mas não comprova transporte TLS nem resolve riscos de implantação. Decisão: ZAP passivo em instância dedicada, modo safe e tráfego fictício autenticado; manter todos os alertas na triagem. CSP é acrescentada à agenda sem relaxar auto-escape; cache proibido nas respostas protegidas. O Swagger padrão continua com CDN/SRI/CSP pendentes para exposição pública.
+
+OpenAPI passa a declarar cookie da agenda como alternativa bearer e erros 401/403 reais; o middleware continua sendo o único validador de identidade. Unidades com mocks complementam testes HTTP e SQLite, sem substituí-los.
+
+Consequências: não autorizar produção enquanto houver HTTP para credenciais, ausência de auditoria persistente, identidade apenas simulada e recuperação não ensaiada. A demonstração acadêmica usa loopback e dados fictícios. Findings e critérios para reavaliação estão em [relatório final](relatorio-capstone.md), sem alegar que scanner verde libera deploy.

@@ -156,3 +156,13 @@ O workflow `.github/workflows/security.yml` executa pytest, Bandit e pip-audit e
 ## Vídeo de apresentação
 
 O vídeo de apresentação será publicado nesta [pasta do Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
+
+## Capstone — Exercício 13
+
+A auditoria final inclui testes unitários com mocking, revisão OpenAPI e ZAP passivo com tráfego autenticado e dados fictícios. A agenda recebeu CSP restritiva e as respostas protegidas usam `Cache-Control: no-store`. Contratos OpenAPI documentam cookie da agenda e erros de acesso.
+
+- [Relatório final, findings e riscos residuais](docs/relatorio-capstone.md).
+- [Auditoria OpenAPI](docs/auditoria-openapi.md).
+- [Evidências e comandos de reprodução do ZAP](evidencias/ex13/README.md).
+
+**Produção bloqueada:** TLS real, identidade/MFA de produção, auditoria persistente e recuperação operacional não estão demonstrados. Gate aprovado permite avaliar integração de código, não autoriza deploy. Vídeo no YouTube não listado e ZIP final permanecem pendentes.

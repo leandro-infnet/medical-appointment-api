@@ -1,0 +1,9 @@
+{
+  "aprovado": true,
+  "exit_codes": {
+    "pytest": 0,
+    "bandit": 1,
+    "sca": 0
+  },
+  "motivos": []
+}

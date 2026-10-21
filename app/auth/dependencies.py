@@ -2,7 +2,7 @@
 from typing import Annotated
 import jwt
 from fastapi import Depends, HTTPException, Request
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import APIKeyCookie, OAuth2PasswordBearer
 from app.auth.tokens import validar_token
 from app.models.identidades import Papel, Usuario
 from app.settings import Settings, get_settings
@@ -39,4 +39,11 @@ def usuario_atual(request: Request, _token: Annotated[str | None, Depends(bearer
 
 UsuarioDep = Annotated[Usuario, Depends(usuario_atual)]
 
-AgendaDep = UsuarioDep
+agenda_cookie = APIKeyCookie(name="agenda_session", auto_error=False, scheme_name="AgendaCookie")
+
+def usuario_agenda(usuario: UsuarioDep,
+                   _cookie: Annotated[str | None, Depends(agenda_cookie)]) -> Usuario:
+    # A identidade já foi validada pelo middleware; o cookie declara o contrato OpenAPI.
+    return usuario
+
+AgendaDep = Annotated[Usuario, Depends(usuario_agenda)]

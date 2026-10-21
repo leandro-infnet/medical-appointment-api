@@ -37,6 +37,6 @@ Os quatro findings permanecem nos JSONs e são aceitáveis para a política defi
 
 Os diretórios `antes/` e `depois/` preservam execuções locais. A execução remota aprovada, o artefato baixado e as capturas de proteção da main estão em [github-actions.md](github-actions.md) e `github-actions/`. O relatório remoto registra 214 testes aprovados, quatro findings LOW do Bandit e nenhuma vulnerabilidade retornada pela SCA.
 
-A proteção exige PR, branch atualizada e check `Security gate`, sem bypass por administradores. Permanece pendente somente a demonstração remota de um PR impedido de fazer merge com check reprovado; não confundir a aprovação mostrada nas imagens com esse cenário negativo.
+A proteção exige PR, branch atualizada e check `Security gate`, sem bypass por administradores. O PR #15 demonstrou merge bloqueado por teste deliberadamente falho: 214 passaram e um falhou. Relatórios em `github-actions-failed/relatorios-seguranca/` e screenshot em `github-actions-failed/images/image-06.png`; links do PR/run em [DevSecOps](../../docs/devsecops.md). O teste temporário não integra a main.
 
 YAML foi analisado localmente com PyYAML e conferidos gatilhos, permissão de leitura, comando do gate e upload `always()`/erro em ausência. Isso não valida infraestrutura hospedada do GitHub. Testes de política usam mocks/relatórios fictícios, identificados no código; são distintos dos scanners reais acima. DAST/ZAP passivo e auditoria final ficam no Ex. 13; IAST é proposta não executada. Nunca incluir `.env`, banco/cadastro real, credenciais ou bearer na entrega.
