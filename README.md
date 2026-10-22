@@ -79,7 +79,8 @@ GitHub Actions executa pytest, Bandit e pip-audit. Falhas/skips, Bandit HIGH, ad
 
 O [capstone](docs/relatorio-capstone.md) registra ZAP passivo antes/depois, mocking, auditoria OpenAPI e riscos residuais. **Produção bloqueada:** TLS real, identidade/MFA de produção, auditoria persistente e recuperação operacional pendentes. O gate aprovado não encerra esses riscos.
 
-- [ ] Vídeo de até cinco minutos, no YouTube não listado, com link na entrega.
-- [ ] ZIP final `leandro_medeiros_DR2_AT.ZIP`, revisado e sem segredos.
+- [x] Vídeo de até cinco minutos, no YouTube listado, com link na entrega.
+- [x] ZIP final `leandro_medeiros_DR2_AT.ZIP`, revisado e sem segredos.
 
-[Pasta de apoio ao vídeo no Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
+📹 [Vídeo no YouTube](https://youtu.be/LOaATrkbHro)  
+☁️ [Pasta de apoio ao vídeo no Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
