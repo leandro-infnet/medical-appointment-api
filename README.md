@@ -83,4 +83,4 @@ O [capstone](docs/relatorio-capstone.md) registra ZAP passivo antes/depois, mock
 - [x] ZIP final `leandro_medeiros_DR2_AT.ZIP`, revisado e sem segredos.
 
 📹 [Vídeo no YouTube](https://youtu.be/LOaATrkbHro)  
-☁️ [Pasta de apoio ao vídeo no Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq).
+☁️ [Pasta de apoio ao vídeo no Google Drive](https://drive.google.com/drive/u/0/folders/1fREoLUQ0jaFfAfYo3vyfTCJTrspcyotq)
